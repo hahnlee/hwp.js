@@ -130,6 +130,13 @@ class SectionParser {
       const [tagID,, size] = this.reader.readRecord()
 
       switch (tagID) {
+        case SectionTagID.HWPTAG_PARA_HEADER: {
+          this.content.push(this.currentParagraph)
+          this.currentParagraph = new Paragraph()
+          this.reader.skipByte(size)
+          break
+        }
+
         case SectionTagID.HWPTAG_PAGE_DEF: {
           this.visitPageDef()
           break
@@ -151,7 +158,6 @@ class SectionParser {
       }
     }
 
-    this.content.push(this.currentParagraph)
     this.content.shift()
 
     this.result.content = this.content

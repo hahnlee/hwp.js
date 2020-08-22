@@ -20,6 +20,25 @@ import HWPHeader from '../models/header'
 import HWPVersion from '../models/version'
 import Section from '../models/section'
 import parse from '../parser'
+import ShapePointer from '../models/shapePointer'
+import Paragraph from '../models/paragraph'
+
+function createPage(section: Section) {
+  const page = document.createElement('div')
+
+  page.style.boxShadow = '0 1px 3px 1px rgba(60,64,67,.15)'
+  page.style.backgroundColor = '#FFF'
+  page.style.margin = '0 auto'
+
+  page.style.width = `${section.width / 7200}in`
+  page.style.height = `${section.height / 7200}in`
+  page.style.paddingTop = `${section.paddingTop / 7200}in`
+  page.style.paddingRight = `${section.paddingRight / 7200}in`
+  page.style.paddingBottom = `${section.paddingBottom / 7200}in`
+  page.style.paddingLeft = `${section.paddingLeft / 7200}in`
+
+  return page
+}
 
 class HWPViewer {
   private hwpDocument: HWPDocument = new HWPDocument(
@@ -49,32 +68,68 @@ class HWPViewer {
     reader.readAsBinaryString(file)
   }
 
-  private drawPageContainer = (section: Section) => {
-    const page = document.createElement('div')
-
-    page.style.boxShadow = '0 1px 3px 1px rgba(60,64,67,.15)'
-    page.style.backgroundColor = '#FFF'
-    page.style.margin = '0 auto'
-
-    page.style.width = `${section.width / 7200}in`
-    page.style.height = `${section.height / 7200}in`
-    page.style.paddingTop = `${section.paddingTop / 7200}in`
-    page.style.paddingRight = `${section.paddingRight / 7200}in`
-    page.style.paddingBottom = `${section.paddingBottom / 7200}in`
-    page.style.paddingLeft = `${section.paddingLeft / 7200}in`
-
-    this.viewer.appendChild(page)
-  }
-
   private drawViewer() {
     this.viewer.style.backgroundColor = '#E8EAED'
     this.viewer.style.padding = '24px'
   }
 
+  private drawText(
+    container: HTMLElement,
+    paragraph: Paragraph,
+    shapePointer: ShapePointer,
+    endPos: number,
+  ) {
+    const range = paragraph.content.slice(shapePointer.pos, endPos + 1)
+
+    let text = ''
+
+    range.forEach((hwpChar) => {
+      if (typeof hwpChar.value === 'string') {
+        text += hwpChar.value
+      } else if (hwpChar.value === 10) {
+        text += '\n'
+      }
+    })
+
+    const span = document.createElement('span')
+    span.textContent = text
+
+    const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
+
+    if (charShape) {
+      const fontSize = charShape.fontBaseSize * (charShape.fontRatio[0] / 100)
+      span.style.fontSize = `${fontSize}pt`
+      span.style.whiteSpace = 'pre-wrap'
+
+      const [red, green, blue] = charShape.color
+      span.style.color = `rgb(${red}, ${green}, ${blue})`
+    }
+
+    container.appendChild(span)
+  }
+
+  private drawSection = (section: Section) => {
+    const page = createPage(section)
+
+    section.content.forEach((paragraph) => {
+      const paragraphContainer = document.createElement('p')
+      paragraphContainer.style.margin = '0'
+
+      paragraph.shapeBuffer.forEach((shapePointer, index) => {
+        const endPos = paragraph.getShapeEndPos(index)
+        this.drawText(paragraphContainer, paragraph, shapePointer, endPos)
+      })
+
+      page.append(paragraphContainer)
+    })
+
+    this.viewer.appendChild(page)
+  }
+
   private draw() {
     this.drawViewer()
 
-    this.hwpDocument.sections.forEach(this.drawPageContainer)
+    this.hwpDocument.sections.forEach(this.drawSection)
 
     this.container.appendChild(this.viewer)
   }
