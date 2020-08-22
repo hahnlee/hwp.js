@@ -1,8 +1,8 @@
 {
   "name": "hwp.js",
   "version": "0.0.1",
-  "main": "build",
-  "module": "build",
+  "main": "build/cjs/index.js",
+  "module": "build/esm/index.js",
   "siseEffect": false,
   "license": "Apache-2.0",
   "repository": {
