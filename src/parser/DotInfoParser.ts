@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { find, CFB$Container } from 'cfb'
-import { inflate } from 'pako'
-
 import { DocInfoTagID } from '../constants/tagID'
 import DocInfo from '../models/docInfo'
 import ByteReader from '../utils/byteReader'
@@ -55,17 +52,4 @@ class DocInfoParser {
   }
 }
 
-function parseDocInfo(container: CFB$Container): DocInfo {
-  const docInfoEntry = find(container, 'DocInfo')
-
-  if (!docInfoEntry) {
-    throw new Error('DocInfo not exist')
-  }
-
-  const content: Uint8Array = docInfoEntry.content as Uint8Array
-  const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
-
-  return new DocInfoParser(decodedContent).parse()
-}
-
-export default parseDocInfo
+export default DocInfoParser

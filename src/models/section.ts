@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-import DocInfo from './docInfo'
-import HWPHeader from './header'
-import Section from './section'
+class Section {
+  width: number = 0
 
-class HWPDocument {
-  header: HWPHeader
+  height: number = 0
 
-  info: DocInfo
+  paddingLeft: number = 0
 
-  sections: Section[]
+  paddingRight: number = 0
 
-  constructor(
-    header: HWPHeader,
-    info: DocInfo,
-    sections: Section[],
-  ) {
-    this.header = header
-    this.info = info
-    this.sections = sections
-  }
+  paddingTop: number = 0
+
+  paddingBottom: number = 0
+
+  headerPadding: number = 0
+
+  footerPadding: number = 0
 }
 
-export default HWPDocument
+export default Section

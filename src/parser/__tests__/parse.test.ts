@@ -35,4 +35,12 @@ describe('parse', () => {
   it('should parse collect sectionNumber', () => {
     expect(hwpDocument.info.sectionSize).toEqual(1)
   })
+
+  it('should be collect page size', () => {
+    expect(hwpDocument.sections.length).toBe(1)
+
+    // A4 width / height
+    expect(hwpDocument.sections[0].width).toBe(59528)
+    expect(hwpDocument.sections[0].height).toBe(84188)
+  })
 })
