@@ -1,0 +1,17 @@
+{
+  "name": "hwp.js",
+  "version": "0.0.1",
+  "main": "build",
+  "module": "build",
+  "siseEffect": false,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hahnlee/hwp.js.git"
+  },
+  "homepage": "https://hanlee.io/hwp.js",
+  "bugs": {
+    "email": "hanlee.dev@gmail.com",
+    "url": "https://github.com/hahnlee/hwp.js/issues"
+  }
+}
