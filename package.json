@@ -13,5 +13,37 @@
   "bugs": {
     "email": "hanlee.dev@gmail.com",
     "url": "https://github.com/hahnlee/hwp.js/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint-staged && yarn typecheck && yarn jest"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.(js|ts)?(x)": [
+      "eslint"
+    ]
+  },
+  "scripts": {
+    "lint-staged": "lint-staged",
+    "typecheck": "tsc",
+    "lint": "eslint ./src",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/jest": "^26.0.10",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.9.1",
+    "babel-jest": "^26.3.0",
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-typescript": "^9.0.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.2.5",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.2.11",
+    "typescript": "^4.0.2"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./build"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
