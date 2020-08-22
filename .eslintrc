@@ -4,6 +4,7 @@
     "project": "./tsconfig.lint.json"
   },
   "rules": {
-    "@typescript-eslint/semi": ["error", "never"]
+    "@typescript-eslint/semi": ["error", "never"],
+    "no-bitwise": "off"
   }
 }

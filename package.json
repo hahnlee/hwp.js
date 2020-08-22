@@ -35,6 +35,7 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
     "@types/jest": "^26.0.10",
+    "@types/pako": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
     "@typescript-eslint/parser": "^3.9.1",
     "babel-jest": "^26.3.0",
@@ -47,6 +48,7 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "cfb": "^1.2.0"
+    "cfb": "^1.2.0",
+    "pako": "^1.0.11"
   }
 }

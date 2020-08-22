@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+import DocInfo from './docInfo'
 import HWPHeader from './header'
 
 class HWPDocument {
   header: HWPHeader
 
-  constructor(header: HWPHeader) {
+  info: DocInfo
+
+  constructor(header: HWPHeader, info: DocInfo) {
     this.header = header
+    this.info = info
   }
 }
 

@@ -14,24 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  read,
-  CFB$Blob,
-  CFB$Container,
-  CFB$ParsingOptions,
-} from 'cfb'
-
-import HWPDocument from '../models/document'
-import parseFileHeader from './parseFileHeader'
-import parseDocInfo from './parseDocInfo'
-
-function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
-  const container: CFB$Container = read(input, options)
-
-  const header = parseFileHeader(container)
-  const docInfo = parseDocInfo(container)
-
-  return new HWPDocument(header, docInfo)
+class DocInfo {
+  sectionSize: number = 0
 }
 
-export default parse
+export default DocInfo

@@ -25,10 +25,14 @@ const reportFilePath = path.join(__dirname, 'data', 'basicsReport.hwp')
 const reportFile = fs.readFileSync(reportFilePath)
 
 describe('parse', () => {
-  it('should parse HWP file', () => {
-    const hwpDocument = parse(reportFile, { type: 'binary' })
+  const hwpDocument = parse(reportFile, { type: 'binary' })
 
+  it('should parse HWP file', () => {
     expect(hwpDocument instanceof HWPDocument).toBe(true)
     expect(hwpDocument.header.version).toEqual(new HWPVersion(5, 0, 2, 4))
+  })
+
+  it('should parse collect sectionNumber', () => {
+    expect(hwpDocument.info.sectionSize).toEqual(1)
   })
 })
