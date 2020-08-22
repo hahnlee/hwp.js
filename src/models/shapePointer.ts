@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
+class ShapePointer {
+  pos: number = 0
 
-class DocInfo {
-  sectionSize: number = 0
-
-  charShapes: CharShape[] = []
-
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
-  }
+  shapeIndex: number = 0
 }
 
-export default DocInfo
+export default ShapePointer

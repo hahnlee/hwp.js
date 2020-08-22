@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
+import HWPChar from './char'
+import ShapePointer from './shapePointer'
 
-class DocInfo {
-  sectionSize: number = 0
+class Paragraph {
+  content: HWPChar[] = []
 
-  charShapes: CharShape[] = []
+  shapeBuffer: ShapePointer[] = []
 
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
+  getShapeEndPos(index: number): number {
+    if (index === this.shapeBuffer.length - 1) {
+      return this.content.length - 1
+    }
+
+    return this.shapeBuffer[index + 1].pos - 1
   }
 }
 
-export default DocInfo
+export default Paragraph

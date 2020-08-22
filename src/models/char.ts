@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
+export enum CharType {
+  Char,
+  Inline,
+  Extened,
+}
 
-class DocInfo {
-  sectionSize: number = 0
+class HWPChar {
+  type: CharType
 
-  charShapes: CharShape[] = []
+  value: number | string
 
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
+  constructor(type: CharType, value: number | string) {
+    this.type = type
+    this.value = value
   }
 }
 
-export default DocInfo
+export default HWPChar

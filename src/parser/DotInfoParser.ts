@@ -15,8 +15,10 @@
  */
 
 import { DocInfoTagID } from '../constants/tagID'
+import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
 import ByteReader from '../utils/byteReader'
+import { getRGB } from '../utils/bitUtils'
 
 class DocInfoParser {
   private reader: ByteReader
@@ -34,6 +36,74 @@ class DocInfoParser {
     this.reader.skipByte(size - 2)
   }
 
+  visitCharShape(size: number) {
+    const charShape = new CharShape(
+      [
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+        this.reader.readUInt16(),
+      ],
+      [
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+      ],
+      [
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+      ],
+      [
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+        this.reader.readUInt8(),
+      ],
+      [
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+        this.reader.readInt8(),
+      ],
+      this.reader.readInt32(),
+      this.reader.readUInt32(),
+      this.reader.readUInt8(),
+      this.reader.readUInt8(),
+      this.reader.readUInt32(),
+      this.reader.readUInt32(),
+      this.reader.readUInt32(),
+      this.reader.readUInt32(),
+    )
+
+    if (size > 68) {
+      charShape.fontBackgroundId = this.reader.readUInt16()
+    }
+
+    if (size > 70) {
+      charShape.underLineColor = getRGB(this.reader.readInt32())
+    }
+
+    this.result.charShapes.push(charShape)
+  }
+
   parse() {
     while (!this.reader.isEOF()) {
       const [tagID, , size] = this.reader.readRecord()
@@ -43,6 +113,12 @@ class DocInfoParser {
           this.visitDocumentPropertes(size)
           break
         }
+
+        case DocInfoTagID.HWPTAG_CHAR_SHAPE: {
+          this.visitCharShape(size)
+          break
+        }
+
         default:
           this.reader.skipByte(size)
       }

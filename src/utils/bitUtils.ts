@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
+export function getBitValue(mask: number, start: number, end: number): number {
+  const target: number = mask >> start
 
-class DocInfo {
-  sectionSize: number = 0
-
-  charShapes: CharShape[] = []
-
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
+  let temp = 0
+  for (let index = 0; index <= (end - start); index += 1) {
+    temp <<= 1
+    temp += 1
   }
+
+  return target & temp
 }
 
-export default DocInfo
+export function getRGB(colorRef: number): [number, number, number] {
+  return [
+    getBitValue(colorRef, 0, 7),
+    getBitValue(colorRef, 8, 15),
+    getBitValue(colorRef, 16, 23),
+  ]
+}
