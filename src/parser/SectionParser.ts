@@ -16,12 +16,19 @@
 
 import { SectionTagID } from '../constants/tagID'
 import Section from '../models/section'
+import Paragraph from '../models/paragraph'
+import HWPChar, { CharType } from '../models/char'
 import ByteReader from '../utils/byteReader'
+import ShapePointer from '../models/shapePointer'
 
 class SectionParser {
   private reader: ByteReader
 
   private result = new Section()
+
+  private currentParagraph: Paragraph = new Paragraph()
+
+  private content: Paragraph[] = []
 
   constructor(data: Uint8Array) {
     this.reader = new ByteReader(data)
@@ -41,6 +48,83 @@ class SectionParser {
     this.reader.skipByte(4)
   }
 
+  // TODO: (@hahnlee) mapper 패턴 사용하기
+  visitParaText(totalByte: number) {
+    let readByte = 0
+
+    while (readByte < totalByte) {
+      const charCode = this.reader.readUInt16()
+
+      switch (charCode) {
+        // Char
+        case 0:
+        case 10:
+        case 13: {
+          this.currentParagraph.content.push(
+            new HWPChar(CharType.Char, charCode),
+          )
+          readByte += 2
+          break
+        }
+
+        // Inline
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 19:
+        case 20: {
+          this.currentParagraph.content.push(
+            new HWPChar(CharType.Inline, charCode),
+          )
+          this.reader.skipByte(14)
+          readByte += 16
+          break
+        }
+
+        // Extened
+        case 1:
+        case 2:
+        case 3:
+        case 11:
+        case 12:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        case 21:
+        case 22:
+        case 23: {
+          this.currentParagraph.content.push(
+            new HWPChar(CharType.Extened, charCode),
+          )
+          this.reader.skipByte(14)
+          readByte += 16
+          break
+        }
+
+        default: {
+          this.currentParagraph.content.push(
+            new HWPChar(CharType.Char, String.fromCharCode(charCode)),
+          )
+          readByte += 2
+        }
+      }
+    }
+  }
+
+  visitCharShape() {
+    const shapePointer = new ShapePointer(
+      this.reader.readUInt32(),
+      this.reader.readUInt32(),
+    )
+
+    this.currentParagraph.shapeBuffer.push(shapePointer)
+  }
+
   parse(): Section {
     while (!this.reader.isEOF()) {
       const [tagID,, size] = this.reader.readRecord()
@@ -51,11 +135,26 @@ class SectionParser {
           break
         }
 
+        case SectionTagID.HWPTAG_PARA_TEXT: {
+          this.visitParaText(size)
+          break
+        }
+
+        case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
+          this.visitCharShape()
+          break
+        }
+
         default: {
           this.reader.skipByte(size)
         }
       }
     }
+
+    this.content.push(this.currentParagraph)
+    this.content.shift()
+
+    this.result.content = this.content
 
     return this.result
   }

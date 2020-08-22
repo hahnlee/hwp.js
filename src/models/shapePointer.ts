@@ -18,6 +18,11 @@ class ShapePointer {
   pos: number = 0
 
   shapeIndex: number = 0
+
+  constructor(pos: number, shapeIndex: number) {
+    this.pos = pos
+    this.shapeIndex = shapeIndex
+  }
 }
 
 export default ShapePointer

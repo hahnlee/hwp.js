@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import Paragraph from './paragraph'
+
 class Section {
   width: number = 0
 
@@ -30,6 +32,8 @@ class Section {
   headerPadding: number = 0
 
   footerPadding: number = 0
+
+  content: Paragraph[] = []
 }
 
 export default Section
