@@ -45,5 +45,8 @@
     "jest": "^26.4.2",
     "lint-staged": "^10.2.11",
     "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "cfb": "^1.2.0"
   }
 }
