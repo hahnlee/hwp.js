@@ -26,7 +26,7 @@ class DocInfoParser {
   private result = new DocInfo()
 
   constructor(data: Uint8Array) {
-    this.reader = new ByteReader(data)
+    this.reader = new ByteReader(data.buffer)
   }
 
   visitDocumentPropertes(size: number) {

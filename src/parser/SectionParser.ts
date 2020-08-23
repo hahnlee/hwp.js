@@ -20,40 +20,46 @@ import Paragraph from '../models/paragraph'
 import HWPChar, { CharType } from '../models/char'
 import ByteReader from '../utils/byteReader'
 import ShapePointer from '../models/shapePointer'
+import HWPRecord from '../models/record'
+import parseRecord from './parseRecord'
 
 class SectionParser {
-  private reader: ByteReader
+  private record: HWPRecord
 
-  private result = new Section()
+  private result: Section
 
   private currentParagraph: Paragraph = new Paragraph()
 
-  private content: Paragraph[] = []
+  private content: Paragraph[]
 
   constructor(data: Uint8Array) {
-    this.reader = new ByteReader(data)
+    this.record = parseRecord(data)
+    this.result = new Section()
+    this.content = this.result.content
   }
 
-  visitPageDef() {
-    this.result.width = this.reader.readUInt32()
-    this.result.height = this.reader.readUInt32()
-    this.result.paddingLeft = this.reader.readUInt32()
-    this.result.paddingRight = this.reader.readUInt32()
-    this.result.paddingTop = this.reader.readUInt32()
-    this.result.paddingBottom = this.reader.readUInt32()
-    this.result.headerPadding = this.reader.readUInt32()
-    this.result.footerPadding = this.reader.readUInt32()
+  visitPageDef(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    this.result.width = reader.readUInt32()
+    this.result.height = reader.readUInt32()
+    this.result.paddingLeft = reader.readUInt32()
+    this.result.paddingRight = reader.readUInt32()
+    this.result.paddingTop = reader.readUInt32()
+    this.result.paddingBottom = reader.readUInt32()
+    this.result.headerPadding = reader.readUInt32()
+    this.result.footerPadding = reader.readUInt32()
 
     // TODO: (@hahnlee) 속성정보도 파싱하기
-    this.reader.skipByte(4)
   }
 
   // TODO: (@hahnlee) mapper 패턴 사용하기
-  visitParaText(totalByte: number) {
+  visitParaText(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+
     let readByte = 0
 
-    while (readByte < totalByte) {
-      const charCode = this.reader.readUInt16()
+    while (readByte < record.size) {
+      const charCode = reader.readUInt16()
 
       switch (charCode) {
         // Char
@@ -79,7 +85,7 @@ class SectionParser {
           this.currentParagraph.content.push(
             new HWPChar(CharType.Inline, charCode),
           )
-          this.reader.skipByte(14)
+          reader.skipByte(14)
           readByte += 16
           break
         }
@@ -101,7 +107,7 @@ class SectionParser {
           this.currentParagraph.content.push(
             new HWPChar(CharType.Extened, charCode),
           )
-          this.reader.skipByte(14)
+          reader.skipByte(14)
           readByte += 16
           break
         }
@@ -116,52 +122,60 @@ class SectionParser {
     }
   }
 
-  visitCharShape() {
+  visitCharShape(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+
     const shapePointer = new ShapePointer(
-      this.reader.readUInt32(),
-      this.reader.readUInt32(),
+      reader.readUInt32(),
+      reader.readUInt32(),
     )
 
     this.currentParagraph.shapeBuffer.push(shapePointer)
   }
 
-  parse(): Section {
-    while (!this.reader.isEOF()) {
-      const [tagID,, size] = this.reader.readRecord()
-
-      switch (tagID) {
-        case SectionTagID.HWPTAG_PARA_HEADER: {
-          this.content.push(this.currentParagraph)
-          this.currentParagraph = new Paragraph()
-          this.reader.skipByte(size)
-          break
-        }
-
-        case SectionTagID.HWPTAG_PAGE_DEF: {
-          this.visitPageDef()
-          break
-        }
-
-        case SectionTagID.HWPTAG_PARA_TEXT: {
-          this.visitParaText(size)
-          break
-        }
-
-        case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
-          this.visitCharShape()
-          break
-        }
-
-        default: {
-          this.reader.skipByte(size)
-        }
+  visit(record: HWPRecord) {
+    switch (record.tagID) {
+      case SectionTagID.HWPTAG_PARA_HEADER: {
+        this.content.push(this.currentParagraph)
+        this.currentParagraph = new Paragraph()
+        break
       }
+
+      case SectionTagID.HWPTAG_PAGE_DEF: {
+        this.visitPageDef(record)
+        break
+      }
+
+      case SectionTagID.HWPTAG_PARA_TEXT: {
+        this.visitParaText(record)
+        break
+      }
+
+      case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
+        this.visitCharShape(record)
+        break
+      }
+
+      default:
+        break
+    }
+  }
+
+  traverse(record: HWPRecord) {
+    const { children } = record
+    const { length } = children
+
+    if (record.tagID) {
+      this.visit(record)
     }
 
-    this.content.shift()
+    for (let i = 0; i < length; i += 1) {
+      this.traverse(children[i])
+    }
+  }
 
-    this.result.content = this.content
-
+  parse(): Section {
+    this.traverse(this.record)
     return this.result
   }
 }

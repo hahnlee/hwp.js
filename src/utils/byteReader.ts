@@ -19,8 +19,8 @@ class ByteReader {
 
   private offsetByte: number = 0
 
-  constructor(content: Uint8Array) {
-    this.view = new DataView(content.buffer)
+  constructor(buffer: ArrayBuffer) {
+    this.view = new DataView(buffer)
   }
 
   readUInt32(): number {
@@ -32,6 +32,12 @@ class ByteReader {
   readInt32(): number {
     const result = this.view.getInt32(this.offsetByte, true)
     this.offsetByte += 4
+    return result
+  }
+
+  readInt16(): number {
+    const result = this.view.getUint16(this.offsetByte, true)
+    this.offsetByte += 2
     return result
   }
 
@@ -65,6 +71,12 @@ class ByteReader {
     }
 
     return [tagID, level, size]
+  }
+
+  read(byte: number): ArrayBuffer {
+    const result = this.view.buffer.slice(this.offsetByte, this.offsetByte + byte)
+    this.offsetByte += byte
+    return result
   }
 
   skipByte(offset: number) {
