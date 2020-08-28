@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
+import { CommonCtrlID } from '../constants/ctrlID'
 import { SectionTagID } from '../constants/tagID'
+import { Control } from '../models/controls'
+import CommonControl from '../models/controls/common'
+import TableControl, { TableColumnOption } from '../models/controls/table'
 import Section from '../models/section'
 import Paragraph from '../models/paragraph'
+import ParagraphList from '../models/paragraphList'
 import HWPChar, { CharType } from '../models/char'
-import ByteReader from '../utils/byteReader'
 import ShapePointer from '../models/shapePointer'
 import HWPRecord from '../models/record'
+import ByteReader from '../utils/byteReader'
+import RecordReader from '../utils/recordReader'
+import { last } from '../utils/listUtils'
 import parseRecord from './parseRecord'
 
 class SectionParser {
@@ -28,14 +35,11 @@ class SectionParser {
 
   private result: Section
 
-  private currentParagraph: Paragraph = new Paragraph()
-
-  private content: Paragraph[]
+  private content: Paragraph[] = []
 
   constructor(data: Uint8Array) {
     this.record = parseRecord(data)
     this.result = new Section()
-    this.content = this.result.content
   }
 
   visitPageDef(record: HWPRecord) {
@@ -53,7 +57,7 @@ class SectionParser {
   }
 
   // TODO: (@hahnlee) mapper 패턴 사용하기
-  visitParaText(record: HWPRecord) {
+  visitParaText(record: HWPRecord, paragraph: Paragraph) {
     const reader = new ByteReader(record.payload)
 
     let readByte = 0
@@ -66,7 +70,7 @@ class SectionParser {
         case 0:
         case 10:
         case 13: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Char, charCode),
           )
           readByte += 2
@@ -82,7 +86,7 @@ class SectionParser {
         case 9:
         case 19:
         case 20: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Inline, charCode),
           )
           reader.skipByte(14)
@@ -104,7 +108,7 @@ class SectionParser {
         case 21:
         case 22:
         case 23: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Extened, charCode),
           )
           reader.skipByte(14)
@@ -113,7 +117,7 @@ class SectionParser {
         }
 
         default: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Char, String.fromCharCode(charCode)),
           )
           readByte += 2
@@ -122,7 +126,7 @@ class SectionParser {
     }
   }
 
-  visitCharShape(record: HWPRecord) {
+  visitCharShape(record: HWPRecord, paragraph: Paragraph) {
     const reader = new ByteReader(record.payload)
 
     const shapePointer = new ShapePointer(
@@ -130,14 +134,134 @@ class SectionParser {
       reader.readUInt32(),
     )
 
-    this.currentParagraph.shapeBuffer.push(shapePointer)
+    paragraph.shapeBuffer.push(shapePointer)
   }
 
-  visit(record: HWPRecord) {
+  /* eslint-disable no-param-reassign */
+  visitCommonControl(reader: ByteReader, control: CommonControl) {
+    control.attrubute = reader.readUInt32()
+    control.verticalOffset = reader.readUInt32()
+    control.horizontalOffset = reader.readUInt32()
+    control.width = reader.readUInt32()
+    control.height = reader.readUInt32()
+    control.zIndex = reader.readUInt32()
+    control.margin = [
+      reader.readInt16(),
+      reader.readInt16(),
+      reader.readInt16(),
+      reader.readInt16(),
+    ]
+    control.uid = reader.readUInt32()
+    control.split = reader.readInt32()
+  }
+  /* eslint-enable no-param-reassign */
+
+  visitTableControl(reader: ByteReader) {
+    const tableControl = new TableControl()
+    tableControl.id = CommonCtrlID.Table
+
+    this.visitCommonControl(reader, tableControl)
+
+    return tableControl
+  }
+
+  visitControlHeader(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+
+    const ctrlID = reader.readUInt32()
+
+    if (ctrlID === CommonCtrlID.Table) {
+      paragraph.controls.push(this.visitTableControl(reader))
+    } else {
+      paragraph.controls.push({
+        id: ctrlID,
+      })
+    }
+
+    if (!record.children.length) {
+      return
+    }
+
+    const childrenReader = new RecordReader(record.children)
+    while (childrenReader.hasNext()) {
+      this.visit(childrenReader, paragraph)
+    }
+  }
+
+  visitCellListHeader(reader: ByteReader): TableColumnOption {
+    const option: TableColumnOption = {
+      column: reader.readUInt16(),
+      row: reader.readUInt16(),
+      colSpan: reader.readUInt16(),
+      rowSpan: reader.readUInt16(),
+      width: reader.readUInt32(),
+      height: reader.readUInt32(),
+      padding: [
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+      ],
+      borderFillID: reader.readUInt16() - 1,
+    }
+
+    return option
+  }
+
+  visitListHeader(record: HWPRecord, reader: RecordReader, controls: Control[]) {
+    const byteReader = new ByteReader(record.payload)
+    const paragraphs = byteReader.readInt32()
+
+    // attrubute
+    byteReader.readInt32()
+
+    const items: Paragraph[] = []
+
+    for (let i = 0; i < paragraphs; i += 1) {
+      const next = reader.read()
+      this.visitParagraphHeader(next, items)
+    }
+
+    if (record.parentTagID === SectionTagID.HWPTAG_CTRL_HEADER) {
+      const lastControl = last(controls)
+
+      if (lastControl?.id === CommonCtrlID.Table) {
+        const tableControl = lastControl as TableControl
+        const options = this.visitCellListHeader(byteReader)
+        const list = new ParagraphList(options, items)
+        tableControl.addRow(options.row, list)
+      }
+    }
+  }
+
+  visitTable(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+
+    const control: TableControl = last(paragraph.controls) as TableControl
+
+    if (!control) {
+      throw new Error('Expect control')
+    }
+
+    if (control.id !== CommonCtrlID.Table) {
+      throw new Error(`Expect: ${CommonCtrlID.Table}, Recived: ${control.id}`)
+    }
+
+    control.tableAttribute = reader.readUInt32()
+    control.rowCount = reader.readUInt16()
+    control.columnCount = reader.readUInt16()
+
+    reader.skipByte(10 + (2 * control.rowCount))
+
+    control.borderFillID = reader.readUInt16()
+  }
+
+  visit(reader: RecordReader, paragraph: Paragraph) {
+    const record = reader.read()
+
     switch (record.tagID) {
-      case SectionTagID.HWPTAG_PARA_HEADER: {
-        this.content.push(this.currentParagraph)
-        this.currentParagraph = new Paragraph()
+      case SectionTagID.HWPTAG_LIST_HEADER: {
+        this.visitListHeader(record, reader, paragraph.controls)
         break
       }
 
@@ -147,12 +271,22 @@ class SectionParser {
       }
 
       case SectionTagID.HWPTAG_PARA_TEXT: {
-        this.visitParaText(record)
+        this.visitParaText(record, paragraph)
         break
       }
 
       case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
-        this.visitCharShape(record)
+        this.visitCharShape(record, paragraph)
+        break
+      }
+
+      case SectionTagID.HWPTAG_CTRL_HEADER: {
+        this.visitControlHeader(record, paragraph)
+        break
+      }
+
+      case SectionTagID.HWPTAG_TABLE: {
+        this.visitTable(record, paragraph)
         break
       }
 
@@ -161,21 +295,29 @@ class SectionParser {
     }
   }
 
-  traverse(record: HWPRecord) {
-    const { children } = record
-    const { length } = children
+  visitParagraphHeader(record: HWPRecord, content: Paragraph[]) {
+    const result = new Paragraph()
 
-    if (record.tagID) {
-      this.visit(record)
+    const childrenRecordReader = new RecordReader(record.children)
+
+    while (childrenRecordReader.hasNext()) {
+      this.visit(childrenRecordReader, result)
     }
 
-    for (let i = 0; i < length; i += 1) {
-      this.traverse(children[i])
+    content.push(result)
+  }
+
+  traverse(record: HWPRecord) {
+    const reader = new RecordReader(record.children)
+
+    while (reader.hasNext()) {
+      this.visitParagraphHeader(reader.read(), this.content)
     }
   }
 
   parse(): Section {
     this.traverse(this.record)
+    this.result.content = this.content
     return this.result
   }
 }

@@ -14,30 +14,7 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
-
-class HWPRecord {
-  children: HWPRecord[] = []
-
-  payload: ArrayBuffer
-
-  tagID: number
-
-  size: number
-
-  parentTagID: number
-
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
-  }
+// eslint-disable-next-line import/prefer-default-export
+export function last<P>(list: P[]): P | undefined {
+  return list[list.length - 1]
 }
-
-export default HWPRecord

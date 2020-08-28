@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
+import HWPRecord from '../models/record'
 
-class HWPRecord {
-  children: HWPRecord[] = []
+class RecordReader {
+  private cursor: number
 
-  payload: ArrayBuffer
+  private records: HWPRecord[]
 
-  tagID: number
+  constructor(records: HWPRecord[]) {
+    this.records = records
+    this.cursor = 0
+  }
 
-  size: number
+  hasNext() {
+    return this.cursor < this.records.length
+  }
 
-  parentTagID: number
+  current(): HWPRecord {
+    return this.records[this.cursor]
+  }
 
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
+  read(): HWPRecord {
+    const result = this.records[this.cursor]
+    this.cursor += 1
+    return result
   }
 }
 
-export default HWPRecord
+export default RecordReader

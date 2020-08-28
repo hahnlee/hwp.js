@@ -13,31 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type TableControl from './table'
 
-const emptyArrayBuffer = new ArrayBuffer(0)
-
-class HWPRecord {
-  children: HWPRecord[] = []
-
-  payload: ArrayBuffer
-
-  tagID: number
-
-  size: number
-
-  parentTagID: number
-
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
-  }
-}
-
-export default HWPRecord
+export type Control = { id: number } | TableControl

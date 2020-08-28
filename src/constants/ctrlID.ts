@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
-
-class HWPRecord {
-  children: HWPRecord[] = []
-
-  payload: ArrayBuffer
-
-  tagID: number
-
-  size: number
-
-  parentTagID: number
-
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
-  }
+export function makeCtrlID(
+  first: string,
+  second: string,
+  third: string,
+  fourth: string,
+): number {
+  const firstCode = first.charCodeAt(0)
+  const secondCode = second.charCodeAt(0)
+  const thirdCode = third.charCodeAt(0)
+  const fourthCode = fourth.charCodeAt(0)
+  return ((firstCode) << 24) | ((secondCode) << 16) | ((thirdCode) << 8) | (fourthCode)
 }
 
-export default HWPRecord
+export enum CommonCtrlID {
+  Table = makeCtrlID('t', 'b', 'l', ' '),
+}

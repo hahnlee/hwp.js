@@ -20,20 +20,20 @@ import HWPRecord from '../models/record'
 function parseRecordTree(data: Uint8Array): HWPRecord {
   const reader = new ByteReader(data.buffer)
 
-  const root = new HWPRecord(0, 0)
+  const root = new HWPRecord(0, 0, 0)
 
   while (!reader.isEOF()) {
     const [tagID, level, size] = reader.readRecord()
 
-    let lastRecord: HWPRecord = root
+    let parent: HWPRecord = root
 
     const payload = reader.read(size)
 
     for (let i = 0; i < level; i += 1) {
-      lastRecord = lastRecord.children.slice(-1).pop()!
+      parent = parent.children.slice(-1).pop()!
     }
 
-    lastRecord.children.push(new HWPRecord(tagID, size, payload))
+    parent.children.push(new HWPRecord(tagID, size, parent.tagID, payload))
   }
 
   return root

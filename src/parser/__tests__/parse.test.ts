@@ -24,7 +24,7 @@ import parse from '../parse'
 const reportFilePath = path.join(__dirname, 'data', 'basicsReport.hwp')
 const reportFile = fs.readFileSync(reportFilePath)
 
-describe('parse', () => {
+describe.skip('parse', () => {
   const hwpDocument = parse(reportFile, { type: 'binary' })
 
   it('should parse HWP file', () => {
