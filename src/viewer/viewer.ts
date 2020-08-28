@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+import { CommonCtrlID } from '../constants/ctrlID'
+import TableControl, { TableColumnOption } from '../models/controls/table'
 import DocInfo from '../models/docInfo'
+import { CharType } from '../models/char'
 import HWPDocument from '../models/document'
 import HWPHeader from '../models/header'
 import HWPVersion from '../models/version'
 import Section from '../models/section'
-import parse from '../parser'
 import ShapePointer from '../models/shapePointer'
 import Paragraph from '../models/paragraph'
+import ParagraphList from '../models/paragraphList'
+import parse from '../parser'
 
 function createPage(section: Section) {
   const page = document.createElement('div')
@@ -73,6 +77,55 @@ class HWPViewer {
     this.viewer.style.padding = '24px'
   }
 
+  private drawColumn(
+    container: HTMLTableRowElement,
+    paragraphList: ParagraphList<TableColumnOption>,
+  ) {
+    const column = document.createElement('td')
+    const {
+      width,
+      height,
+      colSpan,
+      rowSpan,
+    } = paragraphList.attribute
+
+    column.style.width = `${width / 100}pt`
+    column.style.height = `${height / 100}pt`
+    column.colSpan = colSpan
+    column.rowSpan = rowSpan
+
+    paragraphList.items.forEach((paragraph) => {
+      this.drawParagraph(column, paragraph)
+    })
+
+    container.appendChild(column)
+  }
+
+  private drawTable(
+    container: HTMLElement,
+    control: TableControl,
+  ) {
+    const table = document.createElement('table')
+    table.style.display = 'inline-table'
+    table.style.width = `${control.width / 100}pt`
+    table.style.height = `${control.height / 100}pt`
+
+    const tbody = document.createElement('tbody')
+
+    for (let i = 0; i < control.rowCount; i += 1) {
+      const tr = document.createElement('tr')
+
+      control.content[i].forEach((paragraphList) => {
+        this.drawColumn(tr, paragraphList)
+      })
+
+      tbody.appendChild(tr)
+    }
+
+    table.appendChild(tbody)
+    container.appendChild(table)
+  }
+
   private drawText(
     container: HTMLElement,
     paragraph: Paragraph,
@@ -82,11 +135,20 @@ class HWPViewer {
     const range = paragraph.content.slice(shapePointer.pos, endPos + 1)
 
     const texts: string[] = []
+    let ctrlIndex = 0
 
     range.forEach((hwpChar) => {
       if (typeof hwpChar.value === 'string') {
         texts.push(hwpChar.value)
         return
+      }
+
+      if (hwpChar.type === CharType.Extened) {
+        const control = paragraph.controls[ctrlIndex]
+        ctrlIndex += 1
+        if (control?.id === CommonCtrlID.Table) {
+          this.drawTable(container, control as TableControl)
+        }
       }
 
       if (hwpChar.value === 10) {
@@ -96,7 +158,7 @@ class HWPViewer {
 
     const text = texts.join('')
 
-    const span = document.createElement('span')
+    const span = document.createElement('div')
     span.textContent = text
 
     const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
@@ -119,19 +181,26 @@ class HWPViewer {
     container.appendChild(span)
   }
 
+  private drawParagraph(
+    container: HTMLElement,
+    paragraph: Paragraph,
+  ) {
+    const paragraphContainer = document.createElement('p')
+    paragraphContainer.style.margin = '0'
+
+    paragraph.shapeBuffer.forEach((shapePointer, index) => {
+      const endPos = paragraph.getShapeEndPos(index)
+      this.drawText(paragraphContainer, paragraph, shapePointer, endPos)
+    })
+
+    container.append(paragraphContainer)
+  }
+
   private drawSection = (section: Section) => {
     const page = createPage(section)
 
     section.content.forEach((paragraph) => {
-      const paragraphContainer = document.createElement('p')
-      paragraphContainer.style.margin = '0'
-
-      paragraph.shapeBuffer.forEach((shapePointer, index) => {
-        const endPos = paragraph.getShapeEndPos(index)
-        this.drawText(paragraphContainer, paragraph, shapePointer, endPos)
-      })
-
-      page.append(paragraphContainer)
+      this.drawParagraph(page, paragraph)
     })
 
     this.viewer.appendChild(page)

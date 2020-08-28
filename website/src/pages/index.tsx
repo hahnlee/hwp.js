@@ -36,6 +36,13 @@ function IndexPage() {
     <div>
       { !file && <input type="file" onChange={handleChange} /> }
       <div ref={setRef} />
+      <style>
+        { `
+          * {
+            box-sizing: border-box;
+          }
+        ` }
+      </style>
     </div>
   )
 }
