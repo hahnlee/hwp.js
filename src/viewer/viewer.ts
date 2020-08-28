@@ -81,15 +81,20 @@ class HWPViewer {
   ) {
     const range = paragraph.content.slice(shapePointer.pos, endPos + 1)
 
-    let text = ''
+    const texts: string[] = []
 
     range.forEach((hwpChar) => {
       if (typeof hwpChar.value === 'string') {
-        text += hwpChar.value
-      } else if (hwpChar.value === 10) {
-        text += '\n'
+        texts.push(hwpChar.value)
+        return
+      }
+
+      if (hwpChar.value === 10) {
+        texts.push('\n')
       }
     })
+
+    const text = texts.join('')
 
     const span = document.createElement('span')
     span.textContent = text
