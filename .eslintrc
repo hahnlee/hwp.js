@@ -5,6 +5,7 @@
   },
   "rules": {
     "@typescript-eslint/semi": ["error", "never"],
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "class-methods-use-this": "off"
   }
 }

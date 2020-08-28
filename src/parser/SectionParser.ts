@@ -18,9 +18,10 @@ import { SectionTagID } from '../constants/tagID'
 import Section from '../models/section'
 import Paragraph from '../models/paragraph'
 import HWPChar, { CharType } from '../models/char'
-import ByteReader from '../utils/byteReader'
 import ShapePointer from '../models/shapePointer'
 import HWPRecord from '../models/record'
+import ByteReader from '../utils/byteReader'
+import RecordReader from '../utils/recordReader'
 import parseRecord from './parseRecord'
 
 class SectionParser {
@@ -30,12 +31,11 @@ class SectionParser {
 
   private currentParagraph: Paragraph = new Paragraph()
 
-  private content: Paragraph[]
+  private content: Paragraph[] = []
 
   constructor(data: Uint8Array) {
     this.record = parseRecord(data)
     this.result = new Section()
-    this.content = this.result.content
   }
 
   visitPageDef(record: HWPRecord) {
@@ -53,7 +53,7 @@ class SectionParser {
   }
 
   // TODO: (@hahnlee) mapper 패턴 사용하기
-  visitParaText(record: HWPRecord) {
+  visitParaText(record: HWPRecord, paragraph: Paragraph) {
     const reader = new ByteReader(record.payload)
 
     let readByte = 0
@@ -66,7 +66,7 @@ class SectionParser {
         case 0:
         case 10:
         case 13: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Char, charCode),
           )
           readByte += 2
@@ -82,7 +82,7 @@ class SectionParser {
         case 9:
         case 19:
         case 20: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Inline, charCode),
           )
           reader.skipByte(14)
@@ -104,7 +104,7 @@ class SectionParser {
         case 21:
         case 22:
         case 23: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Extened, charCode),
           )
           reader.skipByte(14)
@@ -113,7 +113,7 @@ class SectionParser {
         }
 
         default: {
-          this.currentParagraph.content.push(
+          paragraph.content.push(
             new HWPChar(CharType.Char, String.fromCharCode(charCode)),
           )
           readByte += 2
@@ -122,7 +122,7 @@ class SectionParser {
     }
   }
 
-  visitCharShape(record: HWPRecord) {
+  visitCharShape(record: HWPRecord, paragraph: Paragraph) {
     const reader = new ByteReader(record.payload)
 
     const shapePointer = new ShapePointer(
@@ -130,10 +130,12 @@ class SectionParser {
       reader.readUInt32(),
     )
 
-    this.currentParagraph.shapeBuffer.push(shapePointer)
+    paragraph.shapeBuffer.push(shapePointer)
   }
 
-  visit(record: HWPRecord) {
+  visit(reader: RecordReader, paragraph: Paragraph) {
+    const record = reader.read()
+
     switch (record.tagID) {
       case SectionTagID.HWPTAG_PARA_HEADER: {
         this.content.push(this.currentParagraph)
@@ -147,12 +149,12 @@ class SectionParser {
       }
 
       case SectionTagID.HWPTAG_PARA_TEXT: {
-        this.visitParaText(record)
+        this.visitParaText(record, paragraph)
         break
       }
 
       case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
-        this.visitCharShape(record)
+        this.visitCharShape(record, paragraph)
         break
       }
 
@@ -161,21 +163,29 @@ class SectionParser {
     }
   }
 
-  traverse(record: HWPRecord) {
-    const { children } = record
-    const { length } = children
+  visitParagraphHeader(record: HWPRecord, content: Paragraph[]) {
+    const result = new Paragraph()
 
-    if (record.tagID) {
-      this.visit(record)
+    const childrenRecordReader = new RecordReader(record.children)
+
+    while (childrenRecordReader.hasNext()) {
+      this.visit(childrenRecordReader, result)
     }
 
-    for (let i = 0; i < length; i += 1) {
-      this.traverse(children[i])
+    content.push(result)
+  }
+
+  traverse(record: HWPRecord) {
+    const reader = new RecordReader(record.children)
+
+    while (reader.hasNext()) {
+      this.visitParagraphHeader(reader.read(), this.content)
     }
   }
 
   parse(): Section {
     this.traverse(this.record)
+    this.result.content = this.content
     return this.result
   }
 }
