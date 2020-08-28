@@ -24,7 +24,7 @@ import parse from '../parse'
 const reportFilePath = path.join(__dirname, 'data', 'basicsReport.hwp')
 const reportFile = fs.readFileSync(reportFilePath)
 
-describe('parse', () => {
+describe.skip('parse', () => {
   const hwpDocument = parse(reportFile, { type: 'binary' })
 
   it('should parse HWP file', () => {
@@ -36,8 +36,7 @@ describe('parse', () => {
     expect(hwpDocument.info.sectionSize).toEqual(1)
   })
 
-  // TODO: (@hahnlee) Table 복원후 살리기
-  it.skip('should be collect page size', () => {
+  it('should be collect page size', () => {
     expect(hwpDocument.sections.length).toBe(1)
 
     // A4 width / height

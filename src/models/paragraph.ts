@@ -16,11 +16,14 @@
 
 import HWPChar from './char'
 import ShapePointer from './shapePointer'
+import { Control } from './controls'
 
 class Paragraph {
   content: HWPChar[] = []
 
   shapeBuffer: ShapePointer[] = []
+
+  controls: Control[] = []
 
   getShapeEndPos(index: number): number {
     if (index === this.shapeBuffer.length - 1) {

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
+import { CommonCtrlID } from '../constants/ctrlID'
 import { SectionTagID } from '../constants/tagID'
+import { Control } from '../models/controls'
+import CommonControl from '../models/controls/common'
+import TableControl, { TableColumnOption } from '../models/controls/table'
 import Section from '../models/section'
 import Paragraph from '../models/paragraph'
+import ParagraphList from '../models/paragraphList'
 import HWPChar, { CharType } from '../models/char'
 import ShapePointer from '../models/shapePointer'
 import HWPRecord from '../models/record'
 import ByteReader from '../utils/byteReader'
 import RecordReader from '../utils/recordReader'
+import { last } from '../utils/listUtils'
 import parseRecord from './parseRecord'
 
 class SectionParser {
   private record: HWPRecord
 
   private result: Section
-
-  private currentParagraph: Paragraph = new Paragraph()
 
   private content: Paragraph[] = []
 
@@ -133,13 +137,131 @@ class SectionParser {
     paragraph.shapeBuffer.push(shapePointer)
   }
 
+  /* eslint-disable no-param-reassign */
+  visitCommonControl(reader: ByteReader, control: CommonControl) {
+    control.attrubute = reader.readUInt32()
+    control.verticalOffset = reader.readUInt32()
+    control.horizontalOffset = reader.readUInt32()
+    control.width = reader.readUInt32()
+    control.height = reader.readUInt32()
+    control.zIndex = reader.readUInt32()
+    control.margin = [
+      reader.readInt16(),
+      reader.readInt16(),
+      reader.readInt16(),
+      reader.readInt16(),
+    ]
+    control.uid = reader.readUInt32()
+    control.split = reader.readInt32()
+  }
+  /* eslint-enable no-param-reassign */
+
+  visitTableControl(reader: ByteReader) {
+    const tableControl = new TableControl()
+    tableControl.id = CommonCtrlID.Table
+
+    this.visitCommonControl(reader, tableControl)
+
+    return tableControl
+  }
+
+  visitControlHeader(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+
+    const ctrlID = reader.readUInt32()
+
+    if (ctrlID === CommonCtrlID.Table) {
+      paragraph.controls.push(this.visitTableControl(reader))
+    } else {
+      paragraph.controls.push({
+        id: ctrlID,
+      })
+    }
+
+    if (!record.children.length) {
+      return
+    }
+
+    const childrenReader = new RecordReader(record.children)
+    while (childrenReader.hasNext()) {
+      this.visit(childrenReader, paragraph)
+    }
+  }
+
+  visitCellListHeader(reader: ByteReader): TableColumnOption {
+    const option: TableColumnOption = {
+      column: reader.readUInt16(),
+      row: reader.readUInt16(),
+      colSpan: reader.readUInt16(),
+      rowSpan: reader.readUInt16(),
+      width: reader.readUInt32(),
+      height: reader.readUInt32(),
+      padding: [
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+      ],
+      borderFillID: reader.readUInt16() - 1,
+    }
+
+    return option
+  }
+
+  visitListHeader(record: HWPRecord, reader: RecordReader, controls: Control[]) {
+    const byteReader = new ByteReader(record.payload)
+    const paragraphs = byteReader.readInt32()
+
+    // attrubute
+    byteReader.readInt32()
+
+    const items: Paragraph[] = []
+
+    for (let i = 0; i < paragraphs; i += 1) {
+      const next = reader.read()
+      this.visitParagraphHeader(next, items)
+    }
+
+    if (record.parentTagID === SectionTagID.HWPTAG_CTRL_HEADER) {
+      const lastControl = last(controls)
+
+      if (lastControl?.id === CommonCtrlID.Table) {
+        const tableControl = lastControl as TableControl
+        const options = this.visitCellListHeader(byteReader)
+        const list = new ParagraphList(options, items)
+        tableControl.addRow(options.row, list)
+      }
+    }
+  }
+
+  visitTable(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+
+    const control: TableControl = last(paragraph.controls) as TableControl
+
+    if (!control) {
+      throw new Error('Expect control')
+    }
+
+    if (control.id !== CommonCtrlID.Table) {
+      throw new Error(`Expect: ${CommonCtrlID.Table}, Recived: ${control.id}`)
+    }
+
+    control.tableAttribute = reader.readUInt32()
+    control.rowCount = reader.readUInt16()
+    control.columnCount = reader.readUInt16()
+
+    reader.skipByte(10 + (2 * control.rowCount))
+
+    control.borderFillID = reader.readUInt16()
+  }
+
   visit(reader: RecordReader, paragraph: Paragraph) {
     const record = reader.read()
 
     switch (record.tagID) {
-      case SectionTagID.HWPTAG_PARA_HEADER: {
-        this.content.push(this.currentParagraph)
-        this.currentParagraph = new Paragraph()
+      case SectionTagID.HWPTAG_LIST_HEADER: {
+        this.visitListHeader(record, reader, paragraph.controls)
         break
       }
 
@@ -155,6 +277,16 @@ class SectionParser {
 
       case SectionTagID.HWPTAG_PARA_CHAR_SHAPE: {
         this.visitCharShape(record, paragraph)
+        break
+      }
+
+      case SectionTagID.HWPTAG_CTRL_HEADER: {
+        this.visitControlHeader(record, paragraph)
+        break
+      }
+
+      case SectionTagID.HWPTAG_TABLE: {
+        this.visitTable(record, paragraph)
         break
       }
 

@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
+class CommonControl {
+  id: number = 0
 
-class HWPRecord {
-  children: HWPRecord[] = []
+  // TODO: (@hahnlee) attrubute setter 만들기
+  attrubute: number = 0
 
-  payload: ArrayBuffer
+  verticalOffset: number = 0
 
-  tagID: number
+  horizontalOffset: number = 0
 
-  size: number
+  width: number = 0
 
-  parentTagID: number
+  height: number = 0
 
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
-  }
+  zIndex: number = 0
+
+  margin: [number, number, number, number] = [0, 0, 0, 0]
+
+  uid: number = 0
+
+  split: number = 0
 }
 
-export default HWPRecord
+export default CommonControl

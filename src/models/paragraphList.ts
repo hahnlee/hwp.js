@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
+import Paragraph from './paragraph'
 
-class HWPRecord {
-  children: HWPRecord[] = []
+class ParagraphList<P> {
+  attribute: P
 
-  payload: ArrayBuffer
+  items: Paragraph[] = []
 
-  tagID: number
-
-  size: number
-
-  parentTagID: number
-
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
+  constructor(attribute: P, items: Paragraph[]) {
+    this.attribute = attribute
+    this.items = items
   }
 }
 
-export default HWPRecord
+export default ParagraphList
