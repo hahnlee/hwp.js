@@ -97,12 +97,18 @@ class HWPViewer {
     const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
 
     if (charShape) {
-      const fontSize = charShape.fontBaseSize * (charShape.fontRatio[0] / 100)
+      const {
+        fontBaseSize, fontRatio, color, fontId,
+      } = charShape
+      const fontSize = fontBaseSize * (fontRatio[0] / 100)
       span.style.fontSize = `${fontSize}pt`
       span.style.whiteSpace = 'pre-wrap'
 
-      const [red, green, blue] = charShape.color
+      const [red, green, blue] = color
       span.style.color = `rgb(${red}, ${green}, ${blue})`
+
+      const fontFace = this.hwpDocument.info.fontFaces[fontId[0]]
+      span.style.fontFamily = fontFace.getFontFamily()
     }
 
     container.appendChild(span)

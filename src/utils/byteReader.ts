@@ -79,6 +79,17 @@ class ByteReader {
     return result
   }
 
+  readString(): string {
+    const length = this.readUInt16()
+    const result: string[] = []
+
+    for (let i = 0; i < length; i += 1) {
+      result.push(String.fromCharCode(this.readUInt16()))
+    }
+
+    return result.join('')
+  }
+
   skipByte(offset: number) {
     this.offsetByte += offset
   }

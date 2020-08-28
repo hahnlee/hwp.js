@@ -17,8 +17,9 @@
 import { DocInfoTagID } from '../constants/tagID'
 import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
+import FontFace from '../models/fontFace'
 import ByteReader from '../utils/byteReader'
-import { getRGB } from '../utils/bitUtils'
+import { getRGB, getFlag } from '../utils/bitUtils'
 
 class DocInfoParser {
   private reader: ByteReader
@@ -104,6 +105,31 @@ class DocInfoParser {
     this.result.charShapes.push(charShape)
   }
 
+  visitFaceName() {
+    const attribute = this.reader.readUInt8()
+    const hasAlternative = getFlag(attribute, 7)
+    const hasAttribute = getFlag(attribute, 6)
+    const hasDefault = getFlag(attribute, 5)
+
+    const fontFace = new FontFace()
+    fontFace.name = this.reader.readString()
+
+    if (hasAlternative) {
+      this.reader.skipByte(1)
+      fontFace.alternative = this.reader.readString()
+    }
+
+    if (hasAttribute) {
+      this.reader.skipByte(10)
+    }
+
+    if (hasDefault) {
+      fontFace.default = this.reader.readString()
+    }
+
+    this.result.fontFaces.push(fontFace)
+  }
+
   parse() {
     while (!this.reader.isEOF()) {
       const [tagID, , size] = this.reader.readRecord()
@@ -116,6 +142,11 @@ class DocInfoParser {
 
         case DocInfoTagID.HWPTAG_CHAR_SHAPE: {
           this.visitCharShape(size)
+          break
+        }
+
+        case DocInfoTagID.HWPTAG_FACE_NAME: {
+          this.visitFaceName()
           break
         }
 

@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-export function getBitValue(mask: number, start: number, end: number): number {
-  const target: number = mask >> start
+class FontFace {
+  name: string = ''
 
-  let temp = 0
-  for (let index = 0; index <= (end - start); index += 1) {
-    temp <<= 1
-    temp += 1
+  alternative: string = ''
+
+  default: string = ''
+
+  getFontFamily(): string {
+    const result = [`${this.name}`]
+
+    if (this.alternative) {
+      result.push(`"${this.alternative}"`)
+    }
+
+    if (this.default) {
+      result.push(`"${this.default}"`)
+    }
+
+    return result.join(',')
   }
-
-  return target & temp
 }
 
-export function getRGB(colorRef: number): [number, number, number] {
-  return [
-    getBitValue(colorRef, 0, 7),
-    getBitValue(colorRef, 8, 15),
-    getBitValue(colorRef, 16, 23),
-  ]
-}
-
-export function getFlag(bits: number, position: number): boolean {
-  const mask: number = 1 << position
-  return (bits & mask) === mask
-}
+export default FontFace

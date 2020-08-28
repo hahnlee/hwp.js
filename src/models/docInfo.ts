@@ -15,11 +15,14 @@
  */
 
 import CharShape from './charShape'
+import FontFace from './fontFace'
 
 class DocInfo {
   sectionSize: number = 0
 
   charShapes: CharShape[] = []
+
+  fontFaces: FontFace[] = []
 
   getCharShpe(index: number): CharShape | undefined {
     return this.charShapes[index]
