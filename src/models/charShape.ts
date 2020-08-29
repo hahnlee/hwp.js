@@ -15,6 +15,7 @@
  */
 
 import { getRGB } from '../utils/bitUtils'
+import { RGB } from '../types/color'
 
 type SupportedLocaleOptions = [number, number, number, number, number, number, number]
 
@@ -33,21 +34,21 @@ class CharShape {
 
   attr: number
 
-  shadow: [number, number, number]
+  shadow: RGB
 
-  shadow2: [number, number, number]
+  shadow2: RGB
 
-  color: [number, number, number]
+  color: RGB
 
-  underLineColor: [number, number, number]
+  underLineColor: RGB
 
-  shadeColor: [number, number, number]
+  shadeColor: RGB
 
-  shadowColor: [number, number, number]
+  shadowColor: RGB
 
   fontBackgroundId: number | null = null
 
-  strikeColor: [number, number, number] | null = null
+  strikeColor: RGB | null = null
 
   constructor(
     fontId: SupportedLocaleOptions,

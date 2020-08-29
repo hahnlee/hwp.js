@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { RGB } from '../types/color'
+
 export function getBitValue(mask: number, start: number, end: number): number {
   const target: number = mask >> start
 
@@ -26,7 +28,7 @@ export function getBitValue(mask: number, start: number, end: number): number {
   return target & temp
 }
 
-export function getRGB(colorRef: number): [number, number, number] {
+export function getRGB(colorRef: number): RGB {
   return [
     getBitValue(colorRef, 0, 7),
     getBitValue(colorRef, 8, 15),

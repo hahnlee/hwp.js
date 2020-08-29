@@ -27,7 +27,32 @@ import ShapePointer from '../models/shapePointer'
 import Paragraph from '../models/paragraph'
 import ParagraphList from '../models/paragraphList'
 import { isTable, isShape, isPicture } from '../utils/controlUtil'
+import { RGB } from '../types/color'
 import parse from '../parser'
+
+const BORDER_WIDTH = [
+  '0.1mm',
+  '0.12mm',
+  '0.15mm',
+  '0.2mm',
+  '0.25mm',
+  '0.3mm',
+  '0.4mm',
+  '0.5mm',
+  '0.6mm',
+  '0.7mm',
+  '1.0mm',
+  '1.5mm',
+  '2.0mm',
+  '3.0mm',
+  '4.0mm',
+  '5.0mm',
+]
+
+const BORDER_STYLE = [
+  'none',
+  'solid',
+]
 
 function createPage(section: Section) {
   const page = document.createElement('div')
@@ -74,9 +99,36 @@ class HWPViewer {
     reader.readAsBinaryString(file)
   }
 
+  private getRGBStyle(rgb: RGB) {
+    const [red, green, blue] = rgb
+    return `rgb(${red}, ${green}, ${blue})`
+  }
+
   private drawViewer() {
     this.viewer.style.backgroundColor = '#E8EAED'
     this.viewer.style.padding = '24px'
+  }
+
+  private drawBorderFill(
+    target: HTMLElement,
+    borderFillID: number,
+  ) {
+    const borderFill = this.hwpDocument.info.borderFills[borderFillID]
+
+    target.style.borderTopColor = this.getRGBStyle(borderFill.style.top.color)
+    target.style.borderRightColor = this.getRGBStyle(borderFill.style.right.color)
+    target.style.borderBottomColor = this.getRGBStyle(borderFill.style.bottom.color)
+    target.style.borderLeftColor = this.getRGBStyle(borderFill.style.left.color)
+
+    target.style.borderTopWidth = BORDER_WIDTH[borderFill.style.top.width]
+    target.style.borderRightWidth = BORDER_WIDTH[borderFill.style.right.width]
+    target.style.borderBottomWidth = BORDER_WIDTH[borderFill.style.bottom.width]
+    target.style.borderLeftWidth = BORDER_WIDTH[borderFill.style.left.width]
+
+    target.style.borderTopStyle = BORDER_STYLE[borderFill.style.top.type]
+    target.style.borderRightStyle = BORDER_STYLE[borderFill.style.right.type]
+    target.style.borderBottomStyle = BORDER_STYLE[borderFill.style.bottom.type]
+    target.style.borderLeftStyle = BORDER_STYLE[borderFill.style.left.type]
   }
 
   private drawColumn(
@@ -89,12 +141,15 @@ class HWPViewer {
       height,
       colSpan,
       rowSpan,
+      borderFillID,
     } = paragraphList.attribute
 
     column.style.width = `${width / 100}pt`
     column.style.height = `${height / 100}pt`
     column.colSpan = colSpan
     column.rowSpan = rowSpan
+
+    this.drawBorderFill(column, borderFillID)
 
     paragraphList.items.forEach((paragraph) => {
       this.drawParagraph(column, paragraph)
@@ -109,6 +164,7 @@ class HWPViewer {
   ) {
     const table = document.createElement('table')
     table.style.display = 'inline-table'
+    table.style.borderCollapse = 'collapse'
     table.style.width = `${control.width / 100}pt`
     table.style.height = `${control.height / 100}pt`
 
@@ -191,18 +247,15 @@ class HWPViewer {
         const control = paragraph.controls[ctrlIndex]
         ctrlIndex += 1
         this.drawControl(container, control)
-        return
-      }
-
-      if (hwpChar.value === 10) {
-        texts.push('\n')
       }
     })
 
     const text = texts.join('')
 
     const span = document.createElement('div')
+    span.style.display = 'inline-block'
     span.textContent = text
+    span.appendChild(document.createElement('br'))
 
     const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
 
@@ -214,8 +267,7 @@ class HWPViewer {
       span.style.fontSize = `${fontSize}pt`
       span.style.whiteSpace = 'pre-wrap'
 
-      const [red, green, blue] = color
-      span.style.color = `rgb(${red}, ${green}, ${blue})`
+      span.style.color = this.getRGBStyle(color)
 
       const fontFace = this.hwpDocument.info.fontFaces[fontId[0]]
       span.style.fontFamily = fontFace.getFontFamily()

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { CFB$Container, find } from 'cfb'
 import { inflate } from 'pako'
 
@@ -23,158 +24,203 @@ import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
 import FontFace from '../models/fontFace'
 import { getRGB, getFlag } from '../utils/bitUtils'
+import BorderFill from '../models/borderFill'
+import HWPRecord from '../models/record'
+import parseRecordTree from './parseRecord'
 
 class DocInfoParser {
-  private reader: ByteReader
+  private record: HWPRecord
 
   private result = new DocInfo()
 
   private container: CFB$Container
 
   constructor(data: Uint8Array, container: CFB$Container) {
-    this.reader = new ByteReader(data.buffer)
+    this.record = parseRecordTree(data)
     this.container = container
   }
 
-  visitDocumentPropertes(size: number) {
-    this.result.sectionSize = this.reader.readUInt16()
+  visitDocumentPropertes(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    this.result.sectionSize = reader.readUInt16()
 
     // TODO: (@hahnlee) 다른 프로퍼티도 구현하기
-    this.reader.skipByte(size - 2)
   }
 
-  visitCharShape(size: number) {
+  visitCharShape(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+
     const charShape = new CharShape(
       [
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
-        this.reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
+        reader.readUInt16(),
       ],
       [
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
       ],
       [
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
       ],
       [
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
-        this.reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
       ],
       [
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
-        this.reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
+        reader.readInt8(),
       ],
-      this.reader.readInt32(),
-      this.reader.readUInt32(),
-      this.reader.readUInt8(),
-      this.reader.readUInt8(),
-      this.reader.readUInt32(),
-      this.reader.readUInt32(),
-      this.reader.readUInt32(),
-      this.reader.readUInt32(),
+      reader.readInt32(),
+      reader.readUInt32(),
+      reader.readUInt8(),
+      reader.readUInt8(),
+      reader.readUInt32(),
+      reader.readUInt32(),
+      reader.readUInt32(),
+      reader.readUInt32(),
     )
 
-    if (size > 68) {
-      charShape.fontBackgroundId = this.reader.readUInt16()
+    if (record.size > 68) {
+      charShape.fontBackgroundId = reader.readUInt16()
     }
 
-    if (size > 70) {
-      charShape.underLineColor = getRGB(this.reader.readInt32())
+    if (record.size > 70) {
+      charShape.underLineColor = getRGB(reader.readInt32())
     }
 
     this.result.charShapes.push(charShape)
   }
 
-  visitFaceName() {
-    const attribute = this.reader.readUInt8()
+  visitFaceName(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    const attribute = reader.readUInt8()
     const hasAlternative = getFlag(attribute, 7)
     const hasAttribute = getFlag(attribute, 6)
     const hasDefault = getFlag(attribute, 5)
 
     const fontFace = new FontFace()
-    fontFace.name = this.reader.readString()
+    fontFace.name = reader.readString()
 
     if (hasAlternative) {
-      this.reader.skipByte(1)
-      fontFace.alternative = this.reader.readString()
+      reader.skipByte(1)
+      fontFace.alternative = reader.readString()
     }
 
     if (hasAttribute) {
-      this.reader.skipByte(10)
+      reader.skipByte(10)
     }
 
     if (hasDefault) {
-      fontFace.default = this.reader.readString()
+      fontFace.default = reader.readString()
     }
 
     this.result.fontFaces.push(fontFace)
   }
 
-  visitBinData() {
-    this.reader.readUInt16()
-    const id = this.reader.readUInt16()
-    const extension = this.reader.readString()
+  visitBinData(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    reader.readUInt16()
+    const id = reader.readUInt16()
+    const extension = reader.readString()
     const path = `Root Entry/BinData/BIN${`${id}`.padStart(4, '0')}.${extension}`
     const payload = find(this.container, path)!.content as Uint8Array
     this.result.binData.push(new BinData(extension, inflate(payload, { windowBits: -15 })))
   }
 
-  parse() {
-    while (!this.reader.isEOF()) {
-      const [tagID, , size] = this.reader.readRecord()
+  visitBorderFill(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
 
-      switch (tagID) {
-        case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
-          this.visitDocumentPropertes(size)
-          break
-        }
+    const borderFill = new BorderFill(
+      reader.readUInt16(),
+      {
+        left: {
+          type: reader.readUInt8(),
+          width: reader.readUInt8(),
+          color: getRGB(reader.readUInt32()),
+        },
+        right: {
+          type: reader.readUInt8(),
+          width: reader.readUInt8(),
+          color: getRGB(reader.readUInt32()),
+        },
+        top: {
+          type: reader.readUInt8(),
+          width: reader.readUInt8(),
+          color: getRGB(reader.readUInt32()),
+        },
+        bottom: {
+          type: reader.readUInt8(),
+          width: reader.readUInt8(),
+          color: getRGB(reader.readUInt32()),
+        },
+      },
+    )
 
-        case DocInfoTagID.HWPTAG_CHAR_SHAPE: {
-          this.visitCharShape(size)
-          break
-        }
+    this.result.borderFills.push(borderFill)
+  }
 
-        case DocInfoTagID.HWPTAG_FACE_NAME: {
-          this.visitFaceName()
-          break
-        }
-
-        case DocInfoTagID.HWPTAG_BIN_DATA: {
-          this.visitBinData()
-          break
-        }
-
-        default:
-          this.reader.skipByte(size)
+  private visit = (record: HWPRecord) => {
+    switch (record.tagID) {
+      case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
+        this.visitDocumentPropertes(record)
+        break
       }
+
+      case DocInfoTagID.HWPTAG_CHAR_SHAPE: {
+        this.visitCharShape(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_FACE_NAME: {
+        this.visitFaceName(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_BIN_DATA: {
+        this.visitBinData(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_BORDER_FILL: {
+        this.visitBorderFill(record)
+        break
+      }
+
+      default:
+        break
     }
 
+    record.children.forEach(this.visit)
+  }
+
+  parse() {
+    this.record.children.forEach(this.visit)
     return this.result
   }
 }

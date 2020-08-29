@@ -14,25 +14,34 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
-import FontFace from './fontFace'
-import BinData from './binData'
-import BorderFill from './borderFill'
+import { RGB } from '../types/color'
 
-class DocInfo {
-  sectionSize: number = 0
+interface BorerStyle {
+  type: number
+  width: number
+  color: RGB
+}
 
-  charShapes: CharShape[] = []
+export interface BorderFillStyle {
+  left: BorerStyle
+  right: BorerStyle
+  top: BorerStyle
+  bottom: BorerStyle
+}
 
-  fontFaces: FontFace[] = []
+class BorderFill {
+  // TODO: (@hahnlee) getter & setter 만들기
+  attrubute: number
 
-  binData: BinData[] = []
+  style: BorderFillStyle
 
-  borderFills: BorderFill[] = []
-
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
+  constructor(
+    attrubute: number,
+    style: BorderFillStyle,
+  ) {
+    this.attrubute = attrubute
+    this.style = style
   }
 }
 
-export default DocInfo
+export default BorderFill

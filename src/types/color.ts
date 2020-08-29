@@ -14,25 +14,4 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
-import FontFace from './fontFace'
-import BinData from './binData'
-import BorderFill from './borderFill'
-
-class DocInfo {
-  sectionSize: number = 0
-
-  charShapes: CharShape[] = []
-
-  fontFaces: FontFace[] = []
-
-  binData: BinData[] = []
-
-  borderFills: BorderFill[] = []
-
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
-  }
-}
-
-export default DocInfo
+export type RGB = [number, number, number]
