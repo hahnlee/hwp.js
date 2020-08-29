@@ -16,6 +16,7 @@
 
 import CharShape from './charShape'
 import FontFace from './fontFace'
+import BinData from './binData'
 
 class DocInfo {
   sectionSize: number = 0
@@ -23,6 +24,8 @@ class DocInfo {
   charShapes: CharShape[] = []
 
   fontFaces: FontFace[] = []
+
+  binData: BinData[] = []
 
   getCharShpe(index: number): CharShape | undefined {
     return this.charShapes[index]

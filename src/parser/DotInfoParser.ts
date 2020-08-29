@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { CFB$Container, find } from 'cfb'
+import { inflate } from 'pako'
 
 import { DocInfoTagID } from '../constants/tagID'
+import BinData from '../models/binData'
+import ByteReader from '../utils/byteReader'
 import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
 import FontFace from '../models/fontFace'
-import ByteReader from '../utils/byteReader'
 import { getRGB, getFlag } from '../utils/bitUtils'
 
 class DocInfoParser {
@@ -26,8 +29,11 @@ class DocInfoParser {
 
   private result = new DocInfo()
 
-  constructor(data: Uint8Array) {
+  private container: CFB$Container
+
+  constructor(data: Uint8Array, container: CFB$Container) {
     this.reader = new ByteReader(data.buffer)
+    this.container = container
   }
 
   visitDocumentPropertes(size: number) {
@@ -130,6 +136,15 @@ class DocInfoParser {
     this.result.fontFaces.push(fontFace)
   }
 
+  visitBinData() {
+    this.reader.readUInt16()
+    const id = this.reader.readUInt16()
+    const extension = this.reader.readString()
+    const path = `Root Entry/BinData/BIN${`${id}`.padStart(4, '0')}.${extension}`
+    const payload = find(this.container, path)!.content as Uint8Array
+    this.result.binData.push(new BinData(extension, inflate(payload, { windowBits: -15 })))
+  }
+
   parse() {
     while (!this.reader.isEOF()) {
       const [tagID, , size] = this.reader.readRecord()
@@ -147,6 +162,11 @@ class DocInfoParser {
 
         case DocInfoTagID.HWPTAG_FACE_NAME: {
           this.visitFaceName()
+          break
+        }
+
+        case DocInfoTagID.HWPTAG_BIN_DATA: {
+          this.visitBinData()
           break
         }
 

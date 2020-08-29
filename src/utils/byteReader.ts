@@ -90,6 +90,10 @@ class ByteReader {
     return result.join('')
   }
 
+  remainByte() {
+    return this.view.byteLength - this.offsetByte
+  }
+
   skipByte(offset: number) {
     this.offsetByte += offset
   }

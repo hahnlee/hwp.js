@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../constants/ctrlID'
+import { Control } from '../models/controls'
 import TableControl, { TableColumnOption } from '../models/controls/table'
+import { ShapeControls } from '../models/controls/shapes'
 import DocInfo from '../models/docInfo'
 import { CharType } from '../models/char'
 import HWPDocument from '../models/document'
@@ -25,6 +26,7 @@ import Section from '../models/section'
 import ShapePointer from '../models/shapePointer'
 import Paragraph from '../models/paragraph'
 import ParagraphList from '../models/paragraphList'
+import { isTable, isShape, isPicture } from '../utils/controlUtil'
 import parse from '../parser'
 
 function createPage(section: Section) {
@@ -126,6 +128,48 @@ class HWPViewer {
     container.appendChild(table)
   }
 
+  private drawShape(
+    container: HTMLElement,
+    control: ShapeControls,
+  ) {
+    const shapeGroup = document.createElement('div')
+    shapeGroup.style.width = `${control.width / 100}pt`
+    shapeGroup.style.height = `${control.height / 100}pt`
+    shapeGroup.style.position = 'absolute'
+    shapeGroup.style.top = `${control.verticalOffset / 100}pt`
+    shapeGroup.style.zIndex = `${control.zIndex}`
+
+    if (isPicture(control)) {
+      const image = this.hwpDocument.info.binData[control.info!.binID]
+      const blob = new Blob([image.payload], { type: `images/${image.extension}` })
+      // TODO: (@hahnlee) revokeObjectURL을 관리할 수 있도록 하기
+      const imageURL = window.URL.createObjectURL(blob)
+      shapeGroup.style.backgroundImage = `url("${imageURL}")`
+    }
+
+    control.content.forEach((paragraphList) => {
+      paragraphList.items.forEach((paragraph) => {
+        this.drawParagraph(shapeGroup, paragraph)
+      })
+    })
+
+    container.appendChild(shapeGroup)
+  }
+
+  private drawControl(
+    container: HTMLElement,
+    control: Control,
+  ) {
+    if (isTable(control)) {
+      this.drawTable(container, control)
+      return
+    }
+
+    if (isShape(control)) {
+      this.drawShape(container, control)
+    }
+  }
+
   private drawText(
     container: HTMLElement,
     paragraph: Paragraph,
@@ -146,9 +190,8 @@ class HWPViewer {
       if (hwpChar.type === CharType.Extened) {
         const control = paragraph.controls[ctrlIndex]
         ctrlIndex += 1
-        if (control?.id === CommonCtrlID.Table) {
-          this.drawTable(container, control as TableControl)
-        }
+        this.drawControl(container, control)
+        return
       }
 
       if (hwpChar.value === 10) {
@@ -185,8 +228,9 @@ class HWPViewer {
     container: HTMLElement,
     paragraph: Paragraph,
   ) {
-    const paragraphContainer = document.createElement('p')
+    const paragraphContainer = document.createElement('div')
     paragraphContainer.style.margin = '0'
+    paragraphContainer.style.position = 'relative'
 
     paragraph.shapeBuffer.forEach((shapePointer, index) => {
       const endPos = paragraph.getShapeEndPos(index)

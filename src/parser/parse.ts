@@ -71,7 +71,7 @@ function parseDocInfo(container: CFB$Container): DocInfo {
   const content: Uint8Array = docInfoEntry.content as Uint8Array
   const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
 
-  return new DocInfoParser(decodedContent).parse()
+  return new DocInfoParser(decodedContent, container).parse()
 }
 
 function parseSection(container: CFB$Container, sectionNumber: number): Section {

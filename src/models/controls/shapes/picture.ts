@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
 
-export type Control = { id: number } | TableControl | ShapeControls
+interface Picture {
+  binID: number
+}
+
+export default Picture
