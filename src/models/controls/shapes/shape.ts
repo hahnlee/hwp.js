@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
 
-export type Control = { id: number } | TableControl | ShapeControls
+import ParagraphList from '../../paragraphList'
+import CommonControl from '../common'
+
+class ShapeControl<P = any> extends CommonControl {
+  type: number = 0
+
+  info: P | null = null
+
+  content: ParagraphList<null>[] = []
+}
+
+export default ShapeControl

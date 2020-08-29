@@ -6,6 +6,7 @@
   "rules": {
     "@typescript-eslint/semi": ["error", "never"],
     "no-bitwise": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-param-reassign": "off"
   }
 }

@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
 
-export type Control = { id: number } | TableControl | ShapeControls
+import { CommonCtrlID } from '../constants/ctrlID'
+import { Control } from '../models/controls'
+import TableControl from '../models/controls/table'
+import { ShapeControls, PictureControl } from '../models/controls/shapes'
+
+export function isTable(control: Control): control is TableControl {
+  return control.id === CommonCtrlID.Table
+}
+
+export function isShape(control: Control): control is ShapeControls {
+  return control.id === CommonCtrlID.GenShapeObject
+}
+
+export function isPicture(control: ShapeControls): control is PictureControl {
+  return control.type === CommonCtrlID.Picture
+}

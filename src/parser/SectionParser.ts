@@ -18,6 +18,7 @@ import { CommonCtrlID } from '../constants/ctrlID'
 import { SectionTagID } from '../constants/tagID'
 import { Control } from '../models/controls'
 import CommonControl from '../models/controls/common'
+import ShapeControl from '../models/controls/shapes/shape'
 import TableControl, { TableColumnOption } from '../models/controls/table'
 import Section from '../models/section'
 import Paragraph from '../models/paragraph'
@@ -27,8 +28,9 @@ import ShapePointer from '../models/shapePointer'
 import HWPRecord from '../models/record'
 import ByteReader from '../utils/byteReader'
 import RecordReader from '../utils/recordReader'
-import { last } from '../utils/listUtils'
+import { isTable, isShape } from '../utils/controlUtil'
 import parseRecord from './parseRecord'
+import { PictureControl } from '../models/controls/shapes'
 
 class SectionParser {
   private record: HWPRecord
@@ -137,7 +139,6 @@ class SectionParser {
     paragraph.shapeBuffer.push(shapePointer)
   }
 
-  /* eslint-disable no-param-reassign */
   visitCommonControl(reader: ByteReader, control: CommonControl) {
     control.attrubute = reader.readUInt32()
     control.verticalOffset = reader.readUInt32()
@@ -154,7 +155,6 @@ class SectionParser {
     control.uid = reader.readUInt32()
     control.split = reader.readInt32()
   }
-  /* eslint-enable no-param-reassign */
 
   visitTableControl(reader: ByteReader) {
     const tableControl = new TableControl()
@@ -165,27 +165,37 @@ class SectionParser {
     return tableControl
   }
 
-  visitControlHeader(record: HWPRecord, paragraph: Paragraph) {
-    const reader = new ByteReader(record.payload)
-
+  getControl(reader: ByteReader): Control {
     const ctrlID = reader.readUInt32()
 
     if (ctrlID === CommonCtrlID.Table) {
-      paragraph.controls.push(this.visitTableControl(reader))
-    } else {
-      paragraph.controls.push({
-        id: ctrlID,
-      })
+      return this.visitTableControl(reader)
     }
 
-    if (!record.children.length) {
-      return
+    if (ctrlID === CommonCtrlID.GenShapeObject) {
+      const shape = new ShapeControl()
+      shape.id = ctrlID
+      this.visitCommonControl(reader, shape)
+      return shape
     }
+
+    return {
+      id: ctrlID,
+    }
+  }
+
+  visitControlHeader(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+
+    const control = this.getControl(reader)
 
     const childrenReader = new RecordReader(record.children)
+
     while (childrenReader.hasNext()) {
-      this.visit(childrenReader, paragraph)
+      this.visit(childrenReader, paragraph, control)
     }
+
+    paragraph.controls.push(control)
   }
 
   visitCellListHeader(reader: ByteReader): TableColumnOption {
@@ -208,7 +218,11 @@ class SectionParser {
     return option
   }
 
-  visitListHeader(record: HWPRecord, reader: RecordReader, controls: Control[]) {
+  visitListHeader(record: HWPRecord, reader: RecordReader, control?: Control) {
+    if (!control) {
+      throw new Error(`Except: control, Recived: ${control}`)
+    }
+
     const byteReader = new ByteReader(record.payload)
     const paragraphs = byteReader.readInt32()
 
@@ -219,25 +233,26 @@ class SectionParser {
 
     for (let i = 0; i < paragraphs; i += 1) {
       const next = reader.read()
-      this.visitParagraphHeader(next, items)
+      this.visitParagraphHeader(next, items, control)
     }
 
     if (record.parentTagID === SectionTagID.HWPTAG_CTRL_HEADER) {
-      const lastControl = last(controls)
-
-      if (lastControl?.id === CommonCtrlID.Table) {
-        const tableControl = lastControl as TableControl
+      if (isTable(control)) {
         const options = this.visitCellListHeader(byteReader)
         const list = new ParagraphList(options, items)
-        tableControl.addRow(options.row, list)
+        control.addRow(options.row, list)
+      }
+    }
+
+    if (record.parentTagID === SectionTagID.HWPTAG_SHAPE_COMPONENT) {
+      if (isShape(control)) {
+        control.content.push(new ParagraphList(null, items))
       }
     }
   }
 
-  visitTable(record: HWPRecord, paragraph: Paragraph) {
+  visitTable(record: HWPRecord, control?: TableControl) {
     const reader = new ByteReader(record.payload)
-
-    const control: TableControl = last(paragraph.controls) as TableControl
 
     if (!control) {
       throw new Error('Expect control')
@@ -256,12 +271,35 @@ class SectionParser {
     control.borderFillID = reader.readUInt16()
   }
 
-  visit(reader: RecordReader, paragraph: Paragraph) {
+  visitShapeComponent(record: HWPRecord, paragraph: Paragraph, control: ShapeControl) {
+    const childrenReader = new RecordReader(record.children)
+
+    while (childrenReader.hasNext()) {
+      this.visit(childrenReader, paragraph, control)
+    }
+  }
+
+  visitPicture(record: HWPRecord, control: PictureControl) {
+    if (!isShape(control)) {
+      throw new Error('Control type not matched')
+    }
+
+    const reader = new ByteReader(record.payload)
+    reader.skipByte((4 * 17) + 3)
+
+    control.type = CommonCtrlID.Picture
+
+    control.info = {
+      binID: reader.readUInt16() - 1,
+    }
+  }
+
+  visit(reader: RecordReader, paragraph: Paragraph, control?: Control) {
     const record = reader.read()
 
     switch (record.tagID) {
       case SectionTagID.HWPTAG_LIST_HEADER: {
-        this.visitListHeader(record, reader, paragraph.controls)
+        this.visitListHeader(record, reader, control)
         break
       }
 
@@ -286,7 +324,17 @@ class SectionParser {
       }
 
       case SectionTagID.HWPTAG_TABLE: {
-        this.visitTable(record, paragraph)
+        this.visitTable(record, control as TableControl)
+        break
+      }
+
+      case SectionTagID.HWPTAG_SHAPE_COMPONENT: {
+        this.visitShapeComponent(record, paragraph, control as ShapeControl)
+        break
+      }
+
+      case SectionTagID.HWPTAG_SHAPE_COMPONENT_PICTURE: {
+        this.visitPicture(record, control as ShapeControl)
         break
       }
 
@@ -295,13 +343,13 @@ class SectionParser {
     }
   }
 
-  visitParagraphHeader(record: HWPRecord, content: Paragraph[]) {
+  visitParagraphHeader(record: HWPRecord, content: Paragraph[], control?: Control) {
     const result = new Paragraph()
 
     const childrenRecordReader = new RecordReader(record.children)
 
     while (childrenRecordReader.hasNext()) {
-      this.visit(childrenRecordReader, result)
+      this.visit(childrenRecordReader, result, control)
     }
 
     content.push(result)

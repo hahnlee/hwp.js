@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
 
-export type Control = { id: number } | TableControl | ShapeControls
+class BinData {
+  extension: string
+
+  payload: ArrayBuffer
+
+  constructor(extension: string, payload: Uint8Array) {
+    this.extension = extension
+    this.payload = payload
+  }
+}
+
+export default BinData
