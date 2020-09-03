@@ -14,33 +14,19 @@
  * limitations under the License.
  */
 
-import CommonAttribute from './commonAttribute'
-import { getBitValue } from '../../utils/bitUtils'
+import HWPDocument from '../models/document'
+import Section from '../models/section'
+import PageBuilder from './PageBuilder'
 
-class CommonControl {
-  id: number = 0
+function parsePage(doc: HWPDocument): HWPDocument {
+  let sections: Section[] = []
 
-  attrubute = new CommonAttribute()
+  doc.sections.forEach((section) => {
+    sections = sections.concat(new PageBuilder(section).build())
+  })
 
-  verticalOffset: number = 0
-
-  horizontalOffset: number = 0
-
-  width: number = 0
-
-  height: number = 0
-
-  zIndex: number = 0
-
-  margin: [number, number, number, number] = [0, 0, 0, 0]
-
-  uid: number = 0
-
-  split: number = 0
-
-  setAttribute(mask: number) {
-    this.attrubute.vertRealTo = getBitValue(mask, 3, 4)
-  }
+  doc.sections = sections
+  return doc
 }
 
-export default CommonControl
+export default parsePage

@@ -145,7 +145,7 @@ class SectionParser {
   }
 
   visitCommonControl(reader: ByteReader, control: CommonControl) {
-    control.attrubute = reader.readUInt32()
+    control.setAttribute(reader.readUInt32())
     control.verticalOffset = reader.readUInt32()
     control.horizontalOffset = reader.readUInt32()
     control.width = reader.readUInt32()

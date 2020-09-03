@@ -34,7 +34,7 @@ import SectionParser from './SectionParser'
 // @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
 const FILE_HEADER_BYTES = 256
 
-const SUPPORTED_VERSION = new HWPVersion(5, 0, 0, 0)
+const SUPPORTED_VERSION = new HWPVersion(5, 1, 0, 0)
 
 function parseFileHeader(container: CFB$Container): HWPHeader {
   const fileHeader = find(container, 'FileHeader')

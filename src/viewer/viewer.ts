@@ -29,6 +29,7 @@ import ParagraphList from '../models/paragraphList'
 import { isTable, isShape, isPicture } from '../utils/controlUtil'
 import { RGB } from '../types/color'
 import parse from '../parser'
+import parsePage from '../parser/parsePage'
 
 const BORDER_WIDTH = [
   '0.1mm',
@@ -49,10 +50,20 @@ const BORDER_WIDTH = [
   '5.0mm',
 ]
 
-const BORDER_STYLE = [
-  'none',
-  'solid',
-]
+const BORDER_STYLE: { [key: number]: string } = {
+  0: 'none',
+  1: 'solid',
+  2: 'dashed',
+  3: 'dotted',
+  8: 'double',
+}
+
+const TEXT_ALIGN: { [key: number]: string } = {
+  0: 'justify',
+  1: 'left',
+  2: 'right',
+  3: 'center',
+}
 
 function createPage(section: Section) {
   const page = document.createElement('div')
@@ -60,10 +71,12 @@ function createPage(section: Section) {
   page.style.boxShadow = '0 1px 3px 1px rgba(60,64,67,.15)'
   page.style.backgroundColor = '#FFF'
   page.style.margin = '0 auto'
+  page.style.position = 'relative'
 
   page.style.width = `${section.width / 7200}in`
   page.style.height = `${section.height / 7200}in`
-  page.style.paddingTop = `${section.paddingTop / 7200}in`
+  // TODO: (@hahnlee) header 정의하기
+  page.style.paddingTop = `${(section.paddingTop + section.headerPadding) / 7200}in`
   page.style.paddingRight = `${section.paddingRight / 7200}in`
   page.style.paddingBottom = `${section.paddingBottom / 7200}in`
   page.style.paddingLeft = `${section.paddingLeft / 7200}in`
@@ -91,7 +104,7 @@ class HWPViewer {
       const bstr = result.target?.result
 
       if (bstr) {
-        this.hwpDocument = parse(bstr as Uint8Array, { type: 'binary' })
+        this.hwpDocument = parsePage(parse(bstr as Uint8Array, { type: 'binary' }))
         this.draw()
       }
     }
@@ -129,6 +142,10 @@ class HWPViewer {
     target.style.borderRightStyle = BORDER_STYLE[borderFill.style.right.type]
     target.style.borderBottomStyle = BORDER_STYLE[borderFill.style.bottom.type]
     target.style.borderLeftStyle = BORDER_STYLE[borderFill.style.left.type]
+
+    if (borderFill.backgroundColor) {
+      target.style.backgroundColor = this.getRGBStyle(borderFill.backgroundColor)
+    }
   }
 
   private drawColumn(
@@ -191,9 +208,19 @@ class HWPViewer {
     const shapeGroup = document.createElement('div')
     shapeGroup.style.width = `${control.width / 100}pt`
     shapeGroup.style.height = `${control.height / 100}pt`
-    shapeGroup.style.position = 'absolute'
-    shapeGroup.style.top = `${control.verticalOffset / 100}pt`
+
+    if (control.attrubute.vertRealTo === 0) {
+      shapeGroup.style.position = 'absolute'
+      shapeGroup.style.top = `${control.verticalOffset / 100}pt`
+      shapeGroup.style.left = `${control.horizontalOffset / 100}pt`
+    } else {
+      shapeGroup.style.marginTop = `${control.verticalOffset / 100}pt`
+      shapeGroup.style.marginLeft = `${control.horizontalOffset / 100}pt`
+    }
+
     shapeGroup.style.zIndex = `${control.zIndex}`
+    shapeGroup.style.verticalAlign = 'middle'
+    shapeGroup.style.display = 'inline-block'
 
     if (isPicture(control)) {
       const image = this.hwpDocument.info.binData[control.info!.binID]
@@ -201,6 +228,9 @@ class HWPViewer {
       // TODO: (@hahnlee) revokeObjectURL을 관리할 수 있도록 하기
       const imageURL = window.URL.createObjectURL(blob)
       shapeGroup.style.backgroundImage = `url("${imageURL}")`
+      shapeGroup.style.backgroundRepeat = 'no-repeat'
+      shapeGroup.style.backgroundPosition = 'center'
+      shapeGroup.style.backgroundSize = 'contain'
     }
 
     control.content.forEach((paragraphList) => {
@@ -250,12 +280,12 @@ class HWPViewer {
       }
     })
 
+    texts.push('\n')
+
     const text = texts.join('')
 
     const span = document.createElement('div')
-    span.style.display = 'inline-block'
     span.textContent = text
-    span.appendChild(document.createElement('br'))
 
     const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
 
@@ -265,6 +295,7 @@ class HWPViewer {
       } = charShape
       const fontSize = fontBaseSize * (fontRatio[0] / 100)
       span.style.fontSize = `${fontSize}pt`
+      span.style.lineBreak = 'anywhere'
       span.style.whiteSpace = 'pre-wrap'
 
       span.style.color = this.getRGBStyle(color)
@@ -282,7 +313,9 @@ class HWPViewer {
   ) {
     const paragraphContainer = document.createElement('div')
     paragraphContainer.style.margin = '0'
-    paragraphContainer.style.position = 'relative'
+
+    const shape = this.hwpDocument.info.paragraphShapes[paragraph.shapeIndex]!
+    paragraphContainer.style.textAlign = TEXT_ALIGN[shape.align]
 
     paragraph.shapeBuffer.forEach((shapePointer, index) => {
       const endPos = paragraph.getShapeEndPos(index)
@@ -294,6 +327,7 @@ class HWPViewer {
 
   private drawSection = (section: Section) => {
     const page = createPage(section)
+    page.style.marginBottom = '20px'
 
     section.content.forEach((paragraph) => {
       this.drawParagraph(page, paragraph)
@@ -308,6 +342,10 @@ class HWPViewer {
     this.hwpDocument.sections.forEach(this.drawSection)
 
     this.container.appendChild(this.viewer)
+  }
+
+  distory() {
+    this.viewer.parentElement?.removeChild(this.viewer)
   }
 }
 

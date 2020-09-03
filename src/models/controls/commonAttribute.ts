@@ -14,33 +14,8 @@
  * limitations under the License.
  */
 
-import CommonAttribute from './commonAttribute'
-import { getBitValue } from '../../utils/bitUtils'
-
-class CommonControl {
-  id: number = 0
-
-  attrubute = new CommonAttribute()
-
-  verticalOffset: number = 0
-
-  horizontalOffset: number = 0
-
-  width: number = 0
-
-  height: number = 0
-
-  zIndex: number = 0
-
-  margin: [number, number, number, number] = [0, 0, 0, 0]
-
-  uid: number = 0
-
-  split: number = 0
-
-  setAttribute(mask: number) {
-    this.attrubute.vertRealTo = getBitValue(mask, 3, 4)
-  }
+class CommonAttribute {
+  vertRealTo: number = 0
 }
 
-export default CommonControl
+export default CommonAttribute

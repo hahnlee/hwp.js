@@ -27,8 +27,14 @@ function IndexPage() {
   }, [])
 
   useEffect(() => {
-    if (ref && file) {
-      new HWPViewer(ref, file)
+    if (!ref || !file) {
+      return
+    }
+
+    const viewer = new HWPViewer(ref, file)
+
+    return () => {
+      viewer.distory()
     }
   }, [ref, file])
 
