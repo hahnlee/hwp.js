@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
-import FontFace from './fontFace'
-import BinData from './binData'
-import BorderFill from './borderFill'
-import ParagraphShape from './paragraphShape'
+class LineSegment {
+  start: number = 0
 
-class DocInfo {
-  sectionSize: number = 0
+  y: number = 0
 
-  charShapes: CharShape[] = []
+  height: number = 0
 
-  fontFaces: FontFace[] = []
+  textHeight: number = 0
 
-  binData: BinData[] = []
+  baseLineGap: number = 0
 
-  borderFills: BorderFill[] = []
+  lineSpacing: number = 0
 
-  paragraphShapes: ParagraphShape[] = []
+  startByte: number = 0
 
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
-  }
+  width: number = 0
 }
 
-export default DocInfo
+export default LineSegment

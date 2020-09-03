@@ -35,6 +35,9 @@ class BorderFill {
 
   style: BorderFillStyle
 
+  // TODO: (@hahnlee) 그라데이션도 처리하기
+  backgroundColor: RGB | null = null
+
   constructor(
     attrubute: number,
     style: BorderFillStyle,

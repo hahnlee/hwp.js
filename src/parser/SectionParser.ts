@@ -25,6 +25,7 @@ import Paragraph from '../models/paragraph'
 import ParagraphList from '../models/paragraphList'
 import HWPChar, { CharType } from '../models/char'
 import ShapePointer from '../models/shapePointer'
+import LineSegment from '../models/lineSegment'
 import HWPRecord from '../models/record'
 import ByteReader from '../utils/byteReader'
 import RecordReader from '../utils/recordReader'
@@ -75,6 +76,7 @@ class SectionParser {
           paragraph.content.push(
             new HWPChar(CharType.Char, charCode),
           )
+          paragraph.textSize += 1
           readByte += 2
           break
         }
@@ -91,6 +93,7 @@ class SectionParser {
           paragraph.content.push(
             new HWPChar(CharType.Inline, charCode),
           )
+          paragraph.textSize += 8
           reader.skipByte(14)
           readByte += 16
           break
@@ -114,6 +117,7 @@ class SectionParser {
             new HWPChar(CharType.Extened, charCode),
           )
           reader.skipByte(14)
+          paragraph.textSize += 8
           readByte += 16
           break
         }
@@ -122,6 +126,7 @@ class SectionParser {
           paragraph.content.push(
             new HWPChar(CharType.Char, String.fromCharCode(charCode)),
           )
+          paragraph.textSize += 1
           readByte += 2
         }
       }
@@ -294,6 +299,25 @@ class SectionParser {
     }
   }
 
+  visitLineSegment(record: HWPRecord, paragraph: Paragraph) {
+    const reader = new ByteReader(record.payload)
+    while (!reader.isEOF()) {
+      const lineSegment = new LineSegment()
+
+      lineSegment.start = reader.readUInt32()
+      lineSegment.y = reader.readInt32()
+      lineSegment.height = reader.readInt32()
+      lineSegment.textHeight = reader.readInt32()
+      lineSegment.baseLineGap = reader.readInt32()
+      lineSegment.lineSpacing = reader.readInt32()
+      lineSegment.startByte = reader.readInt32()
+      lineSegment.width = reader.readInt32()
+      reader.readUInt32()
+
+      paragraph.lineSegments.push(lineSegment)
+    }
+  }
+
   visit(reader: RecordReader, paragraph: Paragraph, control?: Control) {
     const record = reader.read()
 
@@ -338,6 +362,11 @@ class SectionParser {
         break
       }
 
+      case SectionTagID.HWPTAG_PARA_LINE_SEG: {
+        this.visitLineSegment(record, paragraph)
+        break
+      }
+
       default:
         break
     }
@@ -345,6 +374,12 @@ class SectionParser {
 
   visitParagraphHeader(record: HWPRecord, content: Paragraph[], control?: Control) {
     const result = new Paragraph()
+
+    const reader = new ByteReader(record.payload)
+
+    reader.skipByte(8)
+
+    result.shapeIndex = reader.readUInt16()
 
     const childrenRecordReader = new RecordReader(record.children)
 

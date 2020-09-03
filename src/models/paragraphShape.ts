@@ -14,28 +14,8 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
-import FontFace from './fontFace'
-import BinData from './binData'
-import BorderFill from './borderFill'
-import ParagraphShape from './paragraphShape'
-
-class DocInfo {
-  sectionSize: number = 0
-
-  charShapes: CharShape[] = []
-
-  fontFaces: FontFace[] = []
-
-  binData: BinData[] = []
-
-  borderFills: BorderFill[] = []
-
-  paragraphShapes: ParagraphShape[] = []
-
-  getCharShpe(index: number): CharShape | undefined {
-    return this.charShapes[index]
-  }
+class ParagraphShape {
+  align: number = 0
 }
 
-export default DocInfo
+export default ParagraphShape

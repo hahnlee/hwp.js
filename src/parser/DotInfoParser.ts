@@ -17,13 +17,15 @@
 import { CFB$Container, find } from 'cfb'
 import { inflate } from 'pako'
 
+import FillType from '../constants/fillType'
 import { DocInfoTagID } from '../constants/tagID'
 import BinData from '../models/binData'
 import ByteReader from '../utils/byteReader'
 import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
 import FontFace from '../models/fontFace'
-import { getRGB, getFlag } from '../utils/bitUtils'
+import ParagraphShape from '../models/paragraphShape'
+import { getRGB, getFlag, getBitValue } from '../utils/bitUtils'
 import BorderFill from '../models/borderFill'
 import HWPRecord from '../models/record'
 import parseRecordTree from './parseRecord'
@@ -182,7 +184,22 @@ class DocInfoParser {
       },
     )
 
+    reader.skipByte(6)
+
+    if (reader.readUInt32() === FillType.Single) {
+      borderFill.backgroundColor = getRGB(reader.readUInt32())
+    }
+
     this.result.borderFills.push(borderFill)
+  }
+
+  visitParagraphShape(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    const attribute = reader.readUInt32()
+
+    const shape = new ParagraphShape()
+    shape.align = getBitValue(attribute, 2, 4)
+    this.result.paragraphShapes.push(shape)
   }
 
   private visit = (record: HWPRecord) => {
@@ -209,6 +226,11 @@ class DocInfoParser {
 
       case DocInfoTagID.HWPTAG_BORDER_FILL: {
         this.visitBorderFill(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_PARA_SHAPE: {
+        this.visitParagraphShape(record)
         break
       }
 
