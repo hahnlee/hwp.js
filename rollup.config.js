@@ -46,7 +46,7 @@ export default [
     input: inputFile,
     output: [
       {
-        file: path.join(rootDirectory, 'extension', 'hwp.js'),
+        file: path.join(rootDirectory, 'extension', 'content', 'hwp.js'),
         format: 'iife',
         name: 'HWP',
       },

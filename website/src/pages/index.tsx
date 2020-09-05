@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 
 import HWPViewer from '../../../src/viewer'
 
 function IndexPage() {
   const [file, setFile] = useState<File | null>(null)
   const [ref, setRef] = useState<HTMLDivElement | null>(null)
+  const viewerRef = useRef<HWPViewer | null>(null)
 
   const handleChange = useCallback((e) => {
     setFile(e.target.files[0])
@@ -31,10 +32,21 @@ function IndexPage() {
       return
     }
 
-    const viewer = new HWPViewer(ref, file)
+    const reader = new FileReader()
+
+    reader.onload = (result) => {
+      const bstr = result.target?.result
+
+      if (bstr) {
+        console.log(bstr)
+        viewerRef.current = new HWPViewer(ref, bstr as Uint8Array)
+      }
+    }
+
+    reader.readAsBinaryString(file)
 
     return () => {
-      viewer.distory()
+      viewerRef.current?.distory()
     }
   }, [ref, file])
 

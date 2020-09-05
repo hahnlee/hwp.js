@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { CFB$ParsingOptions } from 'cfb/types'
+
 import { Control } from '../models/controls'
 import TableControl, { TableColumnOption } from '../models/controls/table'
 import { ShapeControls } from '../models/controls/shapes'
@@ -95,21 +97,10 @@ class HWPViewer {
 
   private viewer: HTMLElement = window.document.createElement('div')
 
-  constructor(container: HTMLElement, file: File) {
+  constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
     this.container = container
-
-    const reader = new FileReader()
-
-    reader.onload = (result) => {
-      const bstr = result.target?.result
-
-      if (bstr) {
-        this.hwpDocument = parsePage(parse(bstr as Uint8Array, { type: 'binary' }))
-        this.draw()
-      }
-    }
-
-    reader.readAsBinaryString(file)
+    this.hwpDocument = parsePage(parse(data, option))
+    this.draw()
   }
 
   private getRGBStyle(rgb: RGB) {
