@@ -15,7 +15,9 @@
  */
 
 import parse from './parser'
+import viewer from './viewer'
 
-export default {
+export {
   parse,
+  viewer,
 }
