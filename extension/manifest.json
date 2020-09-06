@@ -13,7 +13,6 @@
     "webRequestBlocking",
     "tabs",
     "webNavigation",
-    "storage",
     "http://*/*.hwp",
     "https://*/*.hwp",
     "file://*/*"
