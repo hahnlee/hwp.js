@@ -3,6 +3,11 @@
   "name": "hwp.js",
   "version": "1.0",
   "description": "hwp web viewer",
+  "icons": {
+    "128": "icon128.png",
+    "48": "icon48.png",
+    "16": "icon16.png"
+  },
   "permissions": [
     "webRequest",
     "webRequestBlocking",
@@ -19,14 +24,14 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "content/viewer.html",
-      "http:/*",
-      "https:/*",
-      "ftp:/*",
-      "file:/*",
-      "chrome-extension:/*",
-      "blob:*",
-      "data:*",
-      "filesystem:/*",
-      "drive:*"
+    "http:/*",
+    "https:/*",
+    "ftp:/*",
+    "file:/*",
+    "chrome-extension:/*",
+    "blob:*",
+    "data:*",
+    "filesystem:/*",
+    "drive:*"
   ]
 }
