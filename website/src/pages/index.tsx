@@ -38,7 +38,6 @@ function IndexPage() {
       const bstr = result.target?.result
 
       if (bstr) {
-        console.log(bstr)
         viewerRef.current = new HWPViewer(ref, bstr as Uint8Array)
       }
     }
@@ -53,11 +52,20 @@ function IndexPage() {
   return (
     <div>
       { !file && <input type="file" onChange={handleChange} /> }
-      <div ref={setRef} />
+      <div className="container" ref={setRef} />
       <style>
         { `
           * {
             box-sizing: border-box;
+          }
+
+          html, body {
+            padding: 0;
+            margin: 0;
+          }
+
+          .container {
+            height: 100vh;
           }
         ` }
       </style>

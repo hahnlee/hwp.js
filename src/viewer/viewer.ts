@@ -32,6 +32,7 @@ import { isTable, isShape, isPicture } from '../utils/controlUtil'
 import { RGB } from '../types/color'
 import parse from '../parser'
 import parsePage from '../parser/parsePage'
+import Header from './header'
 
 const BORDER_WIDTH = [
   '0.1mm',
@@ -67,25 +68,6 @@ const TEXT_ALIGN: { [key: number]: string } = {
   3: 'center',
 }
 
-function createPage(section: Section) {
-  const page = document.createElement('div')
-
-  page.style.boxShadow = '0 1px 3px 1px rgba(60,64,67,.15)'
-  page.style.backgroundColor = '#FFF'
-  page.style.margin = '0 auto'
-  page.style.position = 'relative'
-
-  page.style.width = `${section.width / 7200}in`
-  page.style.height = `${section.height / 7200}in`
-  // TODO: (@hahnlee) header 정의하기
-  page.style.paddingTop = `${(section.paddingTop + section.headerPadding) / 7200}in`
-  page.style.paddingRight = `${section.paddingRight / 7200}in`
-  page.style.paddingBottom = `${section.paddingBottom / 7200}in`
-  page.style.paddingLeft = `${section.paddingLeft / 7200}in`
-
-  return page
-}
-
 class HWPViewer {
   private hwpDocument: HWPDocument = new HWPDocument(
     new HWPHeader(new HWPVersion(5, 0, 0, 0)),
@@ -97,10 +79,37 @@ class HWPViewer {
 
   private viewer: HTMLElement = window.document.createElement('div')
 
+  private pages: HTMLElement[] = []
+
+  private header: Header | null = null
+
   constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
     this.container = container
     this.hwpDocument = parsePage(parse(data, option))
     this.draw()
+  }
+
+  private createPage(section: Section, index: number) {
+    const page = document.createElement('div')
+
+    page.style.boxShadow = '0 1px 3px 1px rgba(60,64,67,.15)'
+    page.style.backgroundColor = '#FFF'
+    page.style.margin = '0 auto'
+    page.style.position = 'relative'
+
+    page.style.width = `${section.width / 7200}in`
+    page.style.height = `${section.height / 7200}in`
+    // TODO: (@hahnlee) header 정의하기
+    page.style.paddingTop = `${(section.paddingTop + section.headerPadding) / 7200}in`
+    page.style.paddingRight = `${section.paddingRight / 7200}in`
+    page.style.paddingBottom = `${section.paddingBottom / 7200}in`
+    page.style.paddingLeft = `${section.paddingLeft / 7200}in`
+
+    page.setAttribute('data-page-number', index.toString())
+
+    this.pages.push(page)
+
+    return page
   }
 
   private getRGBStyle(rgb: RGB) {
@@ -110,7 +119,10 @@ class HWPViewer {
 
   private drawViewer() {
     this.viewer.style.backgroundColor = '#E8EAED'
-    this.viewer.style.padding = '24px'
+    this.viewer.style.position = 'relative'
+    this.viewer.style.overflow = 'hidden'
+    this.viewer.style.width = '100%'
+    this.viewer.style.height = '100%'
   }
 
   private drawBorderFill(
@@ -316,26 +328,38 @@ class HWPViewer {
     container.append(paragraphContainer)
   }
 
-  private drawSection = (section: Section) => {
-    const page = createPage(section)
+  private drawSection(container: HTMLElement, section: Section, index: number) {
+    const page = this.createPage(section, index)
     page.style.marginBottom = '20px'
 
     section.content.forEach((paragraph) => {
       this.drawParagraph(page, paragraph)
     })
 
-    this.viewer.appendChild(page)
+    container.appendChild(page)
   }
 
   private draw() {
     this.drawViewer()
 
-    this.hwpDocument.sections.forEach(this.drawSection)
+    const content = document.createElement('div')
+    content.style.height = '100%'
+    content.style.padding = '52px 24px 24px 24px'
+    content.style.overflow = 'auto'
 
+    this.hwpDocument.sections.forEach((section, index) => {
+      this.drawSection(content, section, index)
+    })
+
+    this.header = new Header(this.viewer, this.container, this.pages)
+
+    this.viewer.appendChild(content)
     this.container.appendChild(this.viewer)
   }
 
   distory() {
+    this.pages = []
+    this.header?.distory()
     this.viewer.parentElement?.removeChild(this.viewer)
   }
 }
