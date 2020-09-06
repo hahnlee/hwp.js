@@ -30,7 +30,7 @@ function IndexPage() {
     setIsLoading(true)
     setHasError(false)
 
-    fetch('/files/noori.hwp')
+    fetch('files/noori.hwp')
       .then(res => res.arrayBuffer())
       .then(res => {
         const array = new Uint8Array(res)
@@ -51,11 +51,11 @@ function IndexPage() {
     <Page title="hwp.js">
       <main className="index">
         <section className="main">
-          <img src="/images/logo.svg" />
+          <img src="images/logo.svg" />
           <p>Open source hwp viewer and parser library powered by web technology</p>
           <a type="button" className="btn btn-default" href="https://github.com/hahnlee/hwp.js">GitHub</a>
-          <a type="button" className="btn btn-default" href="/files/extension.crx">Chrome extension</a>
-          <a type="button" className="btn btn-default" href="/demo">Demo</a>
+          <a type="button" className="btn btn-default" href="files/extension.crx">Chrome extension</a>
+          <a type="button" className="btn btn-default" href="demo">Demo</a>
           <pre className="code">
             <code>
               npm install hwp.js
