@@ -8,15 +8,23 @@
     "develop": "gatsby develop",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "deploy": "gh-pages -d public"
   },
   "dependencies": {
     "gatsby": "^2.24.47",
+    "gatsby-plugin-react-helmet": "^3.3.10",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.3",
+    "react-helmet": "^6.1.0",
+    "react-loader-spinner": "^3.1.14"
   },
   "devDependencies": {
+    "@types/react-helmet": "^6.1.0",
+    "@types/react-loader-spinner": "^3.1.0",
     "gatsby-plugin-typescript": "^2.4.18",
-    "gatsby-source-filesystem": "^2.3.24"
+    "gatsby-source-filesystem": "^2.3.24",
+    "gh-pages": "^3.1.0"
   }
 }
