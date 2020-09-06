@@ -346,6 +346,8 @@ class HWPViewer {
     content.style.height = '100%'
     content.style.padding = '52px 24px 24px 24px'
     content.style.overflow = 'auto'
+    content.style.position = 'relative'
+    content.style.zIndex = '0'
 
     this.hwpDocument.sections.forEach((section, index) => {
       this.drawSection(content, section, index)

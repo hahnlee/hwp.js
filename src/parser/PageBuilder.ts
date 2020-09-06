@@ -44,6 +44,8 @@ class PageBuilder {
 
   private shapeBufferIndex: number = 0
 
+  private latestY: number = 0
+
   constructor(section: Section) {
     this.section = section
     this.contentHeight = (
@@ -153,10 +155,12 @@ class PageBuilder {
   visitLine(lineSegment: LineSegment, index: number, paragraph: Paragraph) {
     const line = this.getLine(lineSegment, index, paragraph)
 
-    if (lineSegment.y === 0) {
+    if (lineSegment.y === 0 || lineSegment.y < this.latestY) {
       this.exitPage(paragraph)
       this.startChatIndex = this.endCharIndex
     }
+
+    this.latestY = lineSegment.y
 
     this.currentHeight += (lineSegment.height + lineSegment.lineSpacing)
 

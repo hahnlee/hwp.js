@@ -15,9 +15,9 @@
  */
 
 import parse from './parser'
-import viewer from './viewer'
+import Viewer from './viewer'
 
 export {
   parse,
-  viewer,
+  Viewer,
 }
