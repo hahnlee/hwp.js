@@ -8,6 +8,13 @@ npm install hwp.js
 yarn add hwp.js
 ```
 
+# Credits
+A huge thanks to
+- [hwplib](https://github.com/neolord0/hwplib)
+- [cfb-js](https://github.com/SheetJS/js-cfb)
+- [pako](https://github.com/nodeca/pako)
+- [pdf.js](https://github.com/mozilla/pdf.js)
+
 # License
 ```
 Copyright 2020-Present Han Lee <hanlee.dev@gmail.com>
