@@ -138,8 +138,8 @@ class PageBuilder {
 
   getTable(list: ParagraphList<TableColumnOption>[][], width: number): TableControl {
     const height = list.reduce((result, current) => {
-      const column = current.find((c) => c.attribute.rowSpan === 1)!
-      return result + column.attribute.height
+      const columnHeight = Math.min(...current.map((c) => c.attribute.height))
+      return result + columnHeight
     }, 0)
 
     const control = new TableControl()
@@ -186,13 +186,13 @@ class PageBuilder {
       // split table...
       let result: ParagraphList<TableColumnOption>[][] = []
       control.content.forEach((columns) => {
-        const column = columns.find((c) => c.attribute.rowSpan === 1)!
-        this.currentHeight += column.attribute.height
+        const columnHeighrt = Math.min(...columns.map((c) => c.attribute.height))
+        this.currentHeight += columnHeighrt
 
         if (this.currentHeight <= this.contentHeight) {
           result.push(columns)
         } else {
-          this.currentHeight = column.attribute.height
+          this.currentHeight = columnHeighrt
           result.push(columns)
 
           const c = this.getTable(result, control.width)

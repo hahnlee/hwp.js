@@ -217,7 +217,11 @@ class SectionParser {
         reader.readUInt16(),
         reader.readUInt16(),
       ],
-      borderFillID: reader.readUInt16() - 1,
+    }
+
+    // NOTE: (@hahnlee) 문서에선 필수인데 없는 경우도 있다 리서치 필요
+    if (!reader.isEOF()) {
+      option.borderFillID = reader.readUInt16() - 1
     }
 
     return option
@@ -229,10 +233,12 @@ class SectionParser {
     }
 
     const byteReader = new ByteReader(record.payload)
-    const paragraphs = byteReader.readInt32()
+    // NOTE: (@hahnlee) 한글문서에선 readInt16으로 되어있으나 대부분의 경우 readInt32 으로 읽어야 문제가 없다
+    // 리서치 필요
+    const paragraphs = record.size === 30 ? byteReader.readInt16() : byteReader.readInt32()
 
     // attrubute
-    byteReader.readInt32()
+    byteReader.readUInt32()
 
     const items: Paragraph[] = []
 

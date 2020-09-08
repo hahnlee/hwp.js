@@ -25,7 +25,7 @@ export interface TableColumnOption {
   width: number
   height: number
   padding: [number, number, number, number]
-  borderFillID: number
+  borderFillID?: number
 }
 
 class TableControl extends CommonControl {
