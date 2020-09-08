@@ -127,8 +127,12 @@ class HWPViewer {
 
   private drawBorderFill(
     target: HTMLElement,
-    borderFillID: number,
+    borderFillID?: number,
   ) {
+    if (borderFillID === undefined) {
+      return
+    }
+
     const borderFill = this.hwpDocument.info.borderFills[borderFillID]
 
     target.style.borderTopColor = this.getRGBStyle(borderFill.style.top.color)
