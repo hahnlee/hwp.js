@@ -29,7 +29,7 @@ function Demo() {
   const showViewer = useCallback((file: File) => {
     const reader = new FileReader()
 
-    reader.onload = (result) => {
+    reader.onloadend = (result) => {
       const bstr = result.target?.result
 
       if (bstr) {
