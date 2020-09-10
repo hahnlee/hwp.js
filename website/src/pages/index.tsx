@@ -54,6 +54,9 @@ function IndexPage() {
           <img src="images/logo.svg" />
           <p>Open source hwp viewer and parser library powered by web technology</p>
           <a type="button" className="btn btn-default" href="https://github.com/hahnlee/hwp.js">GitHub</a>
+          <a type="button" className="btn btn-default" href="https://chrome.google.com/webstore/detail/hwpjs/hgalnnpknkjdccmcljadkckcdibiglei">
+            Chrome extension
+          </a>
           <a type="button" className="btn btn-default" href="https://github.com/hahnlee/hwp.js/issues/7">공지사항</a>
           <a type="button" className="btn btn-default" href="demo">Demo</a>
           <pre className="code">
