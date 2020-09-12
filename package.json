@@ -1,6 +1,6 @@
 {
   "name": "hwp.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "build/cjs.js",
   "module": "build/esm.js",
   "types": "build/index.d.ts",
