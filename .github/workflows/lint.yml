@@ -1,0 +1,36 @@
+name: Lint, typecheck and test
+on: [push, pull_request]
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: <registry url>
+      - run: yarn install
+      - run: yarn lint
+  typecheck:
+     name: Typecheck
+     runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: '12.x'
+            registry-url: <registry url>
+        - run: yarn install
+        - run: yarn typecheck
+  test:
+     name: Test
+     runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: '12.x'
+            registry-url: <registry url>
+        - run: yarn install
+        - run: yarn test
