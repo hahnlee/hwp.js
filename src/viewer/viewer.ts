@@ -285,9 +285,11 @@ class HWPViewer {
         ctrlIndex += 1
         this.drawControl(container, control)
       }
-    })
 
-    texts.push('\n')
+      if (hwpChar.value === 13) {
+        texts.push('\n')
+      }
+    })
 
     const text = texts.join('')
 
