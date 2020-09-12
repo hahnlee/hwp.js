@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "build/cjs.js",
   "module": "build/esm.js",
+  "types": "build/index.d.ts",
   "siseEffect": false,
   "license": "Apache-2.0",
   "repository": {
