@@ -22,6 +22,7 @@ import { isTable } from '../utils/controlUtil'
 import TableControl, { TableColumnOption } from '../models/controls/table'
 import ParagraphList from '../models/paragraphList'
 import { CommonCtrlID } from '../constants/ctrlID'
+import splitTable from './splitTable'
 
 class PageBuilder {
   private section: Section
@@ -136,7 +137,7 @@ class PageBuilder {
     this.currentHeight = 0
   }
 
-  getTable(list: ParagraphList<TableColumnOption>[][], width: number): TableControl {
+  createTable(list: ParagraphList<TableColumnOption>[][], width: number): TableControl {
     const height = list.reduce((result, current) => {
       const columnHeight = Math.min(...current.map((c) => c.attribute.height))
       return result + columnHeight
@@ -158,6 +159,7 @@ class PageBuilder {
     if (lineSegment.y === 0 || lineSegment.y < this.latestY) {
       this.exitPage(paragraph)
       this.startChatIndex = this.endCharIndex
+      this.currentHeight = 0
     }
 
     this.latestY = lineSegment.y
@@ -183,33 +185,24 @@ class PageBuilder {
 
       this.currentHeight -= (lineSegment.height + lineSegment.lineSpacing)
 
-      // split table...
-      let result: ParagraphList<TableColumnOption>[][] = []
-      control.content.forEach((columns) => {
-        const columnHeighrt = Math.min(...columns.map((c) => c.attribute.height))
-        this.currentHeight += columnHeighrt
+      const tables: TableControl[] = splitTable(
+        control.content,
+        [],
+        this.contentHeight - this.currentHeight,
+        this.contentHeight,
+      ).map((table) => this.createTable(table, control.width))
 
-        if (this.currentHeight <= this.contentHeight) {
-          result.push(columns)
-        } else {
-          this.currentHeight = columnHeighrt
-          result.push(columns)
+      tables.forEach((table, tableIndex) => {
+        this.currentParagraph.content.push(content)
+        this.currentParagraph.controls.push(table)
 
-          const c = this.getTable(result, control.width)
-          this.currentParagraph.content.push(content)
-          this.currentParagraph.controls.push(c)
+        if (tables.length > 1 && tableIndex !== tables.length - 1) {
           this.exitPage(paragraph)
-          result = []
           this.startChatIndex = this.endCharIndex
         }
       })
 
-      if (result.length > 0) {
-        const c = this.getTable(result, control.width)
-        this.currentParagraph.content.push(content)
-        this.currentParagraph.controls.push(c)
-      }
-
+      this.currentHeight += tables[tables.length - 1].height
       this.endCharIndex += 1
     })
   }
