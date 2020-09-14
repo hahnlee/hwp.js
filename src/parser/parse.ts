@@ -28,7 +28,7 @@ import DocInfo from '../models/docInfo'
 import HWPHeader from '../models/header'
 import HWPVersion from '../models/version'
 import Section from '../models/section'
-import DocInfoParser from './DotInfoParser'
+import DocInfoParser from './DocInfoParser'
 import SectionParser from './SectionParser'
 
 // @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
