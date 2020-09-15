@@ -43,4 +43,8 @@ describe.skip('parse', () => {
     expect(hwpDocument.sections[0].width).toBe(59528)
     expect(hwpDocument.sections[0].height).toBe(84188)
   })
+
+  it('should parse signature', () => {
+    expect(hwpDocument.header.signature).toBe('HWP Document File')
+  })
 })

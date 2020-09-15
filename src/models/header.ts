@@ -22,8 +22,11 @@ import HWPVersion from './version'
 class HWPHeader {
   version: HWPVersion
 
-  constructor(version: HWPVersion) {
+  signature: string
+
+  constructor(version: HWPVersion, signature: string) {
     this.version = version
+    this.signature = signature
   }
 }
 
