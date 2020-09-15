@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import printFrame from '../utils/print'
+
 class Header {
   private pages: HTMLElement[]
 
@@ -160,7 +162,7 @@ class Header {
   }
 
   handlePrintButtionClick = () => {
-    console.log('print')
+    printFrame(this.pages)
   }
 
   drawPageNumber() {
