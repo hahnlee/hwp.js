@@ -76,6 +76,7 @@ export default function printFrame(elements: HTMLElement[]) {
   @page {
     margin: 0;
   }
+  @media print {
     .pe-no-print {
         display: none !important;
     }
@@ -90,7 +91,6 @@ export default function printFrame(elements: HTMLElement[]) {
     }
 
     .pe-preserve-ancestor > *  {
-        border: none !important;
         box-shadow: none !important;
         overflow: visible !important;
     }
@@ -100,6 +100,7 @@ export default function printFrame(elements: HTMLElement[]) {
         height: 100% !important;
         margin: 0 !important;
     }
+   }
    `
   const styleSheet: HTMLStyleElement = document.createElement('style')
   styleSheet.type = 'text/css'
