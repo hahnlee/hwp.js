@@ -100,6 +100,10 @@ export default function printFrame(elements: HTMLElement[]) {
         height: 100% !important;
         margin: 0 !important;
     }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
    }
    `
   const styleSheet: HTMLStyleElement = document.createElement('style')

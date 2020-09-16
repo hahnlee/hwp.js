@@ -240,11 +240,10 @@ class HWPViewer {
       const blob = new Blob([image.payload], { type: `images/${image.extension}` })
       // TODO: (@hahnlee) revokeObjectURL을 관리할 수 있도록 하기
       const imageURL = window.URL.createObjectURL(blob)
-      const imageElement: HTMLImageElement = document.createElement('img')
-      imageElement.src = imageURL
-      imageElement.style.width = '100%'
-      imageElement.style.height = '100%'
-      shapeGroup.appendChild(imageElement)
+      shapeGroup.style.backgroundImage = `url("${imageURL}")`
+      shapeGroup.style.backgroundRepeat = 'no-repeat'
+      shapeGroup.style.backgroundPosition = 'center'
+      shapeGroup.style.backgroundSize = 'contain'
     }
 
     control.content.forEach((paragraphList) => {
