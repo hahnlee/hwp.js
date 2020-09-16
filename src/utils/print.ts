@@ -111,13 +111,13 @@ export default function printFrame(elements: HTMLElement[]) {
   styleSheet.innerText = printStyle
   document.head.appendChild(styleSheet)
 
-  const hide = function (element: HTMLElement | Element) {
+  const hide = (element: HTMLElement | Element) => {
     if (!element.classList.contains(preservePrintClass)) {
       element.classList.add(hideFromPrintClass)
     }
   }
 
-  const preserve = function (element: HTMLElement | Element, isStartingElement: boolean) {
+  const preserve = (element: HTMLElement | Element, isStartingElement: boolean) => {
     element.classList.remove(hideFromPrintClass)
     element.classList.add(preservePrintClass)
     if (!isStartingElement) {
@@ -125,7 +125,7 @@ export default function printFrame(elements: HTMLElement[]) {
     }
   }
 
-  const clean = function (element: HTMLElement | Element) {
+  const clean = (element: HTMLElement | Element) => {
     element.classList.remove(hideFromPrintClass)
     element.classList.remove(preservePrintClass)
     element.classList.remove(preserveAncestorClass)
