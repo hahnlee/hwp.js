@@ -89,6 +89,12 @@ class HWPViewer {
     this.draw()
   }
 
+  distory() {
+    this.pages = []
+    this.header?.distory()
+    this.viewer.parentElement?.removeChild(this.viewer)
+  }
+
   private createPage(section: Section, index: number) {
     const page = document.createElement('div')
 
@@ -234,10 +240,11 @@ class HWPViewer {
       const blob = new Blob([image.payload], { type: `images/${image.extension}` })
       // TODO: (@hahnlee) revokeObjectURL을 관리할 수 있도록 하기
       const imageURL = window.URL.createObjectURL(blob)
-      shapeGroup.style.backgroundImage = `url("${imageURL}")`
-      shapeGroup.style.backgroundRepeat = 'no-repeat'
-      shapeGroup.style.backgroundPosition = 'center'
-      shapeGroup.style.backgroundSize = 'contain'
+      const imageElement: HTMLImageElement = document.createElement('img')
+      imageElement.src = imageURL
+      imageElement.style.width = '100%'
+      imageElement.style.height = '100%'
+      shapeGroup.appendChild(imageElement)
     }
 
     control.content.forEach((paragraphList) => {
@@ -363,12 +370,6 @@ class HWPViewer {
 
     this.viewer.appendChild(content)
     this.container.appendChild(this.viewer)
-  }
-
-  distory() {
-    this.pages = []
-    this.header?.distory()
-    this.viewer.parentElement?.removeChild(this.viewer)
   }
 }
 
