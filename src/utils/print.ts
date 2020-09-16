@@ -71,12 +71,11 @@ function walkSiblings(element: HTMLElement, callback: (arg0: HTMLElement | Eleme
   }
 }
 
-export default function printFrame(el: HTMLElement[]) {
+export default function printFrame(elements: HTMLElement[]) {
   const printStyle: string = `
   @page {
     margin: 0;
   }
-  @media print {
     .pe-no-print {
         display: none !important;
     }
@@ -88,12 +87,20 @@ export default function printFrame(el: HTMLElement[]) {
         border: none !important;
         box-shadow: none !important;
         overflow: visible !important;
-        width: 100% !important;
     }
-    .pe-preserve-ancestor * {
-        overflow: visible;
+
+    .pe-preserve-ancestor > *  {
+        border: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
     }
-}`
+
+    .pe-preserve-print {
+        box-shadow: none !important;
+        height: 100% !important;
+        margin: 0 !important;
+    }
+   `
   const styleSheet: HTMLStyleElement = document.createElement('style')
   styleSheet.type = 'text/css'
   styleSheet.innerText = printStyle
@@ -119,14 +126,14 @@ export default function printFrame(el: HTMLElement[]) {
     element.classList.remove(preserveAncestorClass)
   }
 
-  el.forEach((i: HTMLElement) => {
+  elements.forEach((i: HTMLElement) => {
     walkTree(i, (element: HTMLElement, isStartingElement: boolean) => {
       preserve(element, isStartingElement)
       walkSiblings(element, hide)
     })
   })
   window.print()
-  el.forEach((i: HTMLElement) => {
+  elements.forEach((i: HTMLElement) => {
     walkTree(i, (element: HTMLElement) => {
       clean(element)
       walkSiblings(element, clean)
