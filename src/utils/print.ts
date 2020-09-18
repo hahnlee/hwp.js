@@ -1,5 +1,6 @@
 /**
- * Copyright 2020-Present Han Lee <hanlee.dev@gmail.com>
+ * Copyright 2020-Present Han Lee <hanlee.dev@gmail.com>, Seo-Rii <studioSeoRii@gmail.com>,
+ * 2019 András Szepesházi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +41,15 @@
  * SOFTWARE.
  */
 
-// Written by 2020 Seo-Rii <studioSeoRii@gmail.com>
-
 const hideFromPrintClass = 'pe-no-print'
 const preservePrintClass = 'pe-preserve-print'
 const preserveAncestorClass = 'pe-preserve-ancestor'
 const bodyElementName = 'BODY'
 
-function walkTree(element: HTMLElement, callback: (arg0: HTMLElement, arg1: boolean) => void) {
+function walkTree(
+  element: HTMLElement,
+  callback: (element: HTMLElement, isStartingElement: boolean) => void,
+) {
   let currentElement: HTMLElement | null = element
   callback(currentElement, true)
   currentElement = currentElement.parentElement
@@ -57,8 +59,10 @@ function walkTree(element: HTMLElement, callback: (arg0: HTMLElement, arg1: bool
   }
 }
 
-// eslint-disable-next-line max-len
-function walkSiblings(element: HTMLElement, callback: (arg0: HTMLElement | Element, arg1: boolean) => void) {
+function walkSiblings(
+  element: HTMLElement,
+  callback: (element: HTMLElement | Element, isStartingElement: boolean) => void,
+) {
   let sibling: Element | null = element.previousElementSibling
   while (sibling) {
     callback(sibling, false)
@@ -78,34 +82,31 @@ export default function printFrame(elements: HTMLElement[]) {
   }
   @media print {
     .pe-no-print {
-        display: none !important;
+      display: none !important;
     }
-
     .pe-preserve-ancestor {
-        display: block !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        overflow: visible !important;
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      overflow: visible !important;
     }
-
     .pe-preserve-ancestor > *  {
-        box-shadow: none !important;
-        overflow: visible !important;
+      box-shadow: none !important;
+      overflow: visible !important;
     }
-
     .pe-preserve-print {
-        box-shadow: none !important;
-        height: 100% !important;
-        margin: 0 !important;
+      box-shadow: none !important;
+      height: 100% !important;
+      margin: 0 !important;
     }
     * {
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
+      -webkit-print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
    }
-   `
+  `
   const styleSheet: HTMLStyleElement = document.createElement('style')
   styleSheet.type = 'text/css'
   styleSheet.innerText = printStyle
@@ -137,12 +138,15 @@ export default function printFrame(elements: HTMLElement[]) {
       walkSiblings(element, hide)
     })
   })
+
   window.print()
+
   elements.forEach((i: HTMLElement) => {
     walkTree(i, (element: HTMLElement) => {
       clean(element)
       walkSiblings(element, clean)
     })
   })
+
   styleSheet.remove()
 }
