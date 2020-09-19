@@ -180,7 +180,7 @@ class Header {
     const buttion = document.createElement('button')
     buttion.style.marginLeft = '10px'
     buttion.style.cursor = 'pointer'
-    buttion.textContent = '🛈'
+    buttion.textContent = 'ℹ️'
     buttion.addEventListener('click', this.handleInfoButtionClick)
     this.container.appendChild(buttion)
 
