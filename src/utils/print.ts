@@ -82,32 +82,41 @@ export default function printFrame(elements: HTMLElement[]) {
     }
 
     @media print {
-      .pe-no-print {
+      html, body {
+        width: 100%;
+        height: 100%;
+        background-color: #FFF;
+      }
+
+      .${hideFromPrintClass} {
         display: none !important;
       }
-      .pe-preserve-ancestor {
+
+      .${preserveAncestorClass} {
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
         overflow: visible !important;
-    }
+      }
 
-    .pe-preserve-ancestor > *  {
-      box-shadow: none !important;
-      overflow: visible !important;
+      .${preserveAncestorClass} > *  {
+        box-shadow: none !important;
+        overflow: visible !important;
+      }
+
+      .${preservePrintClass} {
+        box-shadow: none !important;
+        height: 100% !important;
+        margin: 0 !important;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
     }
-    .pe-preserve-print {
-      box-shadow: none !important;
-      height: 100% !important;
-      margin: 0 !important;
-    }
-    * {
-      -webkit-print-color-adjust: exact !important;
-      color-adjust: exact !important;
-    }
-  }
   `
   const styleSheet: HTMLStyleElement = document.createElement('style')
   styleSheet.type = 'text/css'
