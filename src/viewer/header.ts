@@ -43,18 +43,21 @@ class Header {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const page = entry.target.getAttribute('data-page-number')
-          const pageNumber = Number(page) + 1
-          this.updatePageNumber(pageNumber)
+          if (entry.target.parentElement) {
+            const page = entry.target.parentElement.getAttribute('data-page-number')
+            const pageNumber = Number(page) + 1
+            this.updatePageNumber(pageNumber)
+          }
         }
       })
     }, {
       root: this.content,
       rootMargin: '0px',
-      threshold: 0.5,
     })
 
-    this.pages.forEach((page) => this.observer.observe(page))
+    this.pages.forEach((page) => {
+      this.observer.observe(<Element>page.querySelector('.--hwpjs-observer'))
+    })
 
     this.draw()
   }
