@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import printFrame from '../utils/print'
+
 class Header {
   private pages: HTMLElement[]
 
@@ -28,6 +30,8 @@ class Header {
   private pageNumber: HTMLElement | null = null
 
   private infoButton: HTMLElement | null = null
+
+  private printButton: HTMLElement | null = null
 
   constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[]) {
     this.content = content
@@ -71,6 +75,9 @@ class Header {
 
     this.infoButton?.removeEventListener('click', this.handleInfoButtionClick)
     this.infoButton = null
+
+    this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
+    this.printButton = null
 
     this.pageNumber = null
   }
@@ -154,6 +161,10 @@ class Header {
     }
   }
 
+  handlePrintButtionClick = () => {
+    printFrame(this.pages)
+  }
+
   drawPageNumber() {
     this.pageNumber = document.createElement('span')
     this.pageNumber.textContent = '1'
@@ -176,8 +187,21 @@ class Header {
     this.infoButton = buttion
   }
 
+  drawPrintIcon() {
+    const buttion = document.createElement('button')
+    buttion.style.marginLeft = '10px'
+    buttion.style.cursor = 'pointer'
+    buttion.textContent = '🖨️'
+    buttion.style.marginLeft = 'auto'
+    buttion.addEventListener('click', this.handlePrintButtionClick)
+    this.container.appendChild(buttion)
+
+    this.printButton = buttion
+  }
+
   draw() {
     this.drawPageNumber()
+    this.drawPrintIcon()
     this.drawInfoIcon()
   }
 }

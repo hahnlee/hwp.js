@@ -89,6 +89,12 @@ class HWPViewer {
     this.draw()
   }
 
+  distory() {
+    this.pages = []
+    this.header?.distory()
+    this.viewer.parentElement?.removeChild(this.viewer)
+  }
+
   private createPage(section: Section, index: number) {
     const page = document.createElement('div')
 
@@ -96,6 +102,7 @@ class HWPViewer {
     page.style.backgroundColor = '#FFF'
     page.style.margin = '0 auto'
     page.style.position = 'relative'
+    page.style.pageBreakAfter = 'always'
 
     page.style.width = `${section.width / 7200}in`
     page.style.height = `${section.height / 7200}in`
@@ -363,12 +370,6 @@ class HWPViewer {
 
     this.viewer.appendChild(content)
     this.container.appendChild(this.viewer)
-  }
-
-  distory() {
-    this.pages = []
-    this.header?.distory()
-    this.viewer.parentElement?.removeChild(this.viewer)
   }
 }
 
