@@ -16,6 +16,7 @@ A huge thanks to
 - [cfb-js](https://github.com/SheetJS/js-cfb)
 - [pako](https://github.com/nodeca/pako)
 - [pdf.js](https://github.com/mozilla/pdf.js)
+- [print-elements](https://github.com/szepeshazi/print-elements)
 
 # Contributors
 <a href="https://github.com/hahnlee/hwp.js/graphs/contributors">
@@ -24,7 +25,7 @@ A huge thanks to
 
 # License
 ```
-Copyright 2020-Present Han Lee <hanlee.dev@gmail.com>
+Copyright Han Lee <hanlee.dev@gmail.com> and other contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,6 +1,5 @@
 /**
- * Copyright 2020-Present Han Lee <hanlee.dev@gmail.com>, Seo-Rii <studioSeoRii@gmail.com>,
- * 2019 András Szepesházi
+ * Copyright Han Lee <hanlee.dev@gmail.com> and other contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
