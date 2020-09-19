@@ -77,21 +77,23 @@ function walkSiblings(
 
 export default function printFrame(elements: HTMLElement[]) {
   const printStyle: string = `
-  @page {
-    margin: 0;
-  }
-  @media print {
-    .pe-no-print {
-      display: none !important;
+    @page {
+      margin: 0;
     }
-    .pe-preserve-ancestor {
-      display: block !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: none !important;
-      box-shadow: none !important;
-      overflow: visible !important;
+
+    @media print {
+      .pe-no-print {
+        display: none !important;
+      }
+      .pe-preserve-ancestor {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
     }
+
     .pe-preserve-ancestor > *  {
       box-shadow: none !important;
       overflow: visible !important;
@@ -105,7 +107,7 @@ export default function printFrame(elements: HTMLElement[]) {
       -webkit-print-color-adjust: exact !important;
       color-adjust: exact !important;
     }
-   }
+  }
   `
   const styleSheet: HTMLStyleElement = document.createElement('style')
   styleSheet.type = 'text/css'
