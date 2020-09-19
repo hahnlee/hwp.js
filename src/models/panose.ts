@@ -14,35 +14,48 @@
  * limitations under the License.
  */
 
-import Panose from './panose'
+/**
+ * Panose 1.0
+ * @see https://www.w3.org/Printing/stevahn.html
+ */
+class Panose {
+  family: number = 0
 
-class FontFace {
-  name: string = ''
+  serifStyle: number = 0
 
-  alternative: string = ''
+  weight: number = 0
 
-  default: string = ''
+  proportion: number = 0
 
-  panose: Panose | null = null
+  contrast: number = 0
 
-  getFontFamily(): string {
-    const result = [`${this.name}`]
+  strokeVariation: number = 0
 
-    if (this.alternative) {
-      result.push(`"${this.alternative}"`)
+  armStyle: number = 0
+
+  letterForm: number = 0
+
+  midline: number = 0
+
+  xHeight: number = 0
+
+  getFontFamily() {
+    if (this.family === 3) {
+      return 'cursive'
     }
 
-    if (this.default) {
-      result.push(`"${this.default}"`)
+    if (this.family === 2) {
+      if (this.serifStyle > 1 && this.serifStyle < 11) {
+        return 'sans'
+      }
+
+      if (this.serifStyle > 10 && this.serifStyle < 14) {
+        return 'sans-serf'
+      }
     }
 
-    if (this.panose) {
-      const panoseFontFamily = this.panose.getFontFamily()
-      result.push(panoseFontFamily)
-    }
-
-    return result.join(',')
+    return ''
   }
 }
 
-export default FontFace
+export default Panose

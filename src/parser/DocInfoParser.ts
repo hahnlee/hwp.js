@@ -28,6 +28,7 @@ import ParagraphShape from '../models/paragraphShape'
 import { getRGB, getFlag, getBitValue } from '../utils/bitUtils'
 import BorderFill from '../models/borderFill'
 import HWPRecord from '../models/record'
+import Panose from '../models/panose'
 import parseRecordTree from './parseRecord'
 
 class DocInfoParser {
@@ -135,7 +136,19 @@ class DocInfoParser {
     }
 
     if (hasAttribute) {
-      reader.skipByte(10)
+      const panose = new Panose()
+      panose.family = reader.readInt8()
+      panose.serifStyle = reader.readInt8()
+      panose.weight = reader.readInt8()
+      panose.proportion = reader.readInt8()
+      panose.contrast = reader.readInt8()
+      panose.strokeVariation = reader.readInt8()
+      panose.armStyle = reader.readInt8()
+      panose.letterForm = reader.readInt8()
+      panose.midline = reader.readInt8()
+      panose.xHeight = reader.readInt8()
+
+      fontFace.panose = panose
     }
 
     if (hasDefault) {
