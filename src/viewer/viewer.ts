@@ -102,6 +102,7 @@ class HWPViewer {
     page.style.backgroundColor = '#FFF'
     page.style.margin = '0 auto'
     page.style.position = 'relative'
+    page.style.pageBreakAfter = 'always'
 
     page.style.width = `${section.width / 7200}in`
     page.style.height = `${section.height / 7200}in`

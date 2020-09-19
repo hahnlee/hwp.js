@@ -41,9 +41,9 @@
  * SOFTWARE.
  */
 
-const hideFromPrintClass = 'pe-no-print'
-const preservePrintClass = 'pe-preserve-print'
-const preserveAncestorClass = 'pe-preserve-ancestor'
+const hideFromPrintClass = '--hwpjs-pe-no-print'
+const preservePrintClass = '--hwpjs-pe-preserve-print'
+const preserveAncestorClass = '--hwpjs-pe-preserve-ancestor'
 const bodyElementName = 'BODY'
 
 function walkTree(
