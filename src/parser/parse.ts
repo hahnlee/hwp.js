@@ -35,6 +35,7 @@ import SectionParser from './SectionParser'
 const FILE_HEADER_BYTES = 256
 
 const SUPPORTED_VERSION = new HWPVersion(5, 1, 0, 0)
+const SIGNATURE = 'HWP Document File'
 
 function parseFileHeader(container: CFB$Container): HWPHeader {
   const fileHeader = find(container, 'FileHeader')
@@ -49,7 +50,10 @@ function parseFileHeader(container: CFB$Container): HWPHeader {
     throw new Error(`FileHeader must be ${FILE_HEADER_BYTES} bytes, Received: ${content.length}`)
   }
 
-  // TODO: (@hahnlee) 파일 시그니처 검증하기
+  const signature = String.fromCharCode(...Array.from(content.slice(0, 17)))
+  if (SIGNATURE !== signature) {
+    throw new Error(`hwp file's signature should be ${SIGNATURE}. Received version: ${signature}`)
+  }
 
   const [major, minor, build, revision] = Array.from(content.slice(32, 36)).reverse()
   const version = new HWPVersion(major, minor, build, revision)
@@ -58,7 +62,7 @@ function parseFileHeader(container: CFB$Container): HWPHeader {
     throw new Error(`hwp.js only support ${SUPPORTED_VERSION} format. Received version: ${version}`)
   }
 
-  return new HWPHeader(version)
+  return new HWPHeader(version, signature)
 }
 
 function parseDocInfo(container: CFB$Container): DocInfo {

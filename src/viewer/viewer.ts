@@ -70,7 +70,7 @@ const TEXT_ALIGN: { [key: number]: string } = {
 
 class HWPViewer {
   private hwpDocument: HWPDocument = new HWPDocument(
-    new HWPHeader(new HWPVersion(5, 0, 0, 0)),
+    new HWPHeader(new HWPVersion(5, 0, 0, 0), 'HWP Document File'),
     new DocInfo(),
     [],
   )
