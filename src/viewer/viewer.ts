@@ -121,6 +121,7 @@ class HWPViewer {
     observer.style.top = '50%'
     observer.style.left = '0'
     observer.classList.add('--hwpjs-observer')
+    observer.setAttribute('data-page-number', index.toString())
     page.appendChild(observer)
 
     this.pages.push(page)

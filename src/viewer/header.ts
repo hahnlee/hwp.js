@@ -44,7 +44,7 @@ class Header {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           if (entry.target.parentElement) {
-            const page = entry.target.parentElement.getAttribute('data-page-number')
+            const page = entry.target.getAttribute('data-page-number')
             const pageNumber = Number(page) + 1
             this.updatePageNumber(pageNumber)
           }
