@@ -56,7 +56,7 @@ class Header {
     })
 
     this.pages.forEach((page) => {
-      this.observer.observe(<Element>page.querySelector('.--hwpjs-observer'))
+      this.observer.observe(<Element>page.querySelector('.hwpjs-observer'))
     })
 
     this.draw()
