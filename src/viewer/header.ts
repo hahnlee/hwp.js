@@ -43,7 +43,7 @@ class Header {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (entry.target.parentElement) {
+          if (entry.isIntersecting && entry.target.parentElement) {
             const page = entry.target.getAttribute('data-page-number')
             const pageNumber = Number(page) + 1
             this.updatePageNumber(pageNumber)
