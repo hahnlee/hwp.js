@@ -43,11 +43,20 @@ class DocInfoParser {
     this.container = container
   }
 
-  visitDocumentPropertes(record: HWPRecord) {
+  visitDocumentProperties(record: HWPRecord) {
     const reader = new ByteReader(record.payload)
     this.result.sectionSize = reader.readUInt16()
 
-    // TODO: (@sboh1214) 다른 프로퍼티도 구현하기
+    this.result.startingPageIndex = reader.readUInt16()
+    this.result.startingFootnoteIndex = reader.readUInt16()
+    this.result.startingEndnoteIndex = reader.readUInt16()
+    this.result.startingPictureIndex = reader.readUInt16()
+    this.result.startingTableIndex = reader.readUInt16()
+    this.result.startingEquationIndex = reader.readUInt16()
+
+    this.result.caratLocation.listId = reader.readUInt32()
+    this.result.caratLocation.paragraphId = reader.readUInt32()
+    this.result.caratLocation.charIndex = reader.readUInt32()
   }
 
   visitCharShape(record: HWPRecord) {
@@ -218,7 +227,7 @@ class DocInfoParser {
   private visit = (record: HWPRecord) => {
     switch (record.tagID) {
       case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
-        this.visitDocumentPropertes(record)
+        this.visitDocumentProperties(record)
         break
       }
 
