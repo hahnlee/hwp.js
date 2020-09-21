@@ -47,7 +47,7 @@ class DocInfoParser {
     const reader = new ByteReader(record.payload)
     this.result.sectionSize = reader.readUInt16()
 
-    // TODO: (@hahnlee) 다른 프로퍼티도 구현하기
+    // TODO: (@sboh1214) 다른 프로퍼티도 구현하기
   }
 
   visitCharShape(record: HWPRecord) {
