@@ -233,7 +233,7 @@ class HWPViewer {
     shapeGroup.style.width = `${control.width / 100}pt`
     shapeGroup.style.height = `${control.height / 100}pt`
 
-    if (control.attrubute.vertRealTo === 0) {
+    if (control.attribute.vertRelTo === 0) {
       shapeGroup.style.position = 'absolute'
       shapeGroup.style.top = `${control.verticalOffset / 100}pt`
       shapeGroup.style.left = `${control.horizontalOffset / 100}pt`

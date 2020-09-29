@@ -20,7 +20,7 @@ import { getBitValue } from '../../utils/bitUtils'
 class CommonControl {
   id: number = 0
 
-  attrubute = new CommonAttribute()
+  attribute = new CommonAttribute()
 
   verticalOffset: number = 0
 
@@ -39,7 +39,7 @@ class CommonControl {
   split: number = 0
 
   setAttribute(mask: number) {
-    this.attrubute.vertRealTo = getBitValue(mask, 3, 4)
+    this.attribute.vertRelTo = getBitValue(mask, 3, 4) as CommonAttribute['vertRelTo']
   }
 }
 

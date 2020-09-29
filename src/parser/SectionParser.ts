@@ -237,7 +237,7 @@ class SectionParser {
     // 리서치 필요
     const paragraphs = record.size === 30 ? byteReader.readInt16() : byteReader.readInt32()
 
-    // attrubute
+    // attribute
     byteReader.readUInt32()
 
     const items: Paragraph[] = []

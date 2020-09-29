@@ -15,7 +15,13 @@
  */
 
 class CommonAttribute {
-  vertRealTo: number = 0
+  /**
+   * 세로 위치의 기준
+   * - `0`: paper
+   * - `1`: page
+   * - `2`: para
+  */
+  vertRelTo: 0 | 1 | 2 = 0
 }
 
 export default CommonAttribute
