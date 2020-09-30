@@ -34,6 +34,10 @@ class Section {
   footerPadding: number = 0
 
   content: Paragraph[] = []
+
+  orientation: number = 0
+
+  bookBindingMethod: number = 0
 }
 
 export default Section

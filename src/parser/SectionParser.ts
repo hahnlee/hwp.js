@@ -32,6 +32,7 @@ import RecordReader from '../utils/recordReader'
 import { isTable, isShape } from '../utils/controlUtil'
 import parseRecord from './parseRecord'
 import { PictureControl } from '../models/controls/shapes'
+import { getBitValue } from '../utils/bitUtils'
 
 class SectionParser {
   private record: HWPRecord
@@ -56,7 +57,9 @@ class SectionParser {
     this.result.headerPadding = reader.readUInt32()
     this.result.footerPadding = reader.readUInt32()
 
-    // TODO: (@hahnlee) 속성정보도 파싱하기
+    const property = reader.readUInt32()
+    this.result.orientation = getBitValue(property, 0, 0)
+    this.result.bookBindingMethod = getBitValue(property, 1, 2)
   }
 
   // TODO: (@hahnlee) mapper 패턴 사용하기
