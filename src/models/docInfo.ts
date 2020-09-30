@@ -19,6 +19,8 @@ import FontFace from './fontFace'
 import BinData from './binData'
 import BorderFill from './borderFill'
 import ParagraphShape from './paragraphShape'
+import StartingIndex from './startingIndex'
+import CaratLocation from './caratLocation'
 
 class DocInfo {
   sectionSize: number = 0
@@ -32,6 +34,10 @@ class DocInfo {
   borderFills: BorderFill[] = []
 
   paragraphShapes: ParagraphShape[] = []
+
+  startingIndex: StartingIndex = new StartingIndex()
+
+  caratLocation: CaratLocation = new CaratLocation()
 
   getCharShpe(index: number): CharShape | undefined {
     return this.charShapes[index]
