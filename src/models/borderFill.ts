@@ -31,7 +31,7 @@ export interface BorderFillStyle {
 
 class BorderFill {
   // TODO: (@hahnlee) getter & setter 만들기
-  attrubute: number
+  attribute: number
 
   style: BorderFillStyle
 
@@ -39,10 +39,10 @@ class BorderFill {
   backgroundColor: RGB | null = null
 
   constructor(
-    attrubute: number,
+    attribute: number,
     style: BorderFillStyle,
   ) {
-    this.attrubute = attrubute
+    this.attribute = attribute
     this.style = style
   }
 }
