@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
-import type { BaseControl } from './base'
-import type ColumnControl from './column'
 
-export type Control = (
-  BaseControl |
-  TableControl |
-  ShapeControls |
-  ColumnControl
-)
+export interface BaseControl {
+  id: number
+}

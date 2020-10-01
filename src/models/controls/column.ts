@@ -13,14 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
-import type { BaseControl } from './base'
-import type ColumnControl from './column'
 
-export type Control = (
-  BaseControl |
-  TableControl |
-  ShapeControls |
-  ColumnControl
-)
+import { BaseControl } from './base'
+
+export enum ColumnType {
+  Normal,
+  Parallel,
+  Justify,
+}
+
+export enum ColumnDirection {
+  Left,
+  Right,
+  Justify,
+}
+
+export default class ColumnControl implements BaseControl {
+  id: number = 0
+
+  type: ColumnType = ColumnType.Normal
+
+  count: number = 0
+
+  direction: ColumnDirection = ColumnDirection.Left
+
+  isSameWidth: boolean = true
+
+  gap: number = 0
+
+  widths: number[] = []
+
+  borderStyle: number = 0
+
+  borderWidth: number = 0
+
+  borderColor: number = 0
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../constants/ctrlID'
+import { CommonCtrlID, OtherCtrlID } from '../constants/ctrlID'
 import { SectionTagID } from '../constants/tagID'
 import { Control } from '../models/controls'
 import CommonControl from '../models/controls/common'
@@ -32,7 +32,8 @@ import RecordReader from '../utils/recordReader'
 import { isTable, isShape } from '../utils/controlUtil'
 import parseRecord from './parseRecord'
 import { PictureControl } from '../models/controls/shapes'
-import { getBitValue } from '../utils/bitUtils'
+import { getBitValue, getFlag } from '../utils/bitUtils'
+import ColumnControl from '../models/controls/column'
 
 class SectionParser {
   private record: HWPRecord
@@ -185,6 +186,32 @@ class SectionParser {
       shape.id = ctrlID
       this.visitCommonControl(reader, shape)
       return shape
+    }
+
+    if (ctrlID === OtherCtrlID.Column) {
+      const column = new ColumnControl()
+      const attribute = reader.readUInt16()
+      column.type = getBitValue(attribute, 0, 1)
+      column.count = getBitValue(attribute, 2, 9)
+      column.direction = getBitValue(attribute, 10, 11)
+      column.isSameWidth = getFlag(attribute, 12)
+      column.id = ctrlID
+      column.gap = reader.readUInt16()
+
+      if (!column.isSameWidth) {
+        const widths: number[] = []
+        for (let i = 0; i < column.count; i += 1) {
+          widths.push(reader.readUInt16())
+        }
+        column.widths = widths
+      }
+
+      reader.readUInt16()
+
+      column.borderStyle = reader.readUInt8()
+      column.borderWidth = reader.readUInt8()
+      column.borderColor = reader.readUInt32()
+      return column
     }
 
     return {
