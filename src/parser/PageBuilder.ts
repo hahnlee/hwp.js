@@ -27,7 +27,7 @@ import splitTable from './splitTable'
 class PageBuilder {
   private section: Section
 
-  private currentSection: Section = new Section()
+  private currentSection: Section
 
   private currentParagraph: Paragraph = new Paragraph()
 
@@ -49,6 +49,7 @@ class PageBuilder {
 
   constructor(section: Section) {
     this.section = section
+    this.currentSection = this.createSection()
     this.contentHeight = (
       section.height
       - section.headerPadding
@@ -59,6 +60,19 @@ class PageBuilder {
   }
 
   result: Section[] = []
+
+  createSection() {
+    const session = new Section()
+    session.width = this.section.width
+    session.height = this.section.height
+    session.paddingTop = this.section.paddingTop
+    session.paddingRight = this.section.paddingRight
+    session.paddingBottom = this.section.paddingBottom
+    session.paddingLeft = this.section.paddingLeft
+    session.headerPadding = this.section.headerPadding
+    session.footerPadding = this.section.footerPadding
+    return session
+  }
 
   getLine(lineSegment: LineSegment, index: number, paragraph: Paragraph) {
     const { start } = lineSegment
@@ -121,16 +135,7 @@ class PageBuilder {
     this.result.push(this.currentSection)
 
     // Reset
-    this.currentSection = new Section()
-
-    this.currentSection.width = this.section.width
-    this.currentSection.height = this.section.height
-    this.currentSection.paddingTop = this.section.paddingTop
-    this.currentSection.paddingRight = this.section.paddingRight
-    this.currentSection.paddingBottom = this.section.paddingBottom
-    this.currentSection.paddingLeft = this.section.paddingLeft
-    this.currentSection.headerPadding = this.section.headerPadding
-    this.currentSection.footerPadding = this.section.footerPadding
+    this.currentSection = this.createSection()
 
     this.currentParagraph = new Paragraph()
     this.currentParagraph.shapeIndex = paragraph.shapeIndex
