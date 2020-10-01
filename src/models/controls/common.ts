@@ -16,8 +16,9 @@
 
 import CommonAttribute from './commonAttribute'
 import { getBitValue } from '../../utils/bitUtils'
+import { BaseControl } from './base'
 
-class CommonControl {
+class CommonControl implements BaseControl {
   id: number = 0
 
   attribute = new CommonAttribute()
