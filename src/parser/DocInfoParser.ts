@@ -224,6 +224,20 @@ class DocInfoParser {
     this.result.paragraphShapes.push(shape)
   }
 
+  visitCompatibleDocument(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    this.result.compatibleDocument = reader.readUInt32()
+  }
+
+  visitLayoutCompatibility(record: HWPRecord) {
+    const reader = new ByteReader(record.payload)
+    this.result.layoutCompatiblity.char = reader.readUInt32()
+    this.result.layoutCompatiblity.paragraph = reader.readUInt32()
+    this.result.layoutCompatiblity.section = reader.readUInt32()
+    this.result.layoutCompatiblity.object = reader.readUInt32()
+    this.result.layoutCompatiblity.field = reader.readUInt32()
+  }
+
   private visit = (record: HWPRecord) => {
     switch (record.tagID) {
       case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
@@ -253,6 +267,16 @@ class DocInfoParser {
 
       case DocInfoTagID.HWPTAG_PARA_SHAPE: {
         this.visitParagraphShape(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_COMPATIBLE_DOCUMENT: {
+        this.visitCompatibleDocument(record)
+        break
+      }
+
+      case DocInfoTagID.HWPTAG_LAYOUT_COMPATIBILITY: {
+        this.visitLayoutCompatibility(record)
         break
       }
 

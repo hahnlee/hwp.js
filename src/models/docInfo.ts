@@ -21,6 +21,7 @@ import BorderFill from './borderFill'
 import ParagraphShape from './paragraphShape'
 import StartingIndex from './startingIndex'
 import CaratLocation from './caratLocation'
+import LayoutCompatibility from './layoutCompatibility'
 
 class DocInfo {
   sectionSize: number = 0
@@ -38,6 +39,10 @@ class DocInfo {
   startingIndex: StartingIndex = new StartingIndex()
 
   caratLocation: CaratLocation = new CaratLocation()
+
+  compatibleDocument: number = 0
+
+  layoutCompatiblity: LayoutCompatibility = new LayoutCompatibility()
 
   getCharShpe(index: number): CharShape | undefined {
     return this.charShapes[index]
