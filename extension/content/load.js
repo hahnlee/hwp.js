@@ -15,10 +15,11 @@
  */
 
 const fileUrl = decodeURIComponent(window.location.search.slice(6))
+//console.log(fileUrl); 
 
 const xhr = new XMLHttpRequest()
 
-xhr.onload = () => {
+xhr.onload = function() {
   const fileName = decodeURIComponent(fileUrl.split('/').pop())
   document.title = fileName
   new HWP.Viewer(document.body, new Uint8Array(xhr.response), { type: 'array' })
