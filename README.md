@@ -3,6 +3,9 @@ Open source hwp viewer and parser library powered by web technology
 > 본 제품은 한글과컴퓨터의 한/글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
 
 <a href="https://chrome.google.com/webstore/detail/hwpjs/hgalnnpknkjdccmcljadkckcdibiglei"><img src="./website/static/images/chromeWebStoreLogo.png" alt="chrome web store" width="206" height="58"/></a>
+<a href="https://join.slack.com/t/hwpjs/shared_invite/zt-hsfa3m5z-m50qwVkTZOkc2r666~BrZQ">
+<img src="./website/static/images/slack.png" alt="chrome web store" width="142" height="58"/></a>
+</a>
 
 # Install
 ```
