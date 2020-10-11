@@ -15,7 +15,6 @@
  */
 
 import CommonAttribute from './commonAttribute'
-import { getBitValue } from '../../utils/bitUtils'
 import { BaseControl } from './base'
 
 class CommonControl implements BaseControl {
@@ -38,10 +37,6 @@ class CommonControl implements BaseControl {
   uid: number = 0
 
   split: number = 0
-
-  setAttribute(mask: number) {
-    this.attribute.vertRelTo = getBitValue(mask, 3, 4) as CommonAttribute['vertRelTo']
-  }
 }
 
 export default CommonControl
