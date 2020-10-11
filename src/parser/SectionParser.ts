@@ -149,7 +149,23 @@ class SectionParser {
   }
 
   visitCommonControl(reader: ByteReader, control: CommonControl) {
-    control.setAttribute(reader.readUInt32())
+    const attribute = reader.readUInt32()
+
+    control.attribute.isTextLike = getFlag(attribute, 0)
+    control.attribute.isApplyLineSpace = getFlag(attribute, 2)
+    control.attribute.vertRelTo = getBitValue(attribute, 3, 4)
+    control.attribute.vertRelativeArrange = getBitValue(attribute, 5, 7)
+    control.attribute.horzRelTo = getBitValue(attribute, 8, 9)
+    control.attribute.horzRelativeArrange = getBitValue(attribute, 10, 12)
+    control.attribute.isVertRelToParaLimit = getFlag(attribute, 13)
+    control.attribute.isAllowOverlap = getFlag(attribute, 14)
+    control.attribute.widthCriterion = getBitValue(attribute, 15, 17)
+    control.attribute.heightCriterion = getBitValue(attribute, 18, 19)
+    control.attribute.isProtectSize = getFlag(attribute, 20)
+    control.attribute.textFlowMethod = getBitValue(attribute, 21, 23)
+    control.attribute.textHorzArrange = getBitValue(attribute, 24, 25)
+    control.attribute.objectType = getBitValue(attribute, 26, 28)
+
     control.verticalOffset = reader.readUInt32()
     control.horizontalOffset = reader.readUInt32()
     control.width = reader.readUInt32()
