@@ -169,12 +169,19 @@ class DocInfoParser {
 
   visitBinData(record: HWPRecord) {
     const reader = new ByteReader(record.payload)
+    // TODO: (@hahnlee) parse properties
     reader.readUInt16()
     const id = reader.readUInt16()
     const extension = reader.readString()
     const path = `Root Entry/BinData/BIN${`${id.toString(16).toUpperCase()}`.padStart(4, '0')}.${extension}`
     const payload = find(this.container, path)!.content as Uint8Array
-    this.result.binData.push(new BinData(extension, inflate(payload, { windowBits: -15 })))
+    // TODO: (@hanlee) use properties
+    try {
+      const data = inflate(payload, { windowBits: -15 })
+      this.result.binData.push(new BinData(extension, data))
+    } catch {
+      this.result.binData.push(new BinData(extension, Uint8Array.from(payload)))
+    }
   }
 
   visitBorderFill(record: HWPRecord) {

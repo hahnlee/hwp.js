@@ -17,7 +17,7 @@
 class BinData {
   extension: string
 
-  payload: ArrayBuffer
+  payload: Uint8Array
 
   constructor(extension: string, payload: Uint8Array) {
     this.extension = extension
