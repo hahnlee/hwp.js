@@ -366,8 +366,9 @@ class HWPViewer {
     this.drawViewer()
 
     const content = document.createElement('div')
-    content.style.height = '100%'
-    content.style.padding = '52px 24px 24px 24px'
+    content.style.height = 'calc(100% - 32px)'
+    content.style.padding = '24px'
+    content.style.marginTop = '32px'
     content.style.overflow = 'auto'
     content.style.position = 'relative'
     content.style.zIndex = '0'
