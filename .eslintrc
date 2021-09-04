@@ -7,6 +7,7 @@
     "@typescript-eslint/semi": ["error", "never"],
     "no-bitwise": "off",
     "class-methods-use-this": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "import/extensions": "off"
   }
 }
