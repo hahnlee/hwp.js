@@ -14,12 +14,40 @@
  * limitations under the License.
  */
 
+export enum BinDataType {
+  LINK,
+  EMBEDDING,
+  STORAGE,
+}
+
+export enum BinDataCompress {
+  DEFAULT,
+  COMPRESS,
+  NOT_COMPRESS,
+}
+
+export enum BinDataStatus {
+  INITIAL,
+  SUCCESS,
+  ERROR,
+  IGNORE,
+}
+
+interface BinProperties {
+  type: BinDataType
+  compress: BinDataCompress
+  status: BinDataStatus
+}
+
 class BinData {
+  properties: BinProperties
+
   extension: string
 
   payload: Uint8Array
 
-  constructor(extension: string, payload: Uint8Array) {
+  constructor(properties: BinProperties, extension: string, payload: Uint8Array) {
+    this.properties = properties
     this.extension = extension
     this.payload = payload
   }
