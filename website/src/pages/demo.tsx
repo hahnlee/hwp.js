@@ -53,6 +53,7 @@ function Demo() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    accept: '.hwp'
   })
 
   return (
