@@ -15,6 +15,7 @@
  */
 
 import printFrame from '../utils/print'
+import startPresentation from '../utils/present'
 
 class Header {
   private pages: HTMLElement[]
@@ -27,11 +28,15 @@ class Header {
 
   private modal: HTMLElement | null = null
 
+  private currentPageNumber: number = 1
+
   private pageNumber: HTMLElement | null = null
 
   private infoButton: HTMLElement | null = null
 
   private printButton: HTMLElement | null = null
+
+  private presentButton: HTMLElement | null = null
 
   constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[]) {
     this.content = content
@@ -81,6 +86,7 @@ class Header {
   }
 
   updatePageNumber(pageNumber: number) {
+    this.currentPageNumber = pageNumber
     if (this.pageNumber) {
       this.pageNumber.textContent = pageNumber.toString()
     }
@@ -99,6 +105,9 @@ class Header {
 
     this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
     this.printButton = null
+
+    this.presentButton?.removeEventListener('click', this.handlePresentationButtionClick)
+    this.presentButton = null
 
     this.pageNumber = null
   }
@@ -192,6 +201,10 @@ class Header {
     printFrame(this.pages)
   }
 
+  handlePresentationButtionClick = () => {
+    startPresentation(this.content, this.container, this.pages, this.currentPageNumber)
+  }
+
   drawPageNumber() {
     this.pageNumber = document.createElement('span')
     this.pageNumber.textContent = '1'
@@ -218,14 +231,29 @@ class Header {
     this.infoButton = buttion
   }
 
+  drawPresentationIcon() {
+    const buttion = document.createElement('div')
+    buttion.style.marginLeft = '10px'
+    buttion.style.cursor = 'pointer'
+    buttion.style.height = '100%'
+    buttion.style.padding = '5px'
+    buttion.classList.add('hwpjs-header-control')
+    buttion.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>'
+    buttion.addEventListener('click', this.handlePresentationButtionClick)
+
+    this.container.appendChild(buttion)
+
+    this.presentButton = buttion
+  }
+
   drawPrintIcon() {
     const buttion = document.createElement('div')
+    buttion.style.marginLeft = '10px'
     buttion.style.cursor = 'pointer'
     buttion.style.height = '100%'
     buttion.style.padding = '5px'
     buttion.classList.add('hwpjs-header-control')
     buttion.innerHTML = '<svg width="284" height="253" viewBox="0 0 284 253" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-print"><rect x="498" y="82" width="284" height="253"/></clipPath></defs><g clip-path="url(#--hwpjs-header-print)" transform="translate(-498 -82)"><rect x="559" y="93" width="162" height="231" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none"/><path d="M756.613 155.95C751.961 155.95 748.189 159.719 748.189 164.368 748.189 169.018 751.961 172.787 756.613 172.787 761.266 172.787 765.038 169.018 765.038 164.368 765.038 159.719 761.266 155.95 756.613 155.95ZM499 140 781 140 781 228.612 781 275 720.698 275 720.698 228.612 559.302 228.612 559.302 275 499 275 499 228.612Z" fill-rule="evenodd"/><path d="M588 286 647.556 286" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/><path d="M588 254 670.667 254" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/></g></svg>'
-    buttion.style.marginLeft = 'auto'
     buttion.addEventListener('click', this.handlePrintButtionClick)
 
     this.container.appendChild(buttion)
@@ -233,8 +261,19 @@ class Header {
     this.printButton = buttion
   }
 
+  drawPlaceHolder() {
+    const buttion = document.createElement('div')
+    buttion.style.marginLeft = 'auto'
+    buttion.style.height = '100%'
+    buttion.style.padding = '5px'
+
+    this.container.appendChild(buttion)
+  }
+
   draw() {
     this.drawPageNumber()
+    this.drawPlaceHolder()
+    this.drawPresentationIcon()
     this.drawPrintIcon()
     this.drawInfoIcon()
   }
