@@ -54,6 +54,7 @@
     "babel-jest": "^26.3.0",
     "eslint": "^7.7.0",
     "eslint-config-airbnb-typescript": "^9.0.0",
+    "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.22.0",
     "husky": "^4.2.5",
     "jest": "^26.4.2",
