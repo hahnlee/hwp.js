@@ -19328,6 +19328,8 @@ typescript@^4.0.2:
   version: 0.0.0-use.local
   resolution: "website@workspace:website"
   dependencies:
+    "@hwp.js/parser": "workspace:packages/parser"
+    "@hwp.js/viewer": "workspace:packages/viewer"
     "@types/react-helmet": ^6.1.0
     "@types/react-loader-spinner": ^3.1.0
     gatsby: ^2.24.47

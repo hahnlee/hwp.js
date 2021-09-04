@@ -44,7 +44,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     "fallbackExclusionList": [
       ["@hwp.js/extension", ["workspace:packages/extension"]],
       ["@hwp.js/parser", ["workspace:packages/parser"]],
-      ["@hwp.js/viewer", ["workspace:packages/viewer"]],
+      ["@hwp.js/viewer", ["virtual:8693780468136bf004f9b532d653844c342247b6a39276486a4e8cbecc2c295c87d04c42b26f9c469bc9dfcf5a0d1f6012e10b6c148cd44051b30c652ede2384#workspace:packages/viewer", "workspace:packages/viewer"]],
       ["hwp.js", ["workspace:."]],
       ["website", ["workspace:website"]]
     ],
@@ -3700,6 +3700,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@hwp.js/viewer", [
+        ["virtual:8693780468136bf004f9b532d653844c342247b6a39276486a4e8cbecc2c295c87d04c42b26f9c469bc9dfcf5a0d1f6012e10b6c148cd44051b30c652ede2384#workspace:packages/viewer", {
+          "packageLocation": "./.yarn/__virtual__/@hwp.js-viewer-virtual-ac9f597815/1/packages/viewer/",
+          "packageDependencies": [
+            ["@hwp.js/viewer", "virtual:8693780468136bf004f9b532d653844c342247b6a39276486a4e8cbecc2c295c87d04c42b26f9c469bc9dfcf5a0d1f6012e10b6c148cd44051b30c652ede2384#workspace:packages/viewer"],
+            ["@hwp.js/parser", "workspace:packages/parser"],
+            ["@types/hwp.js__parser", null],
+            ["cfb", "npm:1.2.0"]
+          ],
+          "packagePeers": [
+            "@hwp.js/parser",
+            "@types/hwp.js__parser"
+          ],
+          "linkType": "SOFT",
+        }],
         ["workspace:packages/viewer", {
           "packageLocation": "./packages/viewer/",
           "packageDependencies": [
@@ -23792,6 +23806,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./website/",
           "packageDependencies": [
             ["website", "workspace:website"],
+            ["@hwp.js/parser", "workspace:packages/parser"],
+            ["@hwp.js/viewer", "virtual:8693780468136bf004f9b532d653844c342247b6a39276486a4e8cbecc2c295c87d04c42b26f9c469bc9dfcf5a0d1f6012e10b6c148cd44051b30c652ede2384#workspace:packages/viewer"],
             ["@types/react-helmet", "npm:6.1.2"],
             ["@types/react-loader-spinner", "npm:3.1.3"],
             ["gatsby", "virtual:8693780468136bf004f9b532d653844c342247b6a39276486a4e8cbecc2c295c87d04c42b26f9c469bc9dfcf5a0d1f6012e10b6c148cd44051b30c652ede2384#npm:2.32.13"],

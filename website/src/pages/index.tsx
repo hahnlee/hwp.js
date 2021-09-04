@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import HWPViewer from '@hwp.js/viewer'
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import Loader from 'react-loader-spinner'
 
-import HWPViewer from '../../../src/viewer'
 import Page from '../components/Page'
 
 function IndexPage() {
