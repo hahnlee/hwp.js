@@ -72,7 +72,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   const scrollHandler = (e: WheelEvent) => {
     const lastPage = currentPage
-    if (e.deltaY >= 0) {
+    if (e.deltaY <= 0) {
       currentPage -= 1
       if (validatePage()) return
     } else {
