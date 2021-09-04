@@ -16,7 +16,7 @@
 
 import { RGB } from '../types/color'
 
-export function getBitValue(mask: number, start: number, end: number): number {
+export function getBitValue(mask: number, start: number, end: number = start): number {
   const target: number = mask >> start
 
   let temp = 0

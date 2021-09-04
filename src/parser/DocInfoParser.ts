@@ -30,6 +30,7 @@ import BorderFill from '../models/borderFill'
 import HWPRecord from '../models/record'
 import Panose from '../models/panose'
 import parseRecordTree from './parseRecord'
+import HWPHeader from '../models/header'
 
 class DocInfoParser {
   private record: HWPRecord
@@ -38,7 +39,10 @@ class DocInfoParser {
 
   private container: CFB$Container
 
-  constructor(data: Uint8Array, container: CFB$Container) {
+  private header: HWPHeader
+
+  constructor(header: HWPHeader, data: Uint8Array, container: CFB$Container) {
+    this.header = header
     this.record = parseRecordTree(data)
     this.container = container
   }
@@ -185,13 +189,14 @@ class DocInfoParser {
     const path = `Root Entry/BinData/BIN${`${id.toString(16).toUpperCase()}`.padStart(4, '0')}.${extension}`
     const payload = find(this.container, path)!.content as Uint8Array
 
-    // TODO: (@hanlee) check default mode
-    if (properties.compress === BinDataCompress.NOT_COMPRESS) {
-      // NOTE: payload is just array
-      this.result.binData.push(new BinData(properties, extension, Uint8Array.from(payload)))
-    } else {
+    if (
+      properties.compress === BinDataCompress.COMPRESS
+      || (properties.compress === BinDataCompress.DEFAULT && this.header.properties.compressed)
+    ) {
       const data = inflate(payload, { windowBits: -15 })
       this.result.binData.push(new BinData(properties, extension, data))
+    } else {
+      this.result.binData.push(new BinData(properties, extension, Uint8Array.from(payload)))
     }
   }
 

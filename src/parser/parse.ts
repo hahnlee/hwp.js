@@ -30,6 +30,8 @@ import HWPVersion from '../models/version'
 import Section from '../models/section'
 import DocInfoParser from './DocInfoParser'
 import SectionParser from './SectionParser'
+import ByteReader from '../utils/byteReader'
+import { getBitValue } from '../utils/bitUtils'
 
 // @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
 const FILE_HEADER_BYTES = 256
@@ -62,10 +64,36 @@ function parseFileHeader(container: CFB$Container): HWPHeader {
     throw new Error(`hwp.js only support ${SUPPORTED_VERSION} format. Received version: ${version}`)
   }
 
-  return new HWPHeader(version, signature)
+  const reader = new ByteReader(Uint8Array.from(content).buffer)
+
+  // signature bytes + version bytes
+  reader.skipByte(32 + 4)
+
+  const data = reader.readUInt32()
+
+  return new HWPHeader(version, signature, {
+    compressed: Boolean(getBitValue(data, 0)),
+    encrypted: Boolean(getBitValue(data, 1)),
+    distribution: Boolean(getBitValue(data, 2)),
+    script: Boolean(getBitValue(data, 3)),
+    drm: Boolean(getBitValue(data, 4)),
+    hasXmlTemplateStorage: Boolean(getBitValue(data, 5)),
+    vcs: Boolean(getBitValue(data, 6)),
+    hasElectronicSignatureInfomation: Boolean(getBitValue(data, 7)),
+    certificateEncryption: Boolean(getBitValue(data, 8)),
+    prepareSignature: Boolean(getBitValue(data, 9)),
+    certificateDRM: Boolean(getBitValue(data, 10)),
+    ccl: Boolean(getBitValue(data, 11)),
+    mobile: Boolean(getBitValue(data, 12)),
+    isPrivacySecurityDocument: Boolean(getBitValue(data, 13)),
+    trackChanges: Boolean(getBitValue(data, 14)),
+    kogl: Boolean(getBitValue(data, 15)),
+    hasVideoControl: Boolean(getBitValue(data, 16)),
+    hasOrderFieldControl: Boolean(getBitValue(data, 17)),
+  })
 }
 
-function parseDocInfo(container: CFB$Container): DocInfo {
+function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
   const docInfoEntry = find(container, 'DocInfo')
 
   if (!docInfoEntry) {
@@ -75,7 +103,7 @@ function parseDocInfo(container: CFB$Container): DocInfo {
   const content: Uint8Array = docInfoEntry.content as Uint8Array
   const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
 
-  return new DocInfoParser(decodedContent, container).parse()
+  return new DocInfoParser(header, decodedContent, container).parse()
 }
 
 function parseSection(container: CFB$Container, sectionNumber: number): Section {
@@ -95,7 +123,7 @@ function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
   const container: CFB$Container = read(input, options)
 
   const header = parseFileHeader(container)
-  const docInfo = parseDocInfo(container)
+  const docInfo = parseDocInfo(container, header)
 
   const sections: Section[] = []
 

@@ -19,11 +19,8 @@ import { CFB$ParsingOptions } from 'cfb/types'
 import { Control } from '../models/controls'
 import TableControl, { TableColumnOption } from '../models/controls/table'
 import { ShapeControls } from '../models/controls/shapes'
-import DocInfo from '../models/docInfo'
 import { CharType } from '../models/char'
 import HWPDocument from '../models/document'
-import HWPHeader from '../models/header'
-import HWPVersion from '../models/version'
 import Section from '../models/section'
 import ShapePointer from '../models/shapePointer'
 import Paragraph from '../models/paragraph'
@@ -69,11 +66,7 @@ const TEXT_ALIGN: { [key: number]: string } = {
 }
 
 class HWPViewer {
-  private hwpDocument: HWPDocument = new HWPDocument(
-    new HWPHeader(new HWPVersion(5, 0, 0, 0), 'HWP Document File'),
-    new DocInfo(),
-    [],
-  )
+  private hwpDocument: HWPDocument
 
   private container: HTMLElement
 
