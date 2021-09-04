@@ -19,7 +19,7 @@ import { inflate } from 'pako'
 
 import FillType from '../constants/fillType'
 import { DocInfoTagID } from '../constants/tagID'
-import BinData from '../models/binData'
+import BinData, { BinDataCompress } from '../models/binData'
 import ByteReader from '../utils/byteReader'
 import CharShape from '../models/charShape'
 import DocInfo from '../models/docInfo'
@@ -170,17 +170,28 @@ class DocInfoParser {
   visitBinData(record: HWPRecord) {
     const reader = new ByteReader(record.payload)
     // TODO: (@hahnlee) parse properties
-    reader.readUInt16()
+    const attribute = reader.readUInt16()
+
+    const properties = {
+      type: getBitValue(attribute, 0, 3),
+      compress: getBitValue(attribute, 4, 5),
+      status: getBitValue(attribute, 8, 9),
+    }
+
     const id = reader.readUInt16()
     const extension = reader.readString()
+
+    // FIXME: (@hanlee) check embed
     const path = `Root Entry/BinData/BIN${`${id.toString(16).toUpperCase()}`.padStart(4, '0')}.${extension}`
     const payload = find(this.container, path)!.content as Uint8Array
-    // TODO: (@hanlee) use properties
-    try {
+
+    // TODO: (@hanlee) check default mode
+    if (properties.compress === BinDataCompress.NOT_COMPRESS) {
+      // NOTE: payload is just array
+      this.result.binData.push(new BinData(properties, extension, Uint8Array.from(payload)))
+    } else {
       const data = inflate(payload, { windowBits: -15 })
-      this.result.binData.push(new BinData(extension, data))
-    } catch {
-      this.result.binData.push(new BinData(extension, Uint8Array.from(payload)))
+      this.result.binData.push(new BinData(properties, extension, data))
     }
   }
 
