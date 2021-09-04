@@ -6,6 +6,9 @@
   "types": "build/index.d.ts",
   "siseEffect": false,
   "license": "Apache-2.0",
+  "workspaces": [
+    "website"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hahnlee/hwp.js.git"

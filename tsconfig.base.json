@@ -3,7 +3,11 @@
     "strict": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "./build"
+    "declarationDir": "./build",
+    "lib": [
+      "es2017",
+      "dom",
+    ]
   },
   "include": [
     "src/**/*"

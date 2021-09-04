@@ -112,6 +112,14 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
 # Yarn Integrity file
 .yarn-integrity
 
