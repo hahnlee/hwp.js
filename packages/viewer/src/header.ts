@@ -269,7 +269,7 @@ class Header {
     }
   }
 
-  distory() {
+  destroy() {
     this.pages.forEach((page) => {
       this.observer.unobserve(page)
     })
@@ -280,7 +280,7 @@ class Header {
     this.infoButton?.removeEventListener('click', this.handleInfoButtionClick)
     this.infoButton = null
 
-    this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
+    this.printButton?.removeEventListener('click', this.handlePrintButtionClick)
     this.printButton = null
 
     this.presentButton?.removeEventListener('click', this.handlePresentationButtionClick)

@@ -86,9 +86,9 @@ class HWPViewer {
     this.draw()
   }
 
-  distory() {
+  destroy() {
     this.pages = []
-    this.header?.distory()
+    this.header?.destroy()
     this.viewer.parentElement?.removeChild(this.viewer)
   }
 
