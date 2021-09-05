@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+import { viewerOption } from "./utils/option"
 import printFrame from './utils/print'
 
 class Header {
+  private option: viewerOption = {}
+
   private pages: HTMLElement[]
 
   private observer: IntersectionObserver
@@ -33,9 +36,10 @@ class Header {
 
   private printButton: HTMLElement | null = null
 
-  constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[]) {
+  constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[], option: viewerOption) {
     this.content = content
     this.pages = pages
+    this.option = option
 
     this.container = this.drawContainer(view)
     this.modal = this.drawModal(view)
@@ -235,7 +239,8 @@ class Header {
 
   draw() {
     this.drawPageNumber()
-    this.drawPrintIcon()
+    if (this.option.utility?.presentation) this.drawPresentationIcon()
+    if (this.option.utility?.print) this.drawPrintIcon()
     this.drawInfoIcon()
   }
 }
