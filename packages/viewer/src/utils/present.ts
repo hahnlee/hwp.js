@@ -30,6 +30,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   let originalScaleFactor = pageContainer.offsetHeight / elements[0].offsetHeight
 
   const originalBackground = documentContainer.style.backgroundColor
+  const originalBorder = documentContainer.style.border
   const originalHeaderDisplay = headerContainer.style.display
   const originalPageContainerMarginTop = pageContainer.style.marginTop
   const originalPageContainerDisplay = pageContainer.style.display
@@ -50,6 +51,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   resizeObserver.observe(pageContainer)
 
   documentContainer.style.backgroundColor = 'rgb(0, 0, 0)'
+  documentContainer.style.border = ''
   headerContainer.style.display = 'none'
   pageContainer.style.marginTop = '0'
   pageContainer.style.display = 'flex'
@@ -99,6 +101,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
       pageContainer.removeEventListener('mousewheel', scrollHandler as (e: Event) => void)
 
       documentContainer.style.backgroundColor = originalBackground
+      documentContainer.style.border = originalBorder
       headerContainer.style.display = originalHeaderDisplay
       pageContainer.style.marginTop = originalPageContainerMarginTop
       pageContainer.style.display = originalPageContainerDisplay

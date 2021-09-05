@@ -137,6 +137,7 @@ class HWPViewer {
     this.viewer.style.overflow = 'hidden'
     this.viewer.style.width = '100%'
     this.viewer.style.height = '100%'
+    this.viewer.style.border = '1px solid #ced4da'
   }
 
   private drawBorderFill(
