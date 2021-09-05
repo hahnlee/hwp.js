@@ -31,6 +31,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   const originalBackground = documentContainer.style.backgroundColor
   const originalBorder = documentContainer.style.border
+  const originalUserSelect = documentContainer.style.userSelect
   const originalHeaderDisplay = headerContainer.style.display
   const originalPageContainerMarginTop = pageContainer.style.marginTop
   const originalPageContainerDisplay = pageContainer.style.display
@@ -52,6 +53,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   documentContainer.style.backgroundColor = 'rgb(0, 0, 0)'
   documentContainer.style.border = ''
+  documentContainer.style.userSelect = 'none'
   headerContainer.style.display = 'none'
   pageContainer.style.marginTop = '0'
   pageContainer.style.display = 'flex'
@@ -102,6 +104,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
       documentContainer.style.backgroundColor = originalBackground
       documentContainer.style.border = originalBorder
+      documentContainer.style.userSelect = originalUserSelect
       headerContainer.style.display = originalHeaderDisplay
       pageContainer.style.marginTop = originalPageContainerMarginTop
       pageContainer.style.display = originalPageContainerDisplay
