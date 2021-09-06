@@ -190,8 +190,9 @@ class Header {
   }
 
   copyErrorMessage() {
-    navigator.clipboard.writeText(this.error?.stack || '')
-      .then()
+    navigator.clipboard.writeText(this.error?.stack || '').then(()=>{
+      if(this.copyErrorButton) this.copyErrorButton.textContent = '복사 성공!'
+    })
   }
 
   drawErrorModal(view: HTMLElement) {
