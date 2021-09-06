@@ -16,7 +16,9 @@
 
 export declare class ResizeObserver {
   constructor(e: () => void)
+
   observe(target: Element): void
+
   unobserve(target: Element): void
 }
 
@@ -32,12 +34,15 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   const originalBackground = documentContainer.style.backgroundColor
   const originalBorder = documentContainer.style.border
   const originalUserSelect = documentContainer.style.userSelect
+  const originalHeight = pageContainer.style.height
+  const originalOverflow = pageContainer.style.overflow
   const originalHeaderDisplay = headerContainer.style.display
   const originalPageContainerMarginTop = pageContainer.style.marginTop
   const originalPageContainerDisplay = pageContainer.style.display
   const originalPageContainerAlignItems = pageContainer.style.alignItems
   const originalPageDisplay = elements[currentPage - 1].style.display
   const originalPageTransform = elements[currentPage - 1].style.display
+  const originalPageMargin = elements[currentPage - 1].style.margin
   const originalScrollTop = pageContainer.scrollTop
 
   const resizeObserver = new ResizeObserver(() => {
@@ -54,6 +59,8 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   documentContainer.style.backgroundColor = 'rgb(0, 0, 0)'
   documentContainer.style.border = ''
   documentContainer.style.userSelect = 'none'
+  pageContainer.style.height = '100%'
+  pageContainer.style.overflow = 'hidden'
   headerContainer.style.display = 'none'
   pageContainer.style.marginTop = '0'
   pageContainer.style.display = 'flex'
@@ -61,6 +68,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   elements.forEach((i: HTMLElement) => {
     i.style.display = 'none'
+    i.style.margin = '0 auto'
   })
 
   elements[currentPage - 1].style.display = ''
@@ -68,7 +76,8 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   const validatePage = () => {
     if (currentPage < 1) currentPage = 1
     if (currentPage > elements.length) {
-      document.exitFullscreen().then()
+      document.exitFullscreen()
+        .then()
       return true
     }
     return false
@@ -105,6 +114,8 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
       documentContainer.style.backgroundColor = originalBackground
       documentContainer.style.border = originalBorder
       documentContainer.style.userSelect = originalUserSelect
+      pageContainer.style.height = originalHeight
+      pageContainer.style.overflow = originalOverflow
       headerContainer.style.display = originalHeaderDisplay
       pageContainer.style.marginTop = originalPageContainerMarginTop
       pageContainer.style.display = originalPageContainerDisplay
@@ -112,6 +123,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
       elements.forEach((i: HTMLElement) => {
         i.style.transform = originalPageTransform
         i.style.display = originalPageDisplay
+        i.style.margin = originalPageMargin
       })
       pageContainer.scrollTop = originalScrollTop
     }
@@ -122,5 +134,6 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   document.addEventListener('fullscreenchange', exitFullScreenHandler)
 
-  container.requestFullscreen().catch()
+  container.requestFullscreen()
+    .catch()
 }
