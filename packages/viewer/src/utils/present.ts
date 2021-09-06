@@ -108,6 +108,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
   }
 
   const keyHandler = (e: KeyboardEvent) => {
+    e.preventDefault()
     const lastPage = currentPage
     const key = e.key
     if(nextKey.includes(key)) currentPage += 1
