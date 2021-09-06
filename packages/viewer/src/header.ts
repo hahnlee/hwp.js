@@ -27,18 +27,28 @@ class Header {
 
   private modal: HTMLElement | null = null
 
+  private errorModal: HTMLElement | null = null
+
   private pageNumber: HTMLElement | null = null
 
   private infoButton: HTMLElement | null = null
 
   private printButton: HTMLElement | null = null
 
-  constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[]) {
+  private copyErrorButton: HTMLElement | null = null
+
+  private error: Error | null = null
+
+  constructor(view: HTMLElement, content: HTMLElement, pages: HTMLElement[], error: Error | null) {
     this.content = content
     this.pages = pages
+    this.error = error
+
+    this.copyErrorMessage = this.copyErrorMessage.bind(this)
 
     this.container = this.drawContainer(view)
-    this.modal = this.drawModal(view)
+    this.modal = this.drawInfoModal(view)
+    this.errorModal = this.drawErrorModal(view)
 
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -78,6 +88,8 @@ class Header {
       styleSheet.innerText = buttonStyle
       document.head.appendChild(styleSheet)
     }
+
+    if (this.error) this.errorModal.style.display = 'flex'
   }
 
   updatePageNumber(pageNumber: number) {
@@ -97,8 +109,10 @@ class Header {
     this.infoButton?.removeEventListener('click', this.handleInfoButtionClick)
     this.infoButton = null
 
-    this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
+    if (!this.error) this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
     this.printButton = null
+
+    this.copyErrorButton?.removeEventListener('click', this.copyErrorMessage)
 
     this.pageNumber = null
   }
@@ -129,7 +143,7 @@ class Header {
     return content
   }
 
-  drawModal(view: HTMLElement) {
+  drawInfoModal(view: HTMLElement) {
     const modal = document.createElement('div')
     modal.style.position = 'absolute'
     modal.style.zIndex = '2'
@@ -175,6 +189,82 @@ class Header {
     return modal
   }
 
+  copyErrorMessage() {
+    navigator.clipboard.writeText(this.error?.stack || '')
+      .then()
+  }
+
+  drawErrorModal(view: HTMLElement) {
+    const modal = document.createElement('div')
+    modal.style.position = 'absolute'
+    modal.style.zIndex = '2'
+    modal.style.top = '0'
+    modal.style.right = '0'
+    modal.style.bottom = '0'
+    modal.style.left = '0'
+    modal.style.background = 'rgba(0, 0, 0, 0.7)'
+    modal.style.display = 'none'
+    modal.style.justifyContent = 'center'
+    modal.style.alignItems = 'center'
+
+    const content = document.createElement('div')
+    content.style.background = '#FFF'
+    content.style.borderRadius = '5px'
+    content.style.padding = '0 24px'
+    content.style.cursor = 'initial'
+    content.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+
+    const title = document.createElement('h1')
+    title.textContent = '오류가 발생했어요.'
+
+    const report = document.createElement('div')
+    const reportText1 = document.createElement('span')
+    reportText1.textContent = '오류를 파일, 오류메시지와 함께 '
+    report.appendChild(reportText1)
+
+    const reportLink = document.createElement('a')
+    reportLink.textContent = '제보'
+    reportLink.href = 'https://github.com/hahnlee/hwp.js/issues/new'
+    reportLink.target = '_blink'
+    reportLink.rel = 'noopener noreferrer'
+    reportLink.style.textDecoration = 'underline'
+    report.appendChild(reportLink)
+
+    const reportText2 = document.createElement('span')
+    reportText2.textContent = '해 주시면 문제 해결에 큰 도움이 됩니다.'
+    report.appendChild(reportText2)
+
+    const reportNL = document.createElement('br')
+
+    const description = document.createElement('textarea')
+    description.textContent = this.error?.stack || ''
+    description.style.width = '100%'
+    description.style.height = '100px'
+    description.style.resize = 'none'
+    description.style.outline = 'none'
+    description.readOnly = true
+
+    const copy = document.createElement('button')
+    copy.textContent = '복사'
+    this.copyErrorButton = copy
+
+    const copyright = document.createElement('p')
+    copyright.textContent = 'Copyright 2020 Han Lee <hanlee.dev@gmail.com> and other contributors.'
+
+    content.appendChild(title)
+    content.appendChild(report)
+    content.appendChild(reportNL)
+    content.appendChild(description)
+    content.appendChild(copy)
+    content.appendChild(copyright)
+    modal.appendChild(content)
+    view.appendChild(modal)
+
+    copy.addEventListener('click', this.copyErrorMessage)
+
+    return modal
+  }
+
   handleModalClick = (event: MouseEvent) => {
     if (event.currentTarget !== event.target) return
     if (this.modal) {
@@ -194,7 +284,7 @@ class Header {
 
   drawPageNumber() {
     this.pageNumber = document.createElement('span')
-    this.pageNumber.textContent = '1'
+    this.pageNumber.textContent = this.pages.length ? '1' : '0'
 
     const totalPages = document.createElement('span')
     totalPages.textContent = `/${this.pages.length}쪽`
@@ -226,7 +316,7 @@ class Header {
     buttion.classList.add('hwpjs-header-control')
     buttion.innerHTML = '<svg width="284" height="253" viewBox="0 0 284 253" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-print"><rect x="498" y="82" width="284" height="253"/></clipPath></defs><g clip-path="url(#--hwpjs-header-print)" transform="translate(-498 -82)"><rect x="559" y="93" width="162" height="231" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none"/><path d="M756.613 155.95C751.961 155.95 748.189 159.719 748.189 164.368 748.189 169.018 751.961 172.787 756.613 172.787 761.266 172.787 765.038 169.018 765.038 164.368 765.038 159.719 761.266 155.95 756.613 155.95ZM499 140 781 140 781 228.612 781 275 720.698 275 720.698 228.612 559.302 228.612 559.302 275 499 275 499 228.612Z" fill-rule="evenodd"/><path d="M588 286 647.556 286" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/><path d="M588 254 670.667 254" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/></g></svg>'
     buttion.style.marginLeft = 'auto'
-    buttion.addEventListener('click', this.handlePrintButtionClick)
+    if (!this.error) buttion.addEventListener('click', this.handlePrintButtionClick)
 
     this.container.appendChild(buttion)
 
