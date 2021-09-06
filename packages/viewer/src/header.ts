@@ -190,9 +190,10 @@ class Header {
   }
 
   copyErrorMessage() {
-    navigator.clipboard.writeText(this.error?.stack || '').then(()=>{
-      if(this.copyErrorButton) this.copyErrorButton.textContent = '복사 성공!'
-    })
+    navigator.clipboard.writeText(this.error?.stack || '')
+      .then(() => {
+        if (this.copyErrorButton) this.copyErrorButton.textContent = '복사 성공!'
+      })
   }
 
   drawErrorModal(view: HTMLElement) {
@@ -225,7 +226,7 @@ class Header {
 
     const reportLink = document.createElement('a')
     reportLink.textContent = '제보'
-    reportLink.href = 'https://github.com/hahnlee/hwp.js/issues/new'
+    reportLink.href = `https://github.com/hahnlee/hwp.js/issues/new?title=Error: ${this.error?.message}`
     reportLink.target = '_blink'
     reportLink.rel = 'noopener noreferrer'
     reportLink.style.textDecoration = 'underline'
