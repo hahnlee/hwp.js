@@ -22,6 +22,9 @@ export declare class ResizeObserver {
   unobserve(target: Element): void
 }
 
+const prevKey = ['ArrowLeft', 'ArrowUp', 'PageUp']
+const nextKey = ['ArrowRight', 'ArrowDown', 'Enter', ' ', 'PageDown', 'Tab']
+
 export default function startPresentation(container: HTMLElement, header: HTMLElement,
                                           elements: HTMLElement[], initPage: number) {
   let currentPage = initPage
@@ -104,12 +107,25 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
     elements[currentPage - 1].style.display = ''
   }
 
+  const keyHandler = (e: KeyboardEvent) => {
+    const lastPage = currentPage
+    const key = e.key
+    if(nextKey.includes(key)) currentPage += 1
+    if(prevKey.includes(key)) currentPage -= 1
+    if (key==='Home') currentPage = 1
+    if (key==='End') currentPage = elements.length
+    if (validatePage()) return
+    elements[lastPage - 1].style.display = 'none'
+    elements[currentPage - 1].style.display = ''
+  }
+
   const exitFullScreenHandler = () => {
     if (!document.fullscreenElement) {
       document.removeEventListener('fullscreenchange', exitFullScreenHandler)
       resizeObserver.unobserve(pageContainer)
       pageContainer.removeEventListener('click', clickHandler)
       pageContainer.removeEventListener('mousewheel', scrollHandler as (e: Event) => void)
+      document.removeEventListener('keydown', keyHandler)
 
       documentContainer.style.backgroundColor = originalBackground
       documentContainer.style.border = originalBorder
@@ -131,6 +147,7 @@ export default function startPresentation(container: HTMLElement, header: HTMLEl
 
   pageContainer.addEventListener('mousewheel', scrollHandler as (e: Event) => void)
   pageContainer.addEventListener('click', clickHandler)
+  document.addEventListener('keydown', keyHandler)
 
   document.addEventListener('fullscreenchange', exitFullScreenHandler)
 
