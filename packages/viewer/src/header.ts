@@ -61,7 +61,7 @@ class Header {
 
     this.draw()
     if (!document.getElementById('hwpjs-header-css')) {
-      const buttonStyle: string = `
+      const headerStyle: string = `
       .hwpjs-header-control {
         transition: background .2s;
       }
@@ -71,11 +71,17 @@ class Header {
       .hwpjs-header-control:active {
         background: #AAA;
       }
+      .hwpjs-header {
+        transition: margin-top 0.5s;
+      }
+      .hwpjs-header--hide .hwpjs-header {
+        margin-top: -35px;
+      }
       `
       const styleSheet: HTMLStyleElement = document.createElement('style')
       styleSheet.type = 'text/css'
       styleSheet.id = 'hwpjs-header-css'
-      styleSheet.innerText = buttonStyle
+      styleSheet.innerText = headerStyle
       document.head.appendChild(styleSheet)
     }
   }
@@ -123,6 +129,7 @@ class Header {
     content.style.width = '100%'
     content.style.padding = '0 24px'
 
+    header.classList.add('hwpjs-header')
     header.appendChild(content)
     container.appendChild(header)
 

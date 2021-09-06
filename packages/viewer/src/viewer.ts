@@ -69,6 +69,12 @@ const TEXT_ALIGN: { [key: number]: string } = {
   3: 'center',
 }
 
+interface focusInfo {
+  focus: boolean;
+  lastTime: number;
+  headerShown: boolean;
+}
+
 class HWPViewer {
   private hwpDocument: HWPDocument
 
@@ -80,10 +86,53 @@ class HWPViewer {
 
   private header: Header | null = null
 
+  private headerFocusInfo: focusInfo = { focus: false, lastTime: Date.now(), headerShown: true }
+
   constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
     this.container = container
     this.hwpDocument = parsePage(parse(data, option))
     this.draw()
+    if (!document.getElementById('hwpjs-css')) {
+      const viewerStyle: string = `
+      .hwpjs-container {
+        transition: all .5s;
+      }
+      .hwpjs-header--hide .hwpjs-container {
+        margin-top: 0 !important;
+        height: 100% !important;
+      }
+      `
+      const styleSheet: HTMLStyleElement = document.createElement('style')
+      styleSheet.type = 'text/css'
+      styleSheet.id = 'hwpjs-header-css'
+      styleSheet.innerText = viewerStyle
+      document.head.appendChild(styleSheet)
+
+      this.headerFocusHandler = this.headerFocusHandler.bind(this)
+      this.headerFocusInterval = this.headerFocusInterval.bind(this)
+      this.container.addEventListener('mousemove', this.headerFocusHandler, false)
+      setInterval(this.headerFocusInterval, 100)
+    }
+  }
+
+  headerFocusHandler(e: MouseEvent) {
+    const offsetY = e.clientY - (e.currentTarget as HTMLElement).getBoundingClientRect().top
+    if (offsetY <= 32) {
+      this.headerFocusInfo.focus = true
+      this.headerFocusInfo.lastTime = Date.now()
+    }
+    else this.headerFocusInfo.focus = false
+  }
+
+  headerFocusInterval() {
+    let headerShouldShown = false
+    if (this.headerFocusInfo.focus) headerShouldShown = true
+    else if (Date.now() - this.headerFocusInfo.lastTime <= 3000) headerShouldShown = true
+    if(headerShouldShown !== this.headerFocusInfo.headerShown) {
+      this.headerFocusInfo.headerShown = headerShouldShown
+      if (headerShouldShown) this.container.classList.remove('hwpjs-header--hide')
+      else this.container.classList.add('hwpjs-header--hide')
+    }
   }
 
   distory() {
@@ -369,6 +418,7 @@ class HWPViewer {
     content.style.overflow = 'auto'
     content.style.position = 'relative'
     content.style.zIndex = '0'
+    content.classList.add('hwpjs-container')
 
     this.hwpDocument.sections.forEach((section, index) => {
       this.drawSection(content, section, index)
