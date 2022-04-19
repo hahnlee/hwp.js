@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/naming-convention */
-
 // Reference 1 : https://cdn.hancom.com/link/docs/%ED%95%9C%EA%B8%80%EB%AC%B8%EC%84%9C%ED%8C%8C%EC%9D%BC%ED%98%95%EC%8B%9D_%EB%B0%B0%ED%8F%AC%EC%9A%A9%EB%AC%B8%EC%84%9C_revision1.2.hwp
 // Reference 2 : https://groups.google.com/g/hwp-foss/c/d2KL2ypR89Q
 
@@ -51,7 +48,7 @@ function getDecryptionKey(data: ArrayBuffer) : ArrayBuffer {
 function parseViewTextSection(entry: CFB$Entry): Section {
   const content = new Uint8Array(entry.content)
   const reader = new ByteReader(content.buffer)
-  const [_tagID, _level, size] = reader.readRecord()
+  const [, , size] = reader.readRecord()
   const distDocData = reader.read(size)
   const encryptedData = reader.read(reader.remainByte())
   const decKey = getDecryptionKey(distDocData)
@@ -63,7 +60,7 @@ function parseViewTextSection(entry: CFB$Entry): Section {
 
 function parseViewText(container: CFB$Container): Section[] {
   const view = find(container, 'Root Entry/ViewText/')
-  const viewPaths = container.FullPaths.filter((e: string) => RegExp('Root Entry/ViewText/Section[0-9]+').test(e))
+  const viewPaths = container.FullPaths.filter((e: string) => e.startsWith('Root Entry/ViewText/Section'))
   const sections: Section[] = []
 
   if (view && viewPaths.length > 0) {
