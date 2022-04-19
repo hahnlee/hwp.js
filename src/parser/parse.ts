@@ -30,6 +30,7 @@ import HWPVersion from '../models/version'
 import Section from '../models/section'
 import DocInfoParser from './DocInfoParser'
 import SectionParser from './SectionParser'
+import parseViewText from './parseViewText'
 import ByteReader from '../utils/byteReader'
 import { getBitValue } from '../utils/bitUtils'
 
@@ -119,17 +120,25 @@ function parseSection(container: CFB$Container, sectionNumber: number): Section 
   return new SectionParser(decodedContent).parse()
 }
 
+function parseBodyText(container: CFB$Container, docInfo: DocInfo): Section[] {
+  const sections: Section[] = []
+
+  for (let i = 0; i < docInfo.sectionSize; i += 1) {
+    sections.push(parseSection(container, i))
+  }
+
+  return sections
+}
+
 function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
   const container: CFB$Container = read(input, options)
 
   const header = parseFileHeader(container)
   const docInfo = parseDocInfo(container, header)
 
-  const sections: Section[] = []
-
-  for (let i = 0; i < docInfo.sectionSize; i += 1) {
-    sections.push(parseSection(container, i))
-  }
+  const sections: Section[] = header.properties.distribution
+    ? parseViewText(container)
+    : parseBodyText(container, docInfo)
 
   return new HWPDocument(header, docInfo, sections)
 }

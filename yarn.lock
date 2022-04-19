@@ -3393,6 +3393,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/aes-js@npm:^3":
+  version: 3.1.1
+  resolution: "@types/aes-js@npm:3.1.1"
+  checksum: 388d21adbaa70548f9e94947430f53b54d13f99408fc6461227c2529b9dbaa5397a135e8bb4584206c65a3ef837b868b34602816dc7c20f1537ea9ef23a74bd9
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.7":
   version: 7.1.9
   resolution: "@types/babel__core@npm:7.1.9"
@@ -4321,6 +4328,13 @@ __metadata:
   bin:
     adler32: ./bin/adler32.njs
   checksum: aa611316fa224349b3eb1b7fcccc05195c38e425ff2b678fde67c0440b27074c42ad97b03efb7478f045b094f0dcb51a8711a2d5571d8940e1c5c52593af7bf6
+  languageName: node
+  linkType: hard
+
+"aes-js@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "aes-js@npm:3.1.2"
+  checksum: 062154d50b1e433cc8c3b8ca7879f3a6375d5e79c2a507b2b6c4ec920b4cd851bf2afa7f65c98761a9da89c0ab618cbe6529e8e9a1c71f93290b53128fb8f712
   languageName: node
   linkType: hard
 
@@ -10935,10 +10949,12 @@ fsevents@~2.3.2:
     "@rollup/plugin-commonjs": ^15.0.0
     "@rollup/plugin-node-resolve": ^9.0.0
     "@rollup/plugin-strip": ^2.0.0
+    "@types/aes-js": ^3
     "@types/jest": ^26.0.10
     "@types/pako": ^1.0.1
     "@typescript-eslint/eslint-plugin": ^3.6.1
     "@typescript-eslint/parser": ^3.9.1
+    aes-js: ^3.1.2
     babel-jest: ^26.3.0
     cfb: ^1.2.0
     eslint: ^7.7.0

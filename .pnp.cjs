@@ -48,10 +48,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@rollup/plugin-commonjs", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:15.0.0"],
             ["@rollup/plugin-node-resolve", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:9.0.0"],
             ["@rollup/plugin-strip", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:2.0.0"],
+            ["@types/aes-js", "npm:3.1.1"],
             ["@types/jest", "npm:26.0.10"],
             ["@types/pako", "npm:1.0.1"],
             ["@typescript-eslint/eslint-plugin", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:3.9.1"],
             ["@typescript-eslint/parser", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:3.9.1"],
+            ["aes-js", "npm:3.1.2"],
             ["babel-jest", "virtual:3bf5cb85a2e664643c98d2e719d27af43974598ccaa6ea3c355c3ae5c1d5177e21a427bd1a7e70bdce3b4affdbcea39f2ffaa213984380213caeec2a5a6a00da#npm:26.3.0"],
             ["cfb", "npm:1.2.0"],
             ["eslint", "npm:7.7.0"],
@@ -5696,6 +5698,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["@types/aes-js", [
+        ["npm:3.1.1", {
+          "packageLocation": "./.yarn/cache/@types-aes-js-npm-3.1.1-c9780f09d6-388d21adba.zip/node_modules/@types/aes-js/",
+          "packageDependencies": [
+            ["@types/aes-js", "npm:3.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["@types/babel__core", [
         ["npm:7.1.9", {
           "packageLocation": "./.yarn/cache/@types-babel__core-npm-7.1.9-23e959fd72-d92c530efc.zip/node_modules/@types/babel__core/",
@@ -6903,6 +6914,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["adler-32", "npm:1.2.0"],
             ["exit-on-epipe", "npm:1.0.1"],
             ["printj", "npm:1.1.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["aes-js", [
+        ["npm:3.1.2", {
+          "packageLocation": "./.yarn/cache/aes-js-npm-3.1.2-d7549a23a2-062154d50b.zip/node_modules/aes-js/",
+          "packageDependencies": [
+            ["aes-js", "npm:3.1.2"]
           ],
           "linkType": "HARD",
         }]
@@ -14749,10 +14769,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@rollup/plugin-commonjs", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:15.0.0"],
             ["@rollup/plugin-node-resolve", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:9.0.0"],
             ["@rollup/plugin-strip", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:2.0.0"],
+            ["@types/aes-js", "npm:3.1.1"],
             ["@types/jest", "npm:26.0.10"],
             ["@types/pako", "npm:1.0.1"],
             ["@typescript-eslint/eslint-plugin", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:3.9.1"],
             ["@typescript-eslint/parser", "virtual:4e4824ddb2bb82a661ef35e7cd03b85962fa8bd39755461bf5f82f22c0044638d264b1390f9aadc6399be3743d686ffbf74edc5194d4caf1c8f6ba822d1bc5d3#npm:3.9.1"],
+            ["aes-js", "npm:3.1.2"],
             ["babel-jest", "virtual:3bf5cb85a2e664643c98d2e719d27af43974598ccaa6ea3c355c3ae5c1d5177e21a427bd1a7e70bdce3b4affdbcea39f2ffaa213984380213caeec2a5a6a00da#npm:26.3.0"],
             ["cfb", "npm:1.2.0"],
             ["eslint", "npm:7.7.0"],
