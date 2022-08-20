@@ -80,10 +80,20 @@ class HWPViewer {
 
   private header: Header | null = null
 
+  private error: Error | null = null
+
   constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
     this.container = container
-    this.hwpDocument = parsePage(parse(data, option))
-    this.draw()
+    try {
+      this.hwpDocument = parsePage(parse(data, option))
+    }
+    catch (e) {
+      this.error = e
+      throw new Error(e)
+    }
+    finally {
+      this.draw()
+    }
   }
 
   distory() {
@@ -370,11 +380,11 @@ class HWPViewer {
     content.style.position = 'relative'
     content.style.zIndex = '0'
 
-    this.hwpDocument.sections.forEach((section, index) => {
+    if (!this.error) this.hwpDocument.sections.forEach((section, index) => {
       this.drawSection(content, section, index)
     })
 
-    this.header = new Header(this.viewer, this.container, this.pages)
+    this.header = new Header(this.viewer, this.container, this.pages, this.error)
 
     this.viewer.appendChild(content)
     this.container.appendChild(this.viewer)
