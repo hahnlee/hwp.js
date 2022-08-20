@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import loadString from './string'
 import printFrame from './utils/print'
 
 class Header {
@@ -159,7 +160,7 @@ class Header {
     title.appendChild(link)
 
     const description = document.createElement('p')
-    description.textContent = '본 제품은 한글과컴퓨터의 한/글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.'
+    description.textContent = loadString('about')
 
     const copyright = document.createElement('p')
     copyright.textContent = 'Copyright 2020 Han Lee <hanlee.dev@gmail.com> and other contributors.'
@@ -197,7 +198,7 @@ class Header {
     this.pageNumber.textContent = '1'
 
     const totalPages = document.createElement('span')
-    totalPages.textContent = `/${this.pages.length}쪽`
+    totalPages.textContent = `/${this.pages.length}${loadString('page')}`
 
     this.container.appendChild(this.pageNumber)
     this.container.appendChild(totalPages)
