@@ -30,8 +30,8 @@ import parse, {
   isPicture,
   RGB,
 } from '@hwp.js/parser'
-import { CFB$ParsingOptions } from 'cfb/types'
 
+import { formatOption, viewerOption } from "./utils/option"
 import parsePage from './parsePage'
 import Header from './header'
 
@@ -80,9 +80,12 @@ class HWPViewer {
 
   private header: Header | null = null
 
-  constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
+  private option: viewerOption = {}
+
+  constructor(container: HTMLElement, data: Uint8Array, option: viewerOption = {}) {
+    this.option = formatOption(option)
     this.container = container
-    this.hwpDocument = parsePage(parse(data, option))
+    this.hwpDocument = parsePage(parse(data, this.option.parser))
     this.draw()
   }
 
@@ -126,7 +129,7 @@ class HWPViewer {
     return page
   }
 
-  private getRGBStyle(rgb: RGB) {
+  private static getRGBStyle(rgb: RGB) {
     const [red, green, blue] = rgb
     return `rgb(${red}, ${green}, ${blue})`
   }
@@ -149,10 +152,10 @@ class HWPViewer {
 
     const borderFill = this.hwpDocument.info.borderFills[borderFillID]
 
-    target.style.borderTopColor = this.getRGBStyle(borderFill.style.top.color)
-    target.style.borderRightColor = this.getRGBStyle(borderFill.style.right.color)
-    target.style.borderBottomColor = this.getRGBStyle(borderFill.style.bottom.color)
-    target.style.borderLeftColor = this.getRGBStyle(borderFill.style.left.color)
+    target.style.borderTopColor = HWPViewer.getRGBStyle(borderFill.style.top.color)
+    target.style.borderRightColor = HWPViewer.getRGBStyle(borderFill.style.right.color)
+    target.style.borderBottomColor = HWPViewer.getRGBStyle(borderFill.style.bottom.color)
+    target.style.borderLeftColor = HWPViewer.getRGBStyle(borderFill.style.left.color)
 
     target.style.borderTopWidth = BORDER_WIDTH[borderFill.style.top.width]
     target.style.borderRightWidth = BORDER_WIDTH[borderFill.style.right.width]
@@ -165,7 +168,7 @@ class HWPViewer {
     target.style.borderLeftStyle = BORDER_STYLE[borderFill.style.left.type]
 
     if (borderFill.backgroundColor) {
-      target.style.backgroundColor = this.getRGBStyle(borderFill.backgroundColor)
+      target.style.backgroundColor = HWPViewer.getRGBStyle(borderFill.backgroundColor)
     }
   }
 
@@ -321,7 +324,7 @@ class HWPViewer {
       span.style.lineBreak = 'anywhere'
       span.style.whiteSpace = 'pre-wrap'
 
-      span.style.color = this.getRGBStyle(color)
+      span.style.color = HWPViewer.getRGBStyle(color)
 
       const fontFace = this.hwpDocument.info.fontFaces[fontId[0]]
       span.style.fontFamily = fontFace.getFontFamily()
@@ -374,7 +377,7 @@ class HWPViewer {
       this.drawSection(content, section, index)
     })
 
-    this.header = new Header(this.viewer, this.container, this.pages)
+    this.header = new Header(this.viewer, this.container, this.pages, this.option)
 
     this.viewer.appendChild(content)
     this.container.appendChild(this.viewer)
