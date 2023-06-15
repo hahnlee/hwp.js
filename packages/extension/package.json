@@ -1,4 +1,7 @@
 {
-  "name": "@hwp.js/extension",
-  "private": true
+  "name": "@nadooio/hwpjs-extension",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://nadooio-npm-867205542541.d.codeartifact.ap-northeast-1.amazonaws.com/npm/packages/"
+  }
 }

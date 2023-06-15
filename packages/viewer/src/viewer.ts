@@ -29,7 +29,7 @@ import parse, {
   isShape,
   isPicture,
   RGB,
-} from '@hwp.js/parser'
+} from '@nadooio/hwpjs-parser'
 import { CFB$ParsingOptions } from 'cfb/types'
 
 import parsePage from './parsePage'

@@ -1,5 +1,5 @@
 {
-  "name": "@hwp.js/parser",
+  "name": "@nadooio/hwpjs-parser",
   "version": "0.0.3",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -8,7 +8,8 @@
   "publishConfig": {
     "main": "./build/cjs.js",
     "module": "./build/esm.js",
-    "types": "./build/index.d.ts"
+    "types": "./build/index.d.ts",
+    "registry": "https://nadooio-npm-867205542541.d.codeartifact.ap-northeast-1.amazonaws.com/npm/packages/"
   },
   "dependencies": {
     "cfb": "^1.2.0",

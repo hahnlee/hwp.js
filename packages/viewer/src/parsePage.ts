@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HWPDocument, Section } from '@hwp.js/parser'
+import { HWPDocument, Section } from '@nadooio/hwpjs-parser'
 
 import PageBuilder from './PageBuilder'
 

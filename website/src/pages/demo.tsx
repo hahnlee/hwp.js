@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import HWPViewer from '@hwp.js/viewer'
+import HWPViewer from '@nadooio/hwpjs-viewer'
 import React, { useCallback, useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 

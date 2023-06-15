@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TableColumnOption, ParagraphList } from '@hwp.js/parser'
+import { TableColumnOption, ParagraphList } from '@nadooio/hwpjs-parser'
 
 function splitTable(
   table: ParagraphList<TableColumnOption>[][],

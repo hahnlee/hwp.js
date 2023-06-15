@@ -1,16 +1,14 @@
-# <img src="./website/static/images/logo.svg" alt="hwp.js" width="22" height="22"/> hwp.js
-Open source hwp viewer and parser library powered by web technology
-> 본 제품은 한글과컴퓨터의 한/글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
-
-<a href="https://chrome.google.com/webstore/detail/hwpjs/hgalnnpknkjdccmcljadkckcdibiglei"><img src="./website/static/images/chromeWebStoreLogo.png" alt="chrome web store" width="206" height="58"/></a>
-<a href="https://join.slack.com/t/hwpjs/shared_invite/zt-hsfa3m5z-m50qwVkTZOkc2r666~BrZQ">
-<img src="./website/static/images/slack.png" alt="chrome web store" width="142" height="58"/></a>
-</a>
-
-# Install
+# Development
+## Build
 ```
-npm install hwp.js
-yarn add hwp.js
+yarn workspaces list
+yarn workspace @nadooio/hwpjs-website build
+```
+## Packaging
+!!! Pre-requisite: configute your aws profile test.nadoo.io/ap-northeast-1 !!!
+```
+aws codeartifact login --tool npm --repository packages --domain nadooio-npm --domain-owner 867205542541 --region ap-northeast-1 --profile test.nadoo.io/ap-northeast-1
+npm publish
 ```
 
 # Credits
@@ -28,8 +26,6 @@ A huge thanks to
 
 # License
 ```
-Copyright Han Lee <hanlee.dev@gmail.com> and other contributors
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

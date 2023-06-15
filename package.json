@@ -1,8 +1,11 @@
 {
-  "name": "hwp.js",
+  "name": "@nadooio/hwpjs",
   "version": "0.0.3",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "registry": "https://nadooio-npm-867205542541.d.codeartifact.ap-northeast-1.amazonaws.com/npm/packages/"
+  },
   "workspaces": [
     "packages/*",
     "website"
@@ -10,11 +13,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/hahnlee/hwp.js.git"
-  },
-  "homepage": "https://hanlee.io/hwp.js",
-  "bugs": {
-    "email": "hanlee.dev@gmail.com",
-    "url": "https://github.com/hahnlee/hwp.js/issues"
   },
   "husky": {
     "hooks": {
@@ -38,6 +36,10 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-strip": "^3.0.2",
     "@types/jest": "^26.0.10",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
     "@typescript-eslint/parser": "^3.9.1",

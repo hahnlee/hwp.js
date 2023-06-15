@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Section, Paragraph, LineSegment, CharType, isTable, TableControl, TableColumnOption, ParagraphList, CommonCtrlID } from '@hwp.js/parser'
+import { Section, Paragraph, LineSegment, CharType, isTable, TableControl, TableColumnOption, ParagraphList, CommonCtrlID } from '@nadooio/hwpjs-parser'
 
 import splitTable from './splitTable'
 

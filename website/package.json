@@ -1,8 +1,11 @@
 {
-  "name": "website",
+  "name": "@nadooio/hwpjs-website",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "registry": "https://nadooio-npm-867205542541.d.codeartifact.ap-northeast-1.amazonaws.com/npm/packages/"
+  },
   "scripts": {
     "build": "gatsby build --prefix-paths",
     "develop": "gatsby develop",
@@ -12,8 +15,8 @@
     "deploy": "gh-pages -d public"
   },
   "dependencies": {
-    "@hwp.js/parser": "workspace:packages/parser",
-    "@hwp.js/viewer": "workspace:packages/viewer",
+    "@nadooio/hwpjs-parser": "workspace:packages/parser",
+    "@nadooio/hwpjs-viewer": "workspace:packages/viewer",
     "gatsby": "^2.24.47",
     "gatsby-plugin-react-helmet": "^3.3.10",
     "react": "^16.13.1",
