@@ -9,14 +9,17 @@ const rootDirectory = path.join(__dirname)
 const srcDirectory = path.join(rootDirectory, 'src')
 const buildDirectory = path.join(rootDirectory, 'build')
 
-const inputFile = path.join(srcDirectory, 'index.ts')
+const inputFile = [path.join(rootDirectory, 'packages', 'viewer', 'src', 'index.ts')]
 
 const extensions = ['.js', '.mjs', '.ts']
 
 const external = ['fs']
 
 const plugins = [
-  resolve({ extensions, skip: ['fs'] }),
+  resolve({
+    extensions,
+    skip: ['fs']
+  }),
   commonjs(),
   babel({
     extensions,
@@ -46,7 +49,7 @@ export default [
     input: inputFile,
     output: [
       {
-        file: path.join(rootDirectory, 'extension', 'content', 'hwp.js'),
+        file: path.join(rootDirectory, 'packages', 'extension', 'content', 'hwp.js'),
         format: 'iife',
         name: 'HWP',
       },

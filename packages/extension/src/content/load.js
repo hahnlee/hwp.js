@@ -21,7 +21,7 @@ const xhr = new XMLHttpRequest()
 xhr.onload = () => {
   const fileName = decodeURIComponent(fileUrl.split('/').pop())
   document.title = fileName
-  new HWP.Viewer(document.body, new Uint8Array(xhr.response), { type: 'array' })
+  new HWP(document.body, new Uint8Array(xhr.response), { type: 'array' })
 }
 
 xhr.open('GET', fileUrl)
