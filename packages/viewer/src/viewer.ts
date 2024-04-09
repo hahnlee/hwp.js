@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import parse, {
+import {
+  parse,
   Control,
   TableControl,
   TableColumnOption,
@@ -69,7 +70,7 @@ const TEXT_ALIGN: { [key: number]: string } = {
   3: 'center',
 }
 
-class HWPViewer {
+export class HWPViewer {
   private hwpDocument: HWPDocument
 
   private container: HTMLElement
@@ -380,5 +381,3 @@ class HWPViewer {
     this.container.appendChild(this.viewer)
   }
 }
-
-export default HWPViewer

@@ -1,17 +1,8 @@
 {
-  "name": "hwp.js",
+  "name": "hwp.js-workspace",
   "version": "0.0.3",
   "license": "Apache-2.0",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hahnlee/hwp.js.git"
-  },
-  "homepage": "https://hanlee.io/hwp.js",
-  "bugs": {
-    "email": "hanlee.dev@gmail.com",
-    "url": "https://github.com/hahnlee/hwp.js/issues"
-  },
   "lint-staged": {
     "src/**/*.(js|ts)?(x)": [
       "eslint"

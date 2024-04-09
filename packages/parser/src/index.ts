@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import parse from './parse'
-
 // FIXME: (@hanlee) export 고치기
 export { Control } from './models/controls'
 export { ShapeControls } from './models/controls/shapes'
@@ -31,4 +29,4 @@ export { default as HWPDocument } from './models/document'
 export { isTable, isShape, isPicture } from './utils/controlUtil'
 export { RGB } from './types/color'
 
-export default parse
+export * from './parse'

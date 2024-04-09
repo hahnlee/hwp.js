@@ -1,0 +1,27 @@
+{
+  "name": "hwp.js",
+  "version": "0.0.3",
+  "license": "Apache-2.0",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "publishConfig": {
+    "main": "./build/cjs.js",
+    "module": "./build/esm.js",
+    "types": "./build/index.d.ts"
+  },
+  "siseEffect": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hahnlee/hwp.js.git"
+  },
+  "homepage": "https://hanlee.io/hwp.js",
+  "bugs": {
+    "email": "hanlee.dev@gmail.com",
+    "url": "https://github.com/hahnlee/hwp.js/issues"
+  },
+  "dependencies": {
+    "@hwp.js/parser": "workspace:*",
+    "@hwp.js/viewer": "workspace:*"
+  }
+}

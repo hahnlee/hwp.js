@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-import HWPViewer from './viewer'
-
-export default HWPViewer
+export * from './viewer'

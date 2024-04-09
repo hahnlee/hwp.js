@@ -59,6 +59,15 @@ importers:
 
   packages/extension: {}
 
+  packages/hwp.js:
+    dependencies:
+      '@hwp.js/parser':
+        specifier: workspace:*
+        version: link:../parser
+      '@hwp.js/viewer':
+        specifier: workspace:*
+        version: link:../viewer
+
   packages/parser:
     dependencies:
       cfb:

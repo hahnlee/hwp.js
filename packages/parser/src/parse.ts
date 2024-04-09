@@ -127,7 +127,7 @@ function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber
   }
 }
 
-function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
+export function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
   const container: CFB$Container = read(input, options)
 
   const header = parseFileHeader(container)
@@ -141,5 +141,3 @@ function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
 
   return new HWPDocument(header, docInfo, sections)
 }
-
-export default parse
