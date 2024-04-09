@@ -101,12 +101,16 @@ function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
   }
 
   const content: Uint8Array = docInfoEntry.content as Uint8Array
-  const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
 
-  return new DocInfoParser(header, decodedContent, container).parse()
+  if (header.properties.compressed) {
+    const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
+    return new DocInfoParser(header, decodedContent, container).parse()
+  } else {
+    return new DocInfoParser(header, Uint8Array.from(content), container).parse()
+  }
 }
 
-function parseSection(container: CFB$Container, sectionNumber: number): Section {
+function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber: number): Section {
   const section = find(container, `Root Entry/BodyText/Section${sectionNumber}`)
 
   if (!section) {
@@ -114,9 +118,13 @@ function parseSection(container: CFB$Container, sectionNumber: number): Section 
   }
 
   const content: Uint8Array = section.content as Uint8Array
-  const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
 
-  return new SectionParser(decodedContent).parse()
+  if (header.properties.compressed) {
+    const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
+    return new SectionParser(decodedContent).parse()
+  } else {
+    return new SectionParser(Uint8Array.from(content)).parse()
+  }
 }
 
 function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
@@ -128,7 +136,7 @@ function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
   const sections: Section[] = []
 
   for (let i = 0; i < docInfo.sectionSize; i += 1) {
-    sections.push(parseSection(container, i))
+    sections.push(parseSection(container, header, i))
   }
 
   return new HWPDocument(header, docInfo, sections)
