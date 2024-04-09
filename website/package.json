@@ -12,8 +12,8 @@
     "deploy": "gh-pages -d public"
   },
   "dependencies": {
-    "@hwp.js/parser": "workspace:packages/parser",
-    "@hwp.js/viewer": "workspace:packages/viewer",
+    "@hwp.js/parser": "workspace:*",
+    "@hwp.js/viewer": "workspace:*",
     "gatsby": "^2.24.47",
     "gatsby-plugin-react-helmet": "^3.3.10",
     "react": "^16.13.1",

@@ -3,10 +3,6 @@
   "version": "0.0.3",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "website"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hahnlee/hwp.js.git"
@@ -16,22 +12,18 @@
     "email": "hanlee.dev@gmail.com",
     "url": "https://github.com/hahnlee/hwp.js/issues"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint-staged && yarn typecheck && yarn jest"
-    }
-  },
   "lint-staged": {
     "src/**/*.(js|ts)?(x)": [
       "eslint"
     ]
   },
   "scripts": {
-    "build": "yarn typecheck && rollup -c rollup.config.js",
+    "build": "pnpm typecheck && rollup -c rollup.config.js",
     "lint-staged": "lint-staged",
-    "typecheck": "yarn workspaces foreach run typecheck",
-    "lint": "yarn workspaces foreach run lint",
-    "test": "jest --coverage"
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test": "jest --coverage",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -46,10 +38,9 @@
     "eslint-config-airbnb-typescript": "^9.0.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.22.0",
-    "husky": "^4.2.5",
+    "husky": "^9.0.11",
     "jest": "^26.4.2",
-    "lint-staged": "^10.2.11",
+    "lint-staged": "^15.2.2",
     "typescript": "^4.7.4"
-  },
-  "packageManager": "yarn@3.2.2"
+  }
 }
