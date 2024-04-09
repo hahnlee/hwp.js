@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, { ReactNode } from 'react'
-import { Helmet } from 'react-helmet'
+import Head from 'next/head'
+import { ReactNode } from 'react'
 
 interface PageProps {
   title?: string
@@ -28,7 +28,7 @@ function Page({
 }: PageProps) {
   return (
     <>
-      <Helmet>
+      <Head>
         <title>{ title }</title>
         <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png" />
@@ -50,7 +50,7 @@ function Page({
         <meta property="og:title" content="hwp.js" />
         <meta property="og:description" content="Open source hwp viewer and parser library powered by web technology" />
         <meta property="og:image" content="images/logo.png" />
-      </Helmet>
+      </Head>
       { children }
     </>
   )

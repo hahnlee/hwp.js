@@ -4,29 +4,21 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "build": "gatsby build --prefix-paths",
-    "develop": "gatsby develop",
-    "start": "npm run develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "deploy": "gh-pages -d public"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@hwp.js/parser": "workspace:*",
     "@hwp.js/viewer": "workspace:*",
-    "gatsby": "^2.24.47",
-    "gatsby-plugin-react-helmet": "^3.3.10",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-dropzone": "^11.0.3",
-    "react-helmet": "^6.1.0",
-    "react-loader-spinner": "^3.1.14"
+    "next": "^14.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-loader-spinner": "^6.1.6"
   },
   "devDependencies": {
-    "@types/react-helmet": "^6.1.0",
-    "@types/react-loader-spinner": "^3.1.0",
-    "gatsby-plugin-typescript": "^2.4.18",
-    "gatsby-source-filesystem": "^2.3.24",
-    "gh-pages": "^3.1.0"
+    "@types/react": "18.2.75",
+    "typescript": "^5.4.4"
   }
 }

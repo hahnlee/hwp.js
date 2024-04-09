@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { HWPViewer } from '@hwp.js/viewer'
-import React, { useCallback, useState, useRef } from 'react'
+import { useCallback, useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 
 import Page from '../components/Page'
@@ -52,11 +52,13 @@ function Demo() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: '.hwp'
+    accept: {
+      'application/hwp': ['.hwp'],
+    }
   })
 
   return (
-    <Page title="Demo - hwp.js">
+    <>
       <div className="viewer" ref={ref}>
         {
           !isFileUploaded && (
@@ -79,7 +81,7 @@ function Demo() {
           )
         }
       </div>
-    </Page>
+    </>
   )
 }
 
