@@ -354,19 +354,7 @@ export class SectionParser {
   visitLineSegment(record: HWPRecord, paragraph: Paragraph) {
     const reader = new ByteReader(record.payload)
     while (!reader.isEOF()) {
-      const lineSegment = new LineSegment()
-
-      lineSegment.start = reader.readUInt32()
-      lineSegment.y = reader.readInt32()
-      lineSegment.height = reader.readInt32()
-      lineSegment.textHeight = reader.readInt32()
-      lineSegment.baseLineGap = reader.readInt32()
-      lineSegment.lineSpacing = reader.readInt32()
-      lineSegment.startByte = reader.readInt32()
-      lineSegment.width = reader.readInt32()
-      reader.readUInt32()
-
-      paragraph.lineSegments.push(lineSegment)
+      paragraph.lineSegments.push(LineSegment.fromReader(reader))
     }
   }
 

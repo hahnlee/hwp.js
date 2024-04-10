@@ -49,6 +49,6 @@ export class Paragraph {
       return this.textSize
     }
 
-    return next.start
+    return next.startPosition
   }
 }

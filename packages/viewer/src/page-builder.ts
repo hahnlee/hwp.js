@@ -69,12 +69,12 @@ export class PageBuilder {
   }
 
   getLine(lineSegment: LineSegment, index: number, paragraph: Paragraph) {
-    const { start } = lineSegment
+    const { startPosition } = lineSegment
     const nextSize = paragraph.getNextSize(index)
 
     const line = []
 
-    let read = start
+    let read = startPosition
     while (read < nextSize) {
       const char = paragraph.content[this.readIndex]
       if (char.type === CharType.Char) {
@@ -155,15 +155,15 @@ export class PageBuilder {
   visitLine(lineSegment: LineSegment, index: number, paragraph: Paragraph) {
     const line = this.getLine(lineSegment, index, paragraph)
 
-    if (lineSegment.y === 0 || lineSegment.y < this.latestY) {
+    if (lineSegment.verticalPosition === 0 || lineSegment.verticalPosition < this.latestY) {
       this.exitPage(paragraph)
       this.startChatIndex = this.endCharIndex
       this.currentHeight = 0
     }
 
-    this.latestY = lineSegment.y
+    this.latestY = lineSegment.verticalPosition
 
-    this.currentHeight += (lineSegment.height + lineSegment.lineSpacing)
+    this.currentHeight += (lineSegment.lineHeight + lineSegment.lineSpacing)
 
     line.forEach((content) => {
       if (content.type !== CharType.Extended) {
@@ -182,7 +182,7 @@ export class PageBuilder {
         return
       }
 
-      this.currentHeight -= (lineSegment.height + lineSegment.lineSpacing)
+      this.currentHeight -= (lineSegment.lineHeight + lineSegment.lineSpacing)
 
       const tables: TableControl[] = splitTable(
         control.content,
