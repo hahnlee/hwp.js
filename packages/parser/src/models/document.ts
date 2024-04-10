@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DocInfo } from './doc-info.js'
+import { DocInfo } from './doc-info/doc-info.js'
 import { HWPHeader } from './header.js'
 import { Section } from './section.js'
 

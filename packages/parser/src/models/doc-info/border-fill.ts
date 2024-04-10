@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { RGB } from '../types/color.js'
+import { RGB } from '../../types/color.js'
 
 interface BorerStyle {
   type: number

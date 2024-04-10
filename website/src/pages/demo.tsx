@@ -17,8 +17,6 @@ import { HWPViewer } from '@hwp.js/viewer'
 import { useCallback, useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 
-import Page from '../components/Page'
-
 function Demo() {
   const ref = useRef<HTMLDivElement | null>(null)
 

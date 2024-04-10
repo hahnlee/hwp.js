@@ -23,7 +23,7 @@ import {
 import { inflate } from 'pako'
 
 import { HWPDocument } from './models/document.js'
-import { DocInfo } from './models/doc-info.js'
+import { DocInfo } from './models/doc-info/doc-info.js'
 import { HWPHeader } from './models/header.js'
 import { Section } from './models/section.js'
 import { DocInfoParser } from './doc-info-parser.js'
