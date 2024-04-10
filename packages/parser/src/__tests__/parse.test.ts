@@ -44,8 +44,4 @@ describe('parse', () => {
     assert.strictEqual(hwpDocument.sections[0].width, 59528)
     assert.strictEqual(hwpDocument.sections[0].height, 84188)
   })
-
-  it('should parse signature', () => {
-    assert.strictEqual(hwpDocument.header.signature, 'HWP Document File')
-  })
 })

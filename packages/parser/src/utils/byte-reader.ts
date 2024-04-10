@@ -25,37 +25,49 @@ export class ByteReader {
 
   readUInt32(): number {
     const result = this.view.getUint32(this.offsetByte, true)
-    this.offsetByte += 4
+    this.#updateOffsetByte(4)
     return result
   }
 
   readInt32(): number {
     const result = this.view.getInt32(this.offsetByte, true)
-    this.offsetByte += 4
+    this.#updateOffsetByte(4)
     return result
   }
 
   readInt16(): number {
     const result = this.view.getUint16(this.offsetByte, true)
-    this.offsetByte += 2
+    this.#updateOffsetByte(2)
     return result
   }
 
   readUInt16(): number {
     const result = this.view.getUint16(this.offsetByte, true)
-    this.offsetByte += 2
+    this.#updateOffsetByte(2)
     return result
   }
 
   readInt8(): number {
     const result = this.view.getInt8(this.offsetByte)
-    this.offsetByte += 1
+    this.#updateOffsetByte(1)
     return result
   }
 
   readUInt8(): number {
     const result = this.view.getUint8(this.offsetByte)
-    this.offsetByte += 1
+    this.#updateOffsetByte(1)
+    return result
+  }
+
+  readFloat32(): number {
+    const result = this.view.getFloat32(this.offsetByte, true)
+    this.#updateOffsetByte(4)
+    return result
+  }
+
+  readFloat64(): number {
+    const result = this.view.getFloat64(this.offsetByte, true)
+    this.#updateOffsetByte(8)
     return result
   }
 
@@ -74,8 +86,11 @@ export class ByteReader {
   }
 
   read(byte: number): ArrayBuffer {
-    const result = this.view.buffer.slice(this.offsetByte, this.offsetByte + byte)
-    this.offsetByte += byte
+    const result = this.view.buffer.slice(
+      this.offsetByte,
+      this.offsetByte + byte
+    )
+    this.#updateOffsetByte(byte)
     return result
   }
 
@@ -95,10 +110,21 @@ export class ByteReader {
   }
 
   skipByte(offset: number) {
-    this.offsetByte += offset
+    this.#updateOffsetByte(offset)
   }
 
   isEOF() {
-    return this.view.byteLength <= this.offsetByte
+    return this.view.byteLength === this.offsetByte
+  }
+
+  length() {
+    return this.view.byteLength
+  }
+
+  #updateOffsetByte(offset: number) {
+    this.offsetByte += offset
+    if (this.offsetByte > this.view.byteLength) {
+      throw new Error('Out of range')
+    }
   }
 }

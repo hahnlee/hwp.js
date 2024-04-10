@@ -19,19 +19,9 @@ import { HWPHeader } from './header.js'
 import { Section } from './section.js'
 
 export class HWPDocument {
-  header: HWPHeader
-
-  info: DocInfo
-
-  sections: Section[]
-
   constructor(
-    header: HWPHeader,
-    info: DocInfo,
-    sections: Section[],
-  ) {
-    this.header = header
-    this.info = info
-    this.sections = sections
-  }
+    public header: HWPHeader,
+    public info: DocInfo,
+    public sections: Section[],
+  ) {}
 }

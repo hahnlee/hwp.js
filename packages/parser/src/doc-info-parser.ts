@@ -191,7 +191,7 @@ export class DocInfoParser {
 
     if (
       properties.compress === BinDataCompress.COMPRESS
-      || (properties.compress === BinDataCompress.DEFAULT && this.header.properties.compressed)
+      || (properties.compress === BinDataCompress.DEFAULT && this.header.flags.compressed)
     ) {
       const data = inflate(Uint8Array.from(payload), { windowBits: -15 })
       this.result.binData.push(new BinData(properties, extension, data))

@@ -25,72 +25,9 @@ import { inflate } from 'pako'
 import { HWPDocument } from './models/document.js'
 import { DocInfo } from './models/doc-info.js'
 import { HWPHeader } from './models/header.js'
-import { HWPVersion } from './models/version.js'
 import { Section } from './models/section.js'
 import { DocInfoParser } from './doc-info-parser.js'
 import { SectionParser } from './section-parser.js'
-import { ByteReader } from './utils/byte-reader.js'
-import { getBitValue } from './utils/bit-utils.js'
-
-// @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
-const FILE_HEADER_BYTES = 256
-
-const SUPPORTED_VERSION = new HWPVersion(5, 1, 0, 0)
-const SIGNATURE = 'HWP Document File'
-
-function parseFileHeader(container: CFB$Container): HWPHeader {
-  const fileHeader = find(container, 'FileHeader')
-
-  if (!fileHeader) {
-    throw new Error('Cannot find FileHeader')
-  }
-
-  const { content } = fileHeader
-
-  if (content.length !== FILE_HEADER_BYTES) {
-    throw new Error(`FileHeader must be ${FILE_HEADER_BYTES} bytes, Received: ${content.length}`)
-  }
-
-  const signature = String.fromCharCode(...Array.from(content.slice(0, 17)))
-  if (SIGNATURE !== signature) {
-    throw new Error(`hwp file's signature should be ${SIGNATURE}. Received version: ${signature}`)
-  }
-
-  const [major, minor, build, revision] = Array.from(content.slice(32, 36)).reverse()
-  const version = new HWPVersion(major, minor, build, revision)
-
-  if (!version.isCompatible(SUPPORTED_VERSION)) {
-    throw new Error(`hwp.js only support ${SUPPORTED_VERSION.toString()} format. Received version: ${version.toString()}`)
-  }
-
-  const reader = new ByteReader(Uint8Array.from(content).buffer)
-
-  // signature bytes + version bytes
-  reader.skipByte(32 + 4)
-
-  const data = reader.readUInt32()
-
-  return new HWPHeader(version, signature, {
-    compressed: Boolean(getBitValue(data, 0)),
-    encrypted: Boolean(getBitValue(data, 1)),
-    distribution: Boolean(getBitValue(data, 2)),
-    script: Boolean(getBitValue(data, 3)),
-    drm: Boolean(getBitValue(data, 4)),
-    hasXmlTemplateStorage: Boolean(getBitValue(data, 5)),
-    vcs: Boolean(getBitValue(data, 6)),
-    hasElectronicSignatureInfomation: Boolean(getBitValue(data, 7)),
-    certificateEncryption: Boolean(getBitValue(data, 8)),
-    prepareSignature: Boolean(getBitValue(data, 9)),
-    certificateDRM: Boolean(getBitValue(data, 10)),
-    ccl: Boolean(getBitValue(data, 11)),
-    mobile: Boolean(getBitValue(data, 12)),
-    isPrivacySecurityDocument: Boolean(getBitValue(data, 13)),
-    trackChanges: Boolean(getBitValue(data, 14)),
-    kogl: Boolean(getBitValue(data, 15)),
-    hasVideoControl: Boolean(getBitValue(data, 16)),
-    hasOrderFieldControl: Boolean(getBitValue(data, 17)),
-  })
-}
 
 function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
   const docInfoEntry = find(container, 'DocInfo')
@@ -101,7 +38,7 @@ function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
 
   const content = docInfoEntry.content
 
-  if (header.properties.compressed) {
+  if (header.flags.compressed) {
     const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
     return new DocInfoParser(header, decodedContent, container).parse()
   } else {
@@ -118,7 +55,7 @@ function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber
 
   const content = section.content
 
-  if (header.properties.compressed) {
+  if (header.flags.compressed) {
     const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
     return new SectionParser(decodedContent).parse()
   } else {
@@ -131,7 +68,7 @@ export function parse(input: CFB$Blob): HWPDocument {
     type: 'array',
   })
 
-  const header = parseFileHeader(container)
+  const header = HWPHeader.fromCfbContainer(container)
   const docInfo = parseDocInfo(container, header)
 
   const sections: Section[] = []
