@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import printFrame from './utils/print.js'
+import { printFrame } from './utils/print.js'
 
-class Header {
+export class Header {
   private pages: HTMLElement[]
 
   private observer: IntersectionObserver
@@ -239,5 +239,3 @@ class Header {
     this.drawInfoIcon()
   }
 }
-
-export default Header

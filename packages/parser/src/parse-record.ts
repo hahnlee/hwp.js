@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-class StartingIndex {
-  page: number = 0
+import { ByteReader } from './utils/byte-reader.js'
+import { HWPRecord } from './models/record.js'
 
-  footnote: number = 0
+export function parseRecordTree(data: Uint8Array): HWPRecord {
+  const reader = new ByteReader(data.buffer)
 
-  endnote: number =0
+  const root = new HWPRecord(0, 0, 0)
 
-  picture: number=0
+  while (!reader.isEOF()) {
+    const [tagID, level, size] = reader.readRecord()
 
-  table: number=0
+    let parent: HWPRecord = root
 
-  equation: number=0
+    const payload = reader.read(size)
+
+    for (let i = 0; i < level; i += 1) {
+      parent = parent.children.slice(-1).pop()!
+    }
+
+    parent.children.push(new HWPRecord(tagID, size, parent.tagID, payload))
+  }
+
+  return root
 }
-
-export default StartingIndex

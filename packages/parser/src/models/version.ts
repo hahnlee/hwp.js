@@ -17,7 +17,7 @@
 /**
  * @see https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EB%B2%84%EC%A0%84
  */
-class HWPVersion {
+export class HWPVersion {
   major: number
 
   minor: number
@@ -77,5 +77,3 @@ class HWPVersion {
     return this.toString()
   }
 }
-
-export default HWPVersion

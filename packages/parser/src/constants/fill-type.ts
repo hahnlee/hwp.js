@@ -14,29 +14,9 @@
  * limitations under the License.
  */
 
-import ByteReader from './utils/byteReader.js'
-import HWPRecord from './models/record.js'
-
-function parseRecordTree(data: Uint8Array): HWPRecord {
-  const reader = new ByteReader(data.buffer)
-
-  const root = new HWPRecord(0, 0, 0)
-
-  while (!reader.isEOF()) {
-    const [tagID, level, size] = reader.readRecord()
-
-    let parent: HWPRecord = root
-
-    const payload = reader.read(size)
-
-    for (let i = 0; i < level; i += 1) {
-      parent = parent.children.slice(-1).pop()!
-    }
-
-    parent.children.push(new HWPRecord(tagID, size, parent.tagID, payload))
-  }
-
-  return root
+export enum FillType {
+  None = 0x00000000,
+  Single = 0x00000001,
+  Image = 0x00000002,
+  Gradation = 0x00000004,
 }
-
-export default parseRecordTree

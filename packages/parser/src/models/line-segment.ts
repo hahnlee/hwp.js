@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-class LayoutCompatibility {
-  char: number = 0
+export class LineSegment {
+  start: number = 0
 
-  paragraph: number = 0
+  y: number = 0
 
-  section: number = 0
+  height: number = 0
 
-  object: number = 0
+  textHeight: number = 0
 
-  field: number = 0
+  baseLineGap: number = 0
+
+  lineSpacing: number = 0
+
+  startByte: number = 0
+
+  width: number = 0
 }
-
-export default LayoutCompatibility

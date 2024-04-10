@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ParagraphList from '../paragraphList.js'
-import CommonControl from './common.js'
+import { ParagraphList } from '../paragraph-list.js'
+import { CommonControl } from './common.js'
 
 export interface TableColumnOption {
   column: number
@@ -28,7 +28,7 @@ export interface TableColumnOption {
   borderFillID?: number
 }
 
-class TableControl extends CommonControl {
+export class TableControl extends CommonControl {
   // TODO: (@hahnlee) setter 만들기
   tableAttribute: number = 0
 
@@ -48,5 +48,3 @@ class TableControl extends CommonControl {
     this.content[row].push(list)
   }
 }
-
-export default TableControl

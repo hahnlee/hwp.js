@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import CommonAttribute from './commonAttribute.js'
+import { CommonAttribute } from './common-attribute.js'
 import { BaseControl } from './base.js'
 
-class CommonControl implements BaseControl {
+export class CommonControl implements BaseControl {
   id: number = 0
 
   attribute = new CommonAttribute()
@@ -38,5 +38,3 @@ class CommonControl implements BaseControl {
 
   split: number = 0
 }
-
-export default CommonControl

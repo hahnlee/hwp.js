@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { getRGB } from '../utils/bitUtils.js'
+import { getRGB } from '../utils/bit-utils.js'
 import { RGB } from '../types/color.js'
 
 type SupportedLocaleOptions = [number, number, number, number, number, number, number]
 
-class CharShape {
+export class CharShape {
   fontId: SupportedLocaleOptions
 
   fontScale: SupportedLocaleOptions
@@ -80,5 +80,3 @@ class CharShape {
     this.shadowColor = getRGB(shadowColor)
   }
 }
-
-export default CharShape

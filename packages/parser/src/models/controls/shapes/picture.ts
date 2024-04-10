@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-interface Picture {
+export interface Picture {
   binID: number
 }
-
-export default Picture

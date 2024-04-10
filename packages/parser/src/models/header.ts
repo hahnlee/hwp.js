@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import HWPVersion from './version.js'
+import { HWPVersion } from './version.js'
 
 interface Properties {
   /** 압축 여부 */
@@ -75,7 +75,7 @@ interface Properties {
 /**
  * @see https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md
  */
-class HWPHeader {
+export class HWPHeader {
   version: HWPVersion
 
   signature: string
@@ -88,5 +88,3 @@ class HWPHeader {
     this.properties = properties
   }
 }
-
-export default HWPHeader

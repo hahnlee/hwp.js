@@ -14,17 +14,33 @@
  * limitations under the License.
  */
 
-import Paragraph from './paragraph.js'
+import { Panose } from './panose.js'
 
-class ParagraphList<P> {
-  attribute: P
+export class FontFace {
+  name: string = ''
 
-  items: Paragraph[] = []
+  alternative: string = ''
 
-  constructor(attribute: P, items: Paragraph[]) {
-    this.attribute = attribute
-    this.items = items
+  default: string = ''
+
+  panose: Panose | null = null
+
+  getFontFamily(): string {
+    const result = [`${this.name}`]
+
+    if (this.alternative) {
+      result.push(`"${this.alternative}"`)
+    }
+
+    if (this.default) {
+      result.push(`"${this.default}"`)
+    }
+
+    if (this.panose) {
+      const panoseFontFamily = this.panose.getFontFamily()
+      result.push(panoseFontFamily)
+    }
+
+    return result.join(',')
   }
 }
-
-export default ParagraphList

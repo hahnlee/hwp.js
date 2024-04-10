@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import HWPChar from './char.js'
-import ShapePointer from './shapePointer.js'
-import LineSegment from './lineSegment.js'
+import { HWPChar } from './char.js'
+import { ShapePointer } from './shape-pointer.js'
+import { LineSegment } from './line-segment.js'
 import { Control } from './controls/index.js'
 
-class Paragraph {
+export class Paragraph {
   content: HWPChar[] = []
 
   shapeBuffer: ShapePointer[] = []
@@ -52,5 +52,3 @@ class Paragraph {
     return next.start
   }
 }
-
-export default Paragraph

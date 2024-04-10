@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-import { RGB } from '../types/color.js'
-
-interface BorerStyle {
-  type: number
-  width: number
-  color: RGB
+export enum BinDataType {
+  LINK,
+  EMBEDDING,
+  STORAGE,
 }
 
-export interface BorderFillStyle {
-  left: BorerStyle
-  right: BorerStyle
-  top: BorerStyle
-  bottom: BorerStyle
+export enum BinDataCompress {
+  DEFAULT,
+  COMPRESS,
+  NOT_COMPRESS,
 }
 
-class BorderFill {
-  // TODO: (@hahnlee) getter & setter 만들기
-  attribute: number
+export enum BinDataStatus {
+  INITIAL,
+  SUCCESS,
+  ERROR,
+  IGNORE,
+}
 
-  style: BorderFillStyle
+interface BinProperties {
+  type: BinDataType
+  compress: BinDataCompress
+  status: BinDataStatus
+}
 
-  // TODO: (@hahnlee) 그라데이션도 처리하기
-  backgroundColor: RGB | null = null
+export class BinData {
+  properties: BinProperties
 
-  constructor(
-    attribute: number,
-    style: BorderFillStyle,
-  ) {
-    this.attribute = attribute
-    this.style = style
+  extension: string
+
+  payload: Uint8Array
+
+  constructor(properties: BinProperties, extension: string, payload: Uint8Array) {
+    this.properties = properties
+    this.extension = extension
+    this.payload = payload
   }
 }
-
-export default BorderFill

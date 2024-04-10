@@ -18,7 +18,7 @@
  * Panose 1.0
  * @see https://www.w3.org/Printing/stevahn.html
  */
-class Panose {
+export class Panose {
   family: number = 0
 
   serifStyle: number = 0
@@ -57,5 +57,3 @@ class Panose {
     return ''
   }
 }
-
-export default Panose

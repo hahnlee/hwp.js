@@ -15,7 +15,8 @@
  */
 import * as assert from 'node:assert'
 import { describe, it } from 'node:test'
-import HWPVersion from '../version.js'
+
+import { HWPVersion } from '../version.js'
 
 describe('HWPVersion', () => {
   it('should make correct version string', () => {

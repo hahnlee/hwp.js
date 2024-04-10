@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import ParagraphList from '../../paragraphList.js'
-import CommonControl from '../common.js'
+import { ParagraphList } from '../../paragraph-list.js'
+import { CommonControl } from '../common.js'
 
-class ShapeControl<P> extends CommonControl {
+export class ShapeControl<P> extends CommonControl {
   type: number = 0
 
   info: P | null = null
 
   content: ParagraphList<null>[] = []
 }
-
-export default ShapeControl

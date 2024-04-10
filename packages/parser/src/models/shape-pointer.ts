@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-import { HWPDocument, Section } from '@hwp.js/parser'
+export class ShapePointer {
+  pos: number = 0
 
-import PageBuilder from './PageBuilder.js'
+  shapeIndex: number = 0
 
-function parsePage(doc: HWPDocument): HWPDocument {
-  let sections: Section[] = []
-
-  doc.sections.forEach((section) => {
-    sections = sections.concat(new PageBuilder(section).build())
-  })
-
-  doc.sections = sections
-  return doc
+  constructor(pos: number, shapeIndex: number) {
+    this.pos = pos
+    this.shapeIndex = shapeIndex
+  }
 }
-
-export default parsePage

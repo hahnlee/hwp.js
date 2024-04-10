@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID, OtherCtrlID } from './constants/ctrlID.js'
-import { SectionTagID } from './constants/tagID.js'
+import { CommonCtrlID, OtherCtrlID } from './constants/ctrl-id.js'
+import { SectionTagID } from './constants/tag-id.js'
 import { Control } from './models/controls/index.js'
-import CommonControl from './models/controls/common.js'
-import ShapeControl from './models/controls/shapes/shape.js'
-import TableControl, { TableColumnOption } from './models/controls/table.js'
-import Section from './models/section.js'
-import Paragraph from './models/paragraph.js'
-import ParagraphList from './models/paragraphList.js'
-import HWPChar, { CharType } from './models/char.js'
-import ShapePointer from './models/shapePointer.js'
-import LineSegment from './models/lineSegment.js'
-import HWPRecord from './models/record.js'
-import ByteReader from './utils/byteReader.js'
-import RecordReader from './utils/recordReader.js'
-import { isTable, isShape } from './utils/controlUtil.js'
-import parseRecord from './parseRecord.js'
+import { CommonControl } from './models/controls/common.js'
+import { ShapeControl } from './models/controls/shapes/shape.js'
+import { TableControl, TableColumnOption } from './models/controls/table.js'
+import { Section } from './models/section.js'
+import { Paragraph } from './models/paragraph.js'
+import { ParagraphList } from './models/paragraph-list.js'
+import { HWPChar, CharType } from './models/char.js'
+import { ShapePointer } from './models/shape-pointer.js'
+import { LineSegment } from './models/line-segment.js'
+import { HWPRecord } from './models/record.js'
+import { ByteReader } from './utils/byte-reader.js'
+import { RecordReader } from './utils/record-reader.js'
+import { isTable, isShape } from './utils/control-util.js'
+import { parseRecordTree } from './parse-record.js'
 import { PictureControl } from './models/controls/shapes/index.js'
-import { getBitValue, getFlag } from './utils/bitUtils.js'
-import ColumnControl from './models/controls/column.js'
+import { getBitValue, getFlag } from './utils/bit-utils.js'
+import { ColumnControl } from './models/controls/column.js'
 
-class SectionParser {
+export class SectionParser {
   private record: HWPRecord
 
   private result: Section
@@ -43,7 +43,7 @@ class SectionParser {
   private content: Paragraph[] = []
 
   constructor(data: Uint8Array) {
-    this.record = parseRecord(data)
+    this.record = parseRecordTree(data)
     this.result = new Section()
   }
 
@@ -456,5 +456,3 @@ class SectionParser {
     return this.result
   }
 }
-
-export default SectionParser

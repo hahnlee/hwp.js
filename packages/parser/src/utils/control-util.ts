@@ -14,31 +14,19 @@
  * limitations under the License.
  */
 
-import HWPRecord from '../models/record.js'
+import { CommonCtrlID } from '../constants/ctrl-id.js'
+import { Control } from '../models/controls/index.js'
+import { TableControl } from '../models/controls/table.js'
+import { ShapeControls, PictureControl } from '../models/controls/shapes/index.js'
 
-class RecordReader {
-  private cursor: number
-
-  private records: HWPRecord[]
-
-  constructor(records: HWPRecord[]) {
-    this.records = records
-    this.cursor = 0
-  }
-
-  hasNext() {
-    return this.cursor < this.records.length
-  }
-
-  current(): HWPRecord {
-    return this.records[this.cursor]
-  }
-
-  read(): HWPRecord {
-    const result = this.records[this.cursor]
-    this.cursor += 1
-    return result
-  }
+export function isTable(control: Control): control is TableControl {
+  return control.id === CommonCtrlID.Table
 }
 
-export default RecordReader
+export function isShape(control: Control): control is ShapeControls {
+  return control.id === CommonCtrlID.GenShapeObject
+}
+
+export function isPicture(control: ShapeControls): control is PictureControl {
+  return control.type === CommonCtrlID.Picture
+}

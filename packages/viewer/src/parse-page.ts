@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../constants/ctrlID.js'
-import { Control } from '../models/controls/index.js'
-import TableControl from '../models/controls/table.js'
-import { ShapeControls, PictureControl } from '../models/controls/shapes/index.js'
+import { HWPDocument, Section } from '@hwp.js/parser'
 
-export function isTable(control: Control): control is TableControl {
-  return control.id === CommonCtrlID.Table
-}
+import { PageBuilder } from './page-builder.js'
 
-export function isShape(control: Control): control is ShapeControls {
-  return control.id === CommonCtrlID.GenShapeObject
-}
+export function parsePage(doc: HWPDocument): HWPDocument {
+  let sections: Section[] = []
 
-export function isPicture(control: ShapeControls): control is PictureControl {
-  return control.type === CommonCtrlID.Picture
+  doc.sections.forEach((section) => {
+    sections = sections.concat(new PageBuilder(section).build())
+  })
+
+  doc.sections = sections
+  return doc
 }

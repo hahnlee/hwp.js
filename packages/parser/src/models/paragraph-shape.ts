@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-enum FillType {
-  None = 0x00000000,
-  Single = 0x00000001,
-  Image = 0x00000002,
-  Gradation = 0x00000004,
+export class ParagraphShape {
+  align: number = 0
 }
-
-export default FillType

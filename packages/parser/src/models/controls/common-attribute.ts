@@ -63,7 +63,7 @@ export enum ObjectType {
   Equation,
 }
 
-class CommonAttribute {
+export class CommonAttribute {
   isTextLike: boolean = false
 
   isApplyLineSpace: boolean = false
@@ -183,5 +183,3 @@ class CommonAttribute {
     return null
   }
 }
-
-export default CommonAttribute

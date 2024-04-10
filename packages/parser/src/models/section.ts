@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import Paragraph from './paragraph.js'
+import { Paragraph } from './paragraph.js'
 
-class Section {
+export class Section {
   width: number = 0
 
   height: number = 0
@@ -39,5 +39,3 @@ class Section {
 
   bookBindingMethod: number = 0
 }
-
-export default Section

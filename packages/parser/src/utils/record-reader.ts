@@ -14,43 +14,29 @@
  * limitations under the License.
  */
 
-export enum BinDataType {
-  LINK,
-  EMBEDDING,
-  STORAGE,
-}
+import { HWPRecord } from '../models/record.js'
 
-export enum BinDataCompress {
-  DEFAULT,
-  COMPRESS,
-  NOT_COMPRESS,
-}
+export class RecordReader {
+  private cursor: number
 
-export enum BinDataStatus {
-  INITIAL,
-  SUCCESS,
-  ERROR,
-  IGNORE,
-}
+  private records: HWPRecord[]
 
-interface BinProperties {
-  type: BinDataType
-  compress: BinDataCompress
-  status: BinDataStatus
-}
+  constructor(records: HWPRecord[]) {
+    this.records = records
+    this.cursor = 0
+  }
 
-class BinData {
-  properties: BinProperties
+  hasNext() {
+    return this.cursor < this.records.length
+  }
 
-  extension: string
+  current(): HWPRecord {
+    return this.records[this.cursor]
+  }
 
-  payload: Uint8Array
-
-  constructor(properties: BinProperties, extension: string, payload: Uint8Array) {
-    this.properties = properties
-    this.extension = extension
-    this.payload = payload
+  read(): HWPRecord {
+    const result = this.records[this.cursor]
+    this.cursor += 1
+    return result
   }
 }
-
-export default BinData

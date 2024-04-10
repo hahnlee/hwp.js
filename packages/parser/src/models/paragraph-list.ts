@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-class CaratLocation {
-  listId : number = 0
+import { Paragraph } from './paragraph.js'
 
-  paragraphId: number = 0
+export class ParagraphList<P> {
+  attribute: P
 
-  // 문단 내에서의 글자 단위 위치
-  charIndex: number = 0
+  items: Paragraph[] = []
+
+  constructor(attribute: P, items: Paragraph[]) {
+    this.attribute = attribute
+    this.items = items
+  }
 }
-
-export default CaratLocation

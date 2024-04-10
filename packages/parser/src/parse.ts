@@ -22,15 +22,15 @@ import {
 } from 'cfb'
 import { inflate } from 'pako'
 
-import HWPDocument from './models/document.js'
-import DocInfo from './models/docInfo.js'
-import HWPHeader from './models/header.js'
-import HWPVersion from './models/version.js'
-import Section from './models/section.js'
-import DocInfoParser from './DocInfoParser.js'
-import SectionParser from './SectionParser.js'
-import ByteReader from './utils/byteReader.js'
-import { getBitValue } from './utils/bitUtils.js'
+import { HWPDocument } from './models/document.js'
+import { DocInfo } from './models/doc-info.js'
+import { HWPHeader } from './models/header.js'
+import { HWPVersion } from './models/version.js'
+import { Section } from './models/section.js'
+import { DocInfoParser } from './doc-info-parser.js'
+import { SectionParser } from './section-parser.js'
+import { ByteReader } from './utils/byte-reader.js'
+import { getBitValue } from './utils/bit-utils.js'
 
 // @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
 const FILE_HEADER_BYTES = 256

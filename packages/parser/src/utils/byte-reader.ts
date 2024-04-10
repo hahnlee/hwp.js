@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-class ByteReader {
+export class ByteReader {
   private view: DataView
 
   private offsetByte: number = 0
@@ -102,5 +102,3 @@ class ByteReader {
     return this.view.byteLength <= this.offsetByte
   }
 }
-
-export default ByteReader

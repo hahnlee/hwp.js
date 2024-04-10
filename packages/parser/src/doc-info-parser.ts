@@ -17,22 +17,22 @@
 import { CFB$Container, find } from 'cfb'
 import { inflate } from 'pako'
 
-import FillType from './constants/fillType.js'
-import { DocInfoTagID } from './constants/tagID.js'
-import BinData, { BinDataCompress } from './models/binData.js'
-import ByteReader from './utils/byteReader.js'
-import CharShape from './models/charShape.js'
-import DocInfo from './models/docInfo.js'
-import FontFace from './models/fontFace.js'
-import ParagraphShape from './models/paragraphShape.js'
-import { getRGB, getFlag, getBitValue } from './utils/bitUtils.js'
-import BorderFill from './models/borderFill.js'
-import HWPRecord from './models/record.js'
-import Panose from './models/panose.js'
-import parseRecordTree from './parseRecord.js'
-import HWPHeader from './models/header.js'
+import { FillType } from './constants/fill-type.js'
+import { DocInfoTagID } from './constants/tag-id.js'
+import { BinData, BinDataCompress } from './models/bin-data.js'
+import { ByteReader } from './utils/byte-reader.js'
+import { CharShape } from './models/char-shape.js'
+import { DocInfo } from './models/doc-info.js'
+import { FontFace } from './models/font-face.js'
+import { ParagraphShape } from './models/paragraph-shape.js'
+import { getRGB, getFlag, getBitValue } from './utils/bit-utils.js'
+import { BorderFill } from './models/border-fill.js'
+import { HWPRecord } from './models/record.js'
+import { Panose } from './models/panose.js'
+import { parseRecordTree } from './parse-record.js'
+import { HWPHeader } from './models/header.js'
 
-class DocInfoParser {
+export class DocInfoParser {
   private record: HWPRecord
 
   private result = new DocInfo()
@@ -315,5 +315,3 @@ class DocInfoParser {
     return this.result
   }
 }
-
-export default DocInfoParser

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import DocInfo from './docInfo.js'
-import HWPHeader from './header.js'
-import Section from './section.js'
+import { DocInfo } from './doc-info.js'
+import { HWPHeader } from './header.js'
+import { Section } from './section.js'
 
-class HWPDocument {
+export class HWPDocument {
   header: HWPHeader
 
   info: DocInfo
@@ -35,5 +35,3 @@ class HWPDocument {
     this.sections = sections
   }
 }
-
-export default HWPDocument

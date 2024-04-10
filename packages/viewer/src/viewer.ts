@@ -32,8 +32,8 @@ import {
   RGB,
 } from '@hwp.js/parser'
 
-import parsePage from './parsePage.js'
-import Header from './header.js'
+import { parsePage } from './parse-page.js'
+import { Header } from './header.js'
 
 const BORDER_WIDTH = [
   '0.1mm',

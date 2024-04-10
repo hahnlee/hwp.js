@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-class ShapePointer {
-  pos: number = 0
+export class LayoutCompatibility {
+  char: number = 0
 
-  shapeIndex: number = 0
+  paragraph: number = 0
 
-  constructor(pos: number, shapeIndex: number) {
-    this.pos = pos
-    this.shapeIndex = shapeIndex
-  }
+  section: number = 0
+
+  object: number = 0
+
+  field: number = 0
 }
-
-export default ShapePointer

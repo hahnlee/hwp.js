@@ -74,7 +74,7 @@ function walkSiblings(
   }
 }
 
-export default function printFrame(elements: HTMLElement[]) {
+export function printFrame(elements: HTMLElement[]) {
   const printStyle: string = `
     @page {
       margin: 0;

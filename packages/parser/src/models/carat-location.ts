@@ -14,35 +14,11 @@
  * limitations under the License.
  */
 
-import Panose from './panose.js'
+export class CaratLocation {
+  listId : number = 0
 
-class FontFace {
-  name: string = ''
+  paragraphId: number = 0
 
-  alternative: string = ''
-
-  default: string = ''
-
-  panose: Panose | null = null
-
-  getFontFamily(): string {
-    const result = [`${this.name}`]
-
-    if (this.alternative) {
-      result.push(`"${this.alternative}"`)
-    }
-
-    if (this.default) {
-      result.push(`"${this.default}"`)
-    }
-
-    if (this.panose) {
-      const panoseFontFamily = this.panose.getFontFamily()
-      result.push(panoseFontFamily)
-    }
-
-    return result.join(',')
-  }
+  // 문단 내에서의 글자 단위 위치
+  charIndex: number = 0
 }
-
-export default FontFace

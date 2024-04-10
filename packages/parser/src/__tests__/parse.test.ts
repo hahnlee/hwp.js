@@ -18,11 +18,11 @@ import { describe, it } from 'node:test'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import HWPDocument from '../models/document.js'
-import HWPVersion from '../models/version.js'
+import { HWPDocument } from '../models/document.js'
+import { HWPVersion } from '../models/version.js'
 import { parse } from '../parse.js'
 
-const reportFilePath = path.join(import.meta.dirname, 'data', 'basicsReport.hwp')
+const reportFilePath = path.join(import.meta.dirname, 'data', 'basics-report.hwp')
 const reportFile = fs.readFileSync(reportFilePath)
 
 describe('parse', () => {

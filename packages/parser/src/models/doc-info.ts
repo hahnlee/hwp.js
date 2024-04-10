@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape.js'
-import FontFace from './fontFace.js'
-import BinData from './binData.js'
-import BorderFill from './borderFill.js'
-import ParagraphShape from './paragraphShape.js'
-import StartingIndex from './startingIndex.js'
-import CaratLocation from './caratLocation.js'
-import LayoutCompatibility from './layoutCompatibility.js'
+import { CharShape } from './char-shape.js'
+import { FontFace } from './font-face.js'
+import { BinData } from './bin-data.js'
+import { BorderFill } from './border-fill.js'
+import { ParagraphShape } from './paragraph-shape.js'
+import { StartingIndex } from './starting-index.js'
+import { CaratLocation } from './carat-location.js'
+import { LayoutCompatibility } from './layout-compatibility.js'
 
-class DocInfo {
+export class DocInfo {
   sectionSize: number = 0
 
   charShapes: CharShape[] = []
@@ -48,5 +48,3 @@ class DocInfo {
     return this.charShapes[index]
   }
 }
-
-export default DocInfo

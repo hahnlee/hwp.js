@@ -16,7 +16,7 @@
 
 import { TableColumnOption, ParagraphList } from '@hwp.js/parser'
 
-function splitTable(
+export function splitTable(
   table: ParagraphList<TableColumnOption>[][],
   overflowColumns: (ParagraphList<TableColumnOption> | undefined)[],
   currentHeight: number,
@@ -96,5 +96,3 @@ function splitTable(
     ...next,
   ]
 }
-
-export default splitTable

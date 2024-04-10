@@ -28,7 +28,7 @@ export enum ColumnDirection {
   Justify,
 }
 
-export default class ColumnControl implements BaseControl {
+export class ColumnControl implements BaseControl {
   id: number = 0
 
   type: ColumnType = ColumnType.Normal

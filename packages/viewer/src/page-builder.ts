@@ -16,9 +16,9 @@
 
 import { Section, Paragraph, LineSegment, CharType, isTable, TableControl, TableColumnOption, ParagraphList, CommonCtrlID } from '@hwp.js/parser'
 
-import splitTable from './splitTable.js'
+import { splitTable } from './split-table.js'
 
-class PageBuilder {
+export class PageBuilder {
   private section: Section
 
   private currentSection: Section
@@ -228,5 +228,3 @@ class PageBuilder {
     return this.result
   }
 }
-
-export default PageBuilder

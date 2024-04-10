@@ -14,8 +14,35 @@
  * limitations under the License.
  */
 
-class ParagraphShape {
-  align: number = 0
+import { RGB } from '../types/color.js'
+
+interface BorerStyle {
+  type: number
+  width: number
+  color: RGB
 }
 
-export default ParagraphShape
+export interface BorderFillStyle {
+  left: BorerStyle
+  right: BorerStyle
+  top: BorerStyle
+  bottom: BorerStyle
+}
+
+export class BorderFill {
+  // TODO: (@hahnlee) getter & setter 만들기
+  attribute: number
+
+  style: BorderFillStyle
+
+  // TODO: (@hahnlee) 그라데이션도 처리하기
+  backgroundColor: RGB | null = null
+
+  constructor(
+    attribute: number,
+    style: BorderFillStyle,
+  ) {
+    this.attribute = attribute
+    this.style = style
+  }
+}

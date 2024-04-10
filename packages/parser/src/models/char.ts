@@ -20,7 +20,7 @@ export enum CharType {
   Extened,
 }
 
-class HWPChar {
+export class HWPChar {
   type: CharType
 
   value: number | string
@@ -30,5 +30,3 @@ class HWPChar {
     this.value = value
   }
 }
-
-export default HWPChar

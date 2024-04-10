@@ -16,7 +16,7 @@
 
 const emptyArrayBuffer = new ArrayBuffer(0)
 
-class HWPRecord {
+export class HWPRecord {
   children: HWPRecord[] = []
 
   payload: ArrayBuffer
@@ -39,5 +39,3 @@ class HWPRecord {
     this.payload = payload
   }
 }
-
-export default HWPRecord

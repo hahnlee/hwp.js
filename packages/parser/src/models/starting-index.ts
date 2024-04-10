@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-class LineSegment {
-  start: number = 0
+export class StartingIndex {
+  page: number = 0
 
-  y: number = 0
+  footnote: number = 0
 
-  height: number = 0
+  endnote: number =0
 
-  textHeight: number = 0
+  picture: number=0
 
-  baseLineGap: number = 0
+  table: number=0
 
-  lineSpacing: number = 0
-
-  startByte: number = 0
-
-  width: number = 0
+  equation: number=0
 }
-
-export default LineSegment
