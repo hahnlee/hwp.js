@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { getRGB } from '../utils/bitUtils'
-import { RGB } from '../types/color'
+import { getRGB } from '../utils/bitUtils.js'
+import { RGB } from '../types/color.js'
 
 type SupportedLocaleOptions = [number, number, number, number, number, number, number]
 

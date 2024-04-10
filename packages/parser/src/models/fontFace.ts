@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Panose from './panose'
+import Panose from './panose.js'
 
 class FontFace {
   name: string = ''

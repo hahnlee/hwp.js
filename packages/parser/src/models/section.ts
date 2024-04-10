@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Paragraph from './paragraph'
+import Paragraph from './paragraph.js'
 
 class Section {
   width: number = 0

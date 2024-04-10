@@ -1,0 +1,19 @@
+{
+  "name": "@hwp.js/eslint-config",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.mjs",
+  "module": "index.mjs",
+  "dependencies": {
+    "@eslint/js": "^8",
+    "typescript-eslint": "^7"
+  },
+  "peerDependencies": {
+    "eslint": "^8",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

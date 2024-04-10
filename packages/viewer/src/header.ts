@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import printFrame from './utils/print'
+import printFrame from './utils/print.js'
 
 class Header {
   private pages: HTMLElement[]

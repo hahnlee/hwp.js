@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../constants/ctrlID'
-import { Control } from '../models/controls'
-import TableControl from '../models/controls/table'
-import { ShapeControls, PictureControl } from '../models/controls/shapes'
+import { CommonCtrlID } from '../constants/ctrlID.js'
+import { Control } from '../models/controls/index.js'
+import TableControl from '../models/controls/table.js'
+import { ShapeControls, PictureControl } from '../models/controls/shapes/index.js'
 
 export function isTable(control: Control): control is TableControl {
   return control.id === CommonCtrlID.Table

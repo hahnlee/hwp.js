@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import ParagraphList from '../../paragraphList'
-import CommonControl from '../common'
+import ParagraphList from '../../paragraphList.js'
+import CommonControl from '../common.js'
 
-class ShapeControl<P = any> extends CommonControl {
+class ShapeControl<P> extends CommonControl {
   type: number = 0
 
   info: P | null = null

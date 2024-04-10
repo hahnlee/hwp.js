@@ -17,20 +17,20 @@
 import { CFB$Container, find } from 'cfb'
 import { inflate } from 'pako'
 
-import FillType from './constants/fillType'
-import { DocInfoTagID } from './constants/tagID'
-import BinData, { BinDataCompress } from './models/binData'
-import ByteReader from './utils/byteReader'
-import CharShape from './models/charShape'
-import DocInfo from './models/docInfo'
-import FontFace from './models/fontFace'
-import ParagraphShape from './models/paragraphShape'
-import { getRGB, getFlag, getBitValue } from './utils/bitUtils'
-import BorderFill from './models/borderFill'
-import HWPRecord from './models/record'
-import Panose from './models/panose'
-import parseRecordTree from './parseRecord'
-import HWPHeader from './models/header'
+import FillType from './constants/fillType.js'
+import { DocInfoTagID } from './constants/tagID.js'
+import BinData, { BinDataCompress } from './models/binData.js'
+import ByteReader from './utils/byteReader.js'
+import CharShape from './models/charShape.js'
+import DocInfo from './models/docInfo.js'
+import FontFace from './models/fontFace.js'
+import ParagraphShape from './models/paragraphShape.js'
+import { getRGB, getFlag, getBitValue } from './utils/bitUtils.js'
+import BorderFill from './models/borderFill.js'
+import HWPRecord from './models/record.js'
+import Panose from './models/panose.js'
+import parseRecordTree from './parseRecord.js'
+import HWPHeader from './models/header.js'
 
 class DocInfoParser {
   private record: HWPRecord
@@ -187,13 +187,13 @@ class DocInfoParser {
 
     // FIXME: (@hanlee) check embed
     const path = `Root Entry/BinData/BIN${`${id.toString(16).toUpperCase()}`.padStart(4, '0')}.${extension}`
-    const payload = find(this.container, path)!.content as Uint8Array
+    const payload = find(this.container, path)!.content
 
     if (
       properties.compress === BinDataCompress.COMPRESS
       || (properties.compress === BinDataCompress.DEFAULT && this.header.properties.compressed)
     ) {
-      const data = inflate(payload, { windowBits: -15 })
+      const data = inflate(Uint8Array.from(payload), { windowBits: -15 })
       this.result.binData.push(new BinData(properties, extension, data))
     } else {
       this.result.binData.push(new BinData(properties, extension, Uint8Array.from(payload)))

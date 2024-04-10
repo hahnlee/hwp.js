@@ -17,21 +17,20 @@
 import {
   read,
   find,
-  CFB$Blob,
-  CFB$Container,
-  CFB$ParsingOptions,
+  type CFB$Blob,
+  type CFB$Container,
 } from 'cfb'
 import { inflate } from 'pako'
 
-import HWPDocument from './models/document'
-import DocInfo from './models/docInfo'
-import HWPHeader from './models/header'
-import HWPVersion from './models/version'
-import Section from './models/section'
-import DocInfoParser from './DocInfoParser'
-import SectionParser from './SectionParser'
-import ByteReader from './utils/byteReader'
-import { getBitValue } from './utils/bitUtils'
+import HWPDocument from './models/document.js'
+import DocInfo from './models/docInfo.js'
+import HWPHeader from './models/header.js'
+import HWPVersion from './models/version.js'
+import Section from './models/section.js'
+import DocInfoParser from './DocInfoParser.js'
+import SectionParser from './SectionParser.js'
+import ByteReader from './utils/byteReader.js'
+import { getBitValue } from './utils/bitUtils.js'
 
 // @link https://github.com/hahnlee/hwp.js/blob/master/docs/hwp/5.0/FileHeader.md#%ED%8C%8C%EC%9D%BC-%EC%9D%B8%EC%8B%9D-%EC%A0%95%EB%B3%B4
 const FILE_HEADER_BYTES = 256
@@ -61,7 +60,7 @@ function parseFileHeader(container: CFB$Container): HWPHeader {
   const version = new HWPVersion(major, minor, build, revision)
 
   if (!version.isCompatible(SUPPORTED_VERSION)) {
-    throw new Error(`hwp.js only support ${SUPPORTED_VERSION} format. Received version: ${version}`)
+    throw new Error(`hwp.js only support ${SUPPORTED_VERSION.toString()} format. Received version: ${version.toString()}`)
   }
 
   const reader = new ByteReader(Uint8Array.from(content).buffer)
@@ -100,10 +99,10 @@ function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
     throw new Error('DocInfo not exist')
   }
 
-  const content: Uint8Array = docInfoEntry.content as Uint8Array
+  const content = docInfoEntry.content
 
   if (header.properties.compressed) {
-    const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
+    const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
     return new DocInfoParser(header, decodedContent, container).parse()
   } else {
     return new DocInfoParser(header, Uint8Array.from(content), container).parse()
@@ -117,18 +116,20 @@ function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber
     throw new Error('Section not exist')
   }
 
-  const content: Uint8Array = section.content as Uint8Array
+  const content = section.content
 
   if (header.properties.compressed) {
-    const decodedContent: Uint8Array = inflate(content, { windowBits: -15 })
+    const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
     return new SectionParser(decodedContent).parse()
   } else {
     return new SectionParser(Uint8Array.from(content)).parse()
   }
 }
 
-export function parse(input: CFB$Blob, options?: CFB$ParsingOptions): HWPDocument {
-  const container: CFB$Container = read(input, options)
+export function parse(input: CFB$Blob): HWPDocument {
+  const container: CFB$Container = read(input, {
+    type: 'array',
+  })
 
   const header = parseFileHeader(container)
   const docInfo = parseDocInfo(container, header)

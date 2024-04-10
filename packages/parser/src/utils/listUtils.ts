@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/prefer-default-export
 export function last<P>(list: P[]): P | undefined {
   return list[list.length - 1]
 }

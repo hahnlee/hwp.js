@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type TableControl from './table'
-import type { ShapeControls } from './shapes'
-import type { BaseControl } from './base'
-import type ColumnControl from './column'
+import type TableControl from './table.js'
+import type { ShapeControls } from './shapes/index.js'
+import type { BaseControl } from './base.js'
+import type ColumnControl from './column.js'
 
 export type Control = (
   BaseControl |

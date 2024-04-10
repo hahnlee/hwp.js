@@ -16,7 +16,7 @@
 
 import { Section, Paragraph, LineSegment, CharType, isTable, TableControl, TableColumnOption, ParagraphList, CommonCtrlID } from '@hwp.js/parser'
 
-import splitTable from './splitTable'
+import splitTable from './splitTable.js'
 
 class PageBuilder {
   private section: Section
@@ -172,7 +172,7 @@ class PageBuilder {
         return
       }
 
-      const control = paragraph.controls[this.controlIndex]!
+      const control = paragraph.controls[this.controlIndex]
       this.controlIndex += 1
 
       if (!isTable(control)) {

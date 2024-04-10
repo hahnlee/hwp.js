@@ -47,7 +47,7 @@ function splitTable(
   }
 
   for (let i = 0; i < overflow.length; i += 1) {
-    const firstRow = columns[0]!
+    const firstRow = columns[0]
     const column = overflow[i]
 
     if (column) {

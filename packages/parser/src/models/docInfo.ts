@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import CharShape from './charShape'
-import FontFace from './fontFace'
-import BinData from './binData'
-import BorderFill from './borderFill'
-import ParagraphShape from './paragraphShape'
-import StartingIndex from './startingIndex'
-import CaratLocation from './caratLocation'
-import LayoutCompatibility from './layoutCompatibility'
+import CharShape from './charShape.js'
+import FontFace from './fontFace.js'
+import BinData from './binData.js'
+import BorderFill from './borderFill.js'
+import ParagraphShape from './paragraphShape.js'
+import StartingIndex from './startingIndex.js'
+import CaratLocation from './caratLocation.js'
+import LayoutCompatibility from './layoutCompatibility.js'
 
 class DocInfo {
   sectionSize: number = 0

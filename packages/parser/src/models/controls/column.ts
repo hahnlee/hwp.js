@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BaseControl } from './base'
+import { BaseControl } from './base.js'
 
 export enum ColumnType {
   Normal,

@@ -3,35 +3,9 @@
   "version": "0.0.3",
   "license": "Apache-2.0",
   "private": true,
-  "lint-staged": {
-    "src/**/*.(js|ts)?(x)": [
-      "eslint"
-    ]
-  },
   "scripts": {
-    "build": "pnpm typecheck && rollup -c rollup.config.js",
-    "lint-staged": "lint-staged",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test": "jest --coverage",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-typescript": "^7.10.4",
-    "@types/jest": "^26.0.10",
-    "@typescript-eslint/eslint-plugin": "^3.6.1",
-    "@typescript-eslint/parser": "^3.9.1",
-    "babel-jest": "^26.3.0",
-    "eslint": "^7.7.0",
-    "eslint-config-airbnb-typescript": "^9.0.0",
-    "eslint-import-resolver-node": "^0.3.6",
-    "eslint-plugin-import": "^2.22.0",
-    "husky": "^9.0.11",
-    "jest": "^26.4.2",
-    "lint-staged": "^15.2.2",
-    "typescript": "^5.4.4"
+    "test": "pnpm -r test"
   }
 }

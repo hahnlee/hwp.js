@@ -1,29 +1,30 @@
 {
   "name": "@hwp.js/parser",
   "version": "0.0.3",
+  "type": "module",
+  "siseEffect": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
-  "types": "./src/index.ts",
-  "siseEffect": false,
   "publishConfig": {
     "main": "./build/cjs.js",
     "module": "./build/esm.js",
     "types": "./build/index.d.ts"
   },
-  "dependencies": {
-    "cfb": "^1.2.0",
-    "pako": "^1.0.11"
+  "scripts": {
+    "lint": "eslint ./src",
+    "test": "node --import tsx --test **/*.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-typescript": "^7.10.4",
-    "@rollup/plugin-babel": "^5.2.0",
-    "@rollup/plugin-commonjs": "^15.0.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-strip": "^2.0.0",
+    "@hwp.js/eslint-config": "workspace:*",
+    "@types/node": "^20",
     "@types/pako": "^1.0.1",
-    "rollup": "^2.26.10"
+    "eslint": "^8",
+    "tsx": "^4.7.2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "cfb": "^1.2.2",
+    "pako": "^2.1.0"
   }
 }

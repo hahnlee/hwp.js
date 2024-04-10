@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { RGB } from '../types/color'
+import { RGB } from '../types/color.js'
 
 export function getBitValue(mask: number, start: number, end: number = start): number {
   const target: number = mask >> start

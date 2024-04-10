@@ -1,5 +1,5 @@
-import type ShapeControl from './shape'
-import type Picture from './picture'
+import type ShapeControl from './shape.js'
+import type Picture from './picture.js'
 
 export type PictureControl = ShapeControl<Picture>
 

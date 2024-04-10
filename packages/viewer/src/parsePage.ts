@@ -16,7 +16,7 @@
 
 import { HWPDocument, Section } from '@hwp.js/parser'
 
-import PageBuilder from './PageBuilder'
+import PageBuilder from './PageBuilder.js'
 
 function parsePage(doc: HWPDocument): HWPDocument {
   let sections: Section[] = []

@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import * as assert from 'node:assert'
+import { describe, it } from 'node:test'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import HWPDocument from '../models/document'
-import HWPVersion from '../models/version'
-import parse from '../parse'
+import HWPDocument from '../models/document.js'
+import HWPVersion from '../models/version.js'
+import { parse } from '../parse.js'
 
-const reportFilePath = path.join(__dirname, 'data', 'basicsReport.hwp')
+const reportFilePath = path.join(import.meta.dirname, 'data', 'basicsReport.hwp')
 const reportFile = fs.readFileSync(reportFilePath)
 
-describe.skip('parse', () => {
-  const hwpDocument = parse(reportFile, { type: 'binary' })
+describe('parse', () => {
+  const hwpDocument = parse(reportFile)
 
   it('should parse HWP file', () => {
-    expect(hwpDocument instanceof HWPDocument).toBe(true)
-    expect(hwpDocument.header.version).toEqual(new HWPVersion(5, 0, 2, 4))
+    assert.strictEqual(hwpDocument instanceof HWPDocument, true)
+    assert.strictEqual(hwpDocument.header.version.toString(), new HWPVersion(5, 0, 2, 4).toString())
   })
 
   it('should parse collect sectionNumber', () => {
-    expect(hwpDocument.info.sectionSize).toEqual(1)
+    assert.strictEqual(hwpDocument.info.sectionSize, 1)
   })
 
   it('should be collect page size', () => {
-    expect(hwpDocument.sections.length).toBe(1)
+    assert.strictEqual(hwpDocument.sections.length, 1)
 
     // A4 width / height
-    expect(hwpDocument.sections[0].width).toBe(59528)
-    expect(hwpDocument.sections[0].height).toBe(84188)
+    assert.strictEqual(hwpDocument.sections[0].width, 59528)
+    assert.strictEqual(hwpDocument.sections[0].height, 84188)
   })
 
   it('should parse signature', () => {
-    expect(hwpDocument.header.signature).toBe('HWP Document File')
+    assert.strictEqual(hwpDocument.header.signature, 'HWP Document File')
   })
 })

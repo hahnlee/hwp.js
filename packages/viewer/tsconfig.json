@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "lib": ["esnext", "DOM"],
+    "strict": true
+  }
+}

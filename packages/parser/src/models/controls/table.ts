@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ParagraphList from '../paragraphList'
-import CommonControl from './common'
+import ParagraphList from '../paragraphList.js'
+import CommonControl from './common.js'
 
 export interface TableColumnOption {
   column: number

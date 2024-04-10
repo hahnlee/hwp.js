@@ -1,3 +1,0 @@
-pnpm lint-staged
-pnpm typecheck
-pnpm jest

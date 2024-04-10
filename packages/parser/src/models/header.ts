@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import HWPVersion from './version'
+import HWPVersion from './version.js'
 
 interface Properties {
   /** 압축 여부 */

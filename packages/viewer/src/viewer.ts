@@ -31,10 +31,9 @@ import {
   isPicture,
   RGB,
 } from '@hwp.js/parser'
-import { CFB$ParsingOptions } from 'cfb/types'
 
-import parsePage from './parsePage'
-import Header from './header'
+import parsePage from './parsePage.js'
+import Header from './header.js'
 
 const BORDER_WIDTH = [
   '0.1mm',
@@ -81,9 +80,9 @@ export class HWPViewer {
 
   private header: Header | null = null
 
-  constructor(container: HTMLElement, data: Uint8Array, option: CFB$ParsingOptions = { type: 'binary' }) {
+  constructor(container: HTMLElement, data: Uint8Array) {
     this.container = container
-    this.hwpDocument = parsePage(parse(data, option))
+    this.hwpDocument = parsePage(parse(data))
     this.draw()
   }
 
@@ -338,7 +337,7 @@ export class HWPViewer {
     const paragraphContainer = document.createElement('div')
     paragraphContainer.style.margin = '0'
 
-    const shape = this.hwpDocument.info.paragraphShapes[paragraph.shapeIndex]!
+    const shape = this.hwpDocument.info.paragraphShapes[paragraph.shapeIndex]
     paragraphContainer.style.textAlign = TEXT_ALIGN[shape.align]
 
     paragraph.shapeBuffer.forEach((shapePointer, index) => {

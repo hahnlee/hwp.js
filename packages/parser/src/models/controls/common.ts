@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import CommonAttribute from './commonAttribute'
-import { BaseControl } from './base'
+import CommonAttribute from './commonAttribute.js'
+import { BaseControl } from './base.js'
 
 class CommonControl implements BaseControl {
   id: number = 0

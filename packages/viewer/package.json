@@ -1,6 +1,7 @@
 {
   "name": "@hwp.js/viewer",
   "version": "0.0.3",
+  "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
   "types": "./src/index.ts",
@@ -10,9 +11,17 @@
     "module": "./build/esm.js",
     "types": "./build/index.d.ts"
   },
+  "scripts": {
+    "lint": "eslint ./src",
+    "test": "node --import tsx --test **/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
+    "@hwp.js/eslint-config": "workspace:*",
     "@hwp.js/parser": "workspace:*",
-    "cfb": "^1.2.0"
+    "@types/node": "^20",
+    "tsx": "^4.7.2",
+    "typescript": "^5"
   },
   "peerDependencies": {
     "@hwp.js/parser": "^0.0.3"

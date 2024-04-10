@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import HWPRecord from '../models/record'
+import HWPRecord from '../models/record.js'
 
 class RecordReader {
   private cursor: number

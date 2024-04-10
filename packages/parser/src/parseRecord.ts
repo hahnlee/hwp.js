@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import ByteReader from './utils/byteReader'
-import HWPRecord from './models/record'
+import ByteReader from './utils/byteReader.js'
+import HWPRecord from './models/record.js'
 
 function parseRecordTree(data: Uint8Array): HWPRecord {
   const reader = new ByteReader(data.buffer)

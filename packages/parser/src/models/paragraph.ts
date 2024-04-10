@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import HWPChar from './char'
-import ShapePointer from './shapePointer'
-import LineSegment from './lineSegment'
-import { Control } from './controls'
+import HWPChar from './char.js'
+import ShapePointer from './shapePointer.js'
+import LineSegment from './lineSegment.js'
+import { Control } from './controls/index.js'
 
 class Paragraph {
   content: HWPChar[] = []

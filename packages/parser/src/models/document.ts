@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import DocInfo from './docInfo'
-import HWPHeader from './header'
-import Section from './section'
+import DocInfo from './docInfo.js'
+import HWPHeader from './header.js'
+import Section from './section.js'
 
 class HWPDocument {
   header: HWPHeader

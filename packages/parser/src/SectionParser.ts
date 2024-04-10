@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID, OtherCtrlID } from './constants/ctrlID'
-import { SectionTagID } from './constants/tagID'
-import { Control } from './models/controls'
-import CommonControl from './models/controls/common'
-import ShapeControl from './models/controls/shapes/shape'
-import TableControl, { TableColumnOption } from './models/controls/table'
-import Section from './models/section'
-import Paragraph from './models/paragraph'
-import ParagraphList from './models/paragraphList'
-import HWPChar, { CharType } from './models/char'
-import ShapePointer from './models/shapePointer'
-import LineSegment from './models/lineSegment'
-import HWPRecord from './models/record'
-import ByteReader from './utils/byteReader'
-import RecordReader from './utils/recordReader'
-import { isTable, isShape } from './utils/controlUtil'
-import parseRecord from './parseRecord'
-import { PictureControl } from './models/controls/shapes'
-import { getBitValue, getFlag } from './utils/bitUtils'
-import ColumnControl from './models/controls/column'
+import { CommonCtrlID, OtherCtrlID } from './constants/ctrlID.js'
+import { SectionTagID } from './constants/tagID.js'
+import { Control } from './models/controls/index.js'
+import CommonControl from './models/controls/common.js'
+import ShapeControl from './models/controls/shapes/shape.js'
+import TableControl, { TableColumnOption } from './models/controls/table.js'
+import Section from './models/section.js'
+import Paragraph from './models/paragraph.js'
+import ParagraphList from './models/paragraphList.js'
+import HWPChar, { CharType } from './models/char.js'
+import ShapePointer from './models/shapePointer.js'
+import LineSegment from './models/lineSegment.js'
+import HWPRecord from './models/record.js'
+import ByteReader from './utils/byteReader.js'
+import RecordReader from './utils/recordReader.js'
+import { isTable, isShape } from './utils/controlUtil.js'
+import parseRecord from './parseRecord.js'
+import { PictureControl } from './models/controls/shapes/index.js'
+import { getBitValue, getFlag } from './utils/bitUtils.js'
+import ColumnControl from './models/controls/column.js'
 
 class SectionParser {
   private record: HWPRecord
@@ -328,7 +328,7 @@ class SectionParser {
     control.borderFillID = reader.readUInt16()
   }
 
-  visitShapeComponent(record: HWPRecord, paragraph: Paragraph, control: ShapeControl) {
+  visitShapeComponent(record: HWPRecord, paragraph: Paragraph, control: Control) {
     const childrenReader = new RecordReader(record.children)
 
     while (childrenReader.hasNext()) {
@@ -405,12 +405,12 @@ class SectionParser {
       }
 
       case SectionTagID.HWPTAG_SHAPE_COMPONENT: {
-        this.visitShapeComponent(record, paragraph, control as ShapeControl)
+        this.visitShapeComponent(record, paragraph, control as ShapeControl<unknown>)
         break
       }
 
       case SectionTagID.HWPTAG_SHAPE_COMPONENT_PICTURE: {
-        this.visitPicture(record, control as ShapeControl)
+        this.visitPicture(record, control as PictureControl)
         break
       }
 
