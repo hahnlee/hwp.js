@@ -103,7 +103,7 @@ export class SectionParser {
           break
         }
 
-        // Extened
+        // Extended
         case 1:
         case 2:
         case 3:
@@ -118,7 +118,7 @@ export class SectionParser {
         case 22:
         case 23: {
           paragraph.content.push(
-            new HWPChar(CharType.Extened, charCode),
+            new HWPChar(CharType.Extended, charCode),
           )
           reader.skipByte(14)
           paragraph.textSize += 8
@@ -275,7 +275,7 @@ export class SectionParser {
 
   visitListHeader(record: HWPRecord, reader: RecordReader, control?: Control) {
     if (!control) {
-      throw new Error(`Except: control, Recived: ${control}`)
+      throw new Error(`Except: control, Received: ${control}`)
     }
 
     const byteReader = new ByteReader(record.payload)
@@ -316,7 +316,7 @@ export class SectionParser {
     }
 
     if (control.id !== CommonCtrlID.Table) {
-      throw new Error(`Expect: ${CommonCtrlID.Table}, Recived: ${control.id}`)
+      throw new Error(`Expect: ${CommonCtrlID.Table}, Received: ${control.id}`)
     }
 
     control.tableAttribute = reader.readUInt32()

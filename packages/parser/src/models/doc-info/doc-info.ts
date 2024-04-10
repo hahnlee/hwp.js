@@ -42,9 +42,9 @@ export class DocInfo {
 
   compatibleDocument: number = 0
 
-  layoutCompatiblity: LayoutCompatibility = new LayoutCompatibility()
+  layoutCompatibility: LayoutCompatibility = new LayoutCompatibility()
 
-  getCharShpe(index: number): CharShape | undefined {
+  getCharShape(index: number): CharShape | undefined {
     return this.charShapes[index]
   }
 }

@@ -89,7 +89,7 @@ export class PageBuilder {
     return line
   }
 
-  checkoutShpeBuffer(paragraph: Paragraph) {
+  checkoutShapeBuffer(paragraph: Paragraph) {
     let endIndex = paragraph.getShapeEndPos(this.shapeBufferIndex)
     let startIndex = 0
 
@@ -119,7 +119,7 @@ export class PageBuilder {
   }
 
   exitParagraph(paragraph: Paragraph) {
-    this.checkoutShpeBuffer(paragraph)
+    this.checkoutShapeBuffer(paragraph)
     this.currentSection.content.push(this.currentParagraph)
   }
 
@@ -166,7 +166,7 @@ export class PageBuilder {
     this.currentHeight += (lineSegment.height + lineSegment.lineSpacing)
 
     line.forEach((content) => {
-      if (content.type !== CharType.Extened) {
+      if (content.type !== CharType.Extended) {
         this.currentParagraph.content.push(content)
         this.endCharIndex += 1
         return

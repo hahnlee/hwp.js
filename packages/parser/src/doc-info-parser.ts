@@ -47,7 +47,7 @@ export class DocInfoParser {
     this.container = container
   }
 
-  visitDocumentPropertes(record: HWPRecord) {
+  visitDocumentProperties(record: HWPRecord) {
     const reader = new ByteReader(record.payload)
     this.result.sectionSize = reader.readUInt16()
 
@@ -254,17 +254,17 @@ export class DocInfoParser {
 
   visitLayoutCompatibility(record: HWPRecord) {
     const reader = new ByteReader(record.payload)
-    this.result.layoutCompatiblity.char = reader.readUInt32()
-    this.result.layoutCompatiblity.paragraph = reader.readUInt32()
-    this.result.layoutCompatiblity.section = reader.readUInt32()
-    this.result.layoutCompatiblity.object = reader.readUInt32()
-    this.result.layoutCompatiblity.field = reader.readUInt32()
+    this.result.layoutCompatibility.char = reader.readUInt32()
+    this.result.layoutCompatibility.paragraph = reader.readUInt32()
+    this.result.layoutCompatibility.section = reader.readUInt32()
+    this.result.layoutCompatibility.object = reader.readUInt32()
+    this.result.layoutCompatibility.field = reader.readUInt32()
   }
 
   private visit = (record: HWPRecord) => {
     switch (record.tagID) {
       case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
-        this.visitDocumentPropertes(record)
+        this.visitDocumentProperties(record)
         break
       }
 

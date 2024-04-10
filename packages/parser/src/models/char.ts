@@ -17,7 +17,7 @@
 export enum CharType {
   Char,
   Inline,
-  Extened,
+  Extended,
 }
 
 export class HWPChar {

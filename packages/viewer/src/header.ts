@@ -86,7 +86,7 @@ export class Header {
     }
   }
 
-  distory() {
+  destroy() {
     this.pages.forEach((page) => {
       this.observer.unobserve(page)
     })
@@ -94,10 +94,10 @@ export class Header {
     this.modal?.removeEventListener('click', this.handleModalClick)
     this.modal = null
 
-    this.infoButton?.removeEventListener('click', this.handleInfoButtionClick)
+    this.infoButton?.removeEventListener('click', this.handleInfoButtonClick)
     this.infoButton = null
 
-    this.printButton?.removeEventListener('click', this.handleInfoButtionClick)
+    this.printButton?.removeEventListener('click', this.handleInfoButtonClick)
     this.printButton = null
 
     this.pageNumber = null
@@ -182,13 +182,13 @@ export class Header {
     }
   }
 
-  handleInfoButtionClick = () => {
+  handleInfoButtonClick = () => {
     if (this.modal) {
       this.modal.style.display = 'flex'
     }
   }
 
-  handlePrintButtionClick = () => {
+  handlePrintButtonClick = () => {
     printFrame(this.pages)
   }
 
@@ -204,33 +204,33 @@ export class Header {
   }
 
   drawInfoIcon() {
-    const buttion = document.createElement('div')
-    buttion.style.marginLeft = '10px'
-    buttion.style.cursor = 'pointer'
-    buttion.style.height = '100%'
-    buttion.style.padding = '5px'
-    buttion.classList.add('hwpjs-header-control')
-    buttion.innerHTML = '<svg width="393" height="394" viewBox="0 0 393 394" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-info"><rect x="463" y="144" width="393" height="394"/></clipPath></defs><g clip-path="url(#--hwpjs-header-info)" transform="translate(-463 -144)"><path d="M640.245 292.076 640.245 471.79 678.755 471.79 678.755 292.076ZM640.245 209.21 640.245 247.602 678.755 247.602 678.755 209.21ZM463 144 856 144 856 537 463 537Z" fill-rule="evenodd"/></g></svg>'
-    buttion.addEventListener('click', this.handleInfoButtionClick)
+    const button = document.createElement('div')
+    button.style.marginLeft = '10px'
+    button.style.cursor = 'pointer'
+    button.style.height = '100%'
+    button.style.padding = '5px'
+    button.classList.add('hwpjs-header-control')
+    button.innerHTML = '<svg width="393" height="394" viewBox="0 0 393 394" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-info"><rect x="463" y="144" width="393" height="394"/></clipPath></defs><g clip-path="url(#--hwpjs-header-info)" transform="translate(-463 -144)"><path d="M640.245 292.076 640.245 471.79 678.755 471.79 678.755 292.076ZM640.245 209.21 640.245 247.602 678.755 247.602 678.755 209.21ZM463 144 856 144 856 537 463 537Z" fill-rule="evenodd"/></g></svg>'
+    button.addEventListener('click', this.handleInfoButtonClick)
 
-    this.container.appendChild(buttion)
+    this.container.appendChild(button)
 
-    this.infoButton = buttion
+    this.infoButton = button
   }
 
   drawPrintIcon() {
-    const buttion = document.createElement('div')
-    buttion.style.cursor = 'pointer'
-    buttion.style.height = '100%'
-    buttion.style.padding = '5px'
-    buttion.classList.add('hwpjs-header-control')
-    buttion.innerHTML = '<svg width="284" height="253" viewBox="0 0 284 253" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-print"><rect x="498" y="82" width="284" height="253"/></clipPath></defs><g clip-path="url(#--hwpjs-header-print)" transform="translate(-498 -82)"><rect x="559" y="93" width="162" height="231" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none"/><path d="M756.613 155.95C751.961 155.95 748.189 159.719 748.189 164.368 748.189 169.018 751.961 172.787 756.613 172.787 761.266 172.787 765.038 169.018 765.038 164.368 765.038 159.719 761.266 155.95 756.613 155.95ZM499 140 781 140 781 228.612 781 275 720.698 275 720.698 228.612 559.302 228.612 559.302 275 499 275 499 228.612Z" fill-rule="evenodd"/><path d="M588 286 647.556 286" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/><path d="M588 254 670.667 254" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/></g></svg>'
-    buttion.style.marginLeft = 'auto'
-    buttion.addEventListener('click', this.handlePrintButtionClick)
+    const button = document.createElement('div')
+    button.style.cursor = 'pointer'
+    button.style.height = '100%'
+    button.style.padding = '5px'
+    button.classList.add('hwpjs-header-control')
+    button.innerHTML = '<svg width="284" height="253" viewBox="0 0 284 253" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden" style="height: 100%;width: auto;"><defs><clipPath id="hwpjs-header-print"><rect x="498" y="82" width="284" height="253"/></clipPath></defs><g clip-path="url(#--hwpjs-header-print)" transform="translate(-498 -82)"><rect x="559" y="93" width="162" height="231" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none"/><path d="M756.613 155.95C751.961 155.95 748.189 159.719 748.189 164.368 748.189 169.018 751.961 172.787 756.613 172.787 761.266 172.787 765.038 169.018 765.038 164.368 765.038 159.719 761.266 155.95 756.613 155.95ZM499 140 781 140 781 228.612 781 275 720.698 275 720.698 228.612 559.302 228.612 559.302 275 499 275 499 228.612Z" fill-rule="evenodd"/><path d="M588 286 647.556 286" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/><path d="M588 254 670.667 254" stroke="#000000" stroke-width="20" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/></g></svg>'
+    button.style.marginLeft = 'auto'
+    button.addEventListener('click', this.handlePrintButtonClick)
 
-    this.container.appendChild(buttion)
+    this.container.appendChild(button)
 
-    this.printButton = buttion
+    this.printButton = button
   }
 
   draw() {

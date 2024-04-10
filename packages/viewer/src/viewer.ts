@@ -86,9 +86,9 @@ export class HWPViewer {
     this.draw()
   }
 
-  distory() {
+  destroy() {
     this.pages = []
-    this.header?.distory()
+    this.header?.destroy()
     this.viewer.parentElement?.removeChild(this.viewer)
   }
 
@@ -294,7 +294,7 @@ export class HWPViewer {
         return
       }
 
-      if (hwpChar.type === CharType.Extened) {
+      if (hwpChar.type === CharType.Extended) {
         const control = paragraph.controls[ctrlIndex]
         ctrlIndex += 1
         this.drawControl(container, control)
@@ -310,7 +310,7 @@ export class HWPViewer {
     const span = document.createElement('div')
     span.textContent = text
 
-    const charShape = this.hwpDocument.info.getCharShpe(shapePointer.shapeIndex)
+    const charShape = this.hwpDocument.info.getCharShape(shapePointer.shapeIndex)
 
     if (charShape) {
       const {
