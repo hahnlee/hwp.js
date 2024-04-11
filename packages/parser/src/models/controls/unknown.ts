@@ -14,30 +14,14 @@
  * limitations under the License.
  */
 
-import { ByteReader } from '../../utils/byte-reader.js'
 import type { PeekableIterator } from '../../utils/generator.js'
+import { collectChildren } from '../../utils/record.js'
 import type { HWPRecord } from '../record.js'
-import { SectionTagID } from '../../constants/tag-id.js'
-import { type ControlContent, parseControl } from './content.js'
-import { HWPVersion } from '../version.js'
 
-export class Control {
-  constructor(public id: number, public content: ControlContent) {}
+export class UnknownControl {
+  constructor(public records: HWPRecord[]) {}
 
-  static fromRecords(
-    iterator: PeekableIterator<HWPRecord>,
-    version: HWPVersion,
-  ) {
-    const current = iterator.next()
-    if (current.id !== SectionTagID.HWPTAG_CTRL_HEADER) {
-      throw new Error('Control: Record has wrong ID')
-    }
-
-    const reader = new ByteReader(current.data)
-    const id = reader.readUInt32()
-
-    const content = parseControl(id, current, iterator, version)
-
-    return new Control(id, content)
+  static fromRecord(current: HWPRecord, iterator: PeekableIterator<HWPRecord>) {
+    return new UnknownControl(collectChildren(iterator, current.level))
   }
 }

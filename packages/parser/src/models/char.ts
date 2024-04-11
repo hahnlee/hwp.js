@@ -14,19 +14,130 @@
  * limitations under the License.
  */
 
-export enum CharType {
-  Char,
-  Inline,
-  Extended,
+import { ByteReader } from '../utils/byte-reader.js'
+
+export enum CharControls {
+  Unusable = 0,
+  LineBreak = 10,
+  ParaBreak = 13,
+  Hyphen = 24,
+  Reserved1 = 25,
+  Reserved2 = 26,
+  Reserved3 = 27,
+  Reserved4 = 28,
+  Reserved5 = 29,
+  /** 묶음 빈칸 */
+  KeepWordSpace = 30,
+  /** 고정폭 빈칸 */
+  FixedWidthSpace = 31,
 }
 
-export class HWPChar {
-  type: CharType
+export type HWPChar = CharCode | CharControl | InlineControl | ExtendedControl
 
-  value: number | string
+export class CharCode {
+  public bytes = 1
 
-  constructor(type: CharType, value: number | string) {
-    this.type = type
-    this.value = value
+  constructor(public code: number) {}
+
+  toString() {
+    return String.fromCharCode(this.code)
+  }
+}
+
+export class CharControl {
+  public bytes = 1
+
+  constructor(public control: CharControls) {}
+
+  toString() {
+    return ''
+  }
+}
+
+export class InlineControl {
+  public bytes = 8
+
+  constructor(public code: number, public buffer: ArrayBuffer) {}
+
+  toString() {
+    return ''
+  }
+}
+
+export class ExtendedControl {
+  public bytes = 8
+
+  constructor(public code: number, public buffer: ArrayBuffer) {}
+
+  toString() {
+    return ''
+  }
+}
+
+function matchCharControl(input: number) {
+  switch (input) {
+    case 0:
+      return CharControls.Unusable
+    case 10:
+      return CharControls.LineBreak
+    case 13:
+      return CharControls.ParaBreak
+    case 24:
+      return CharControls.Hyphen
+    case 25:
+      return CharControls.Reserved1
+    case 26:
+      return CharControls.Reserved2
+    case 27:
+      return CharControls.Reserved3
+    case 28:
+      return CharControls.Reserved4
+    case 29:
+      return CharControls.Reserved5
+    case 30:
+      return CharControls.KeepWordSpace
+    case 31:
+      return CharControls.FixedWidthSpace
+    default:
+      return null
+  }
+}
+
+export function readChar(reader: ByteReader) {
+  const code = reader.readUInt16()
+
+  if (code > 31) {
+    return new CharCode(code)
+  }
+
+  const charControl = matchCharControl(code)
+  if (charControl) {
+    return new CharControl(charControl)
+  }
+
+  const buf = reader.read(12)
+
+  const other = reader.readUInt16()
+  if (code !== other) {
+    throw new Error('invalid char')
+  }
+
+  switch (code) {
+    case 1:
+    case 2:
+    case 3:
+    case 11:
+    case 12:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 21:
+    case 22:
+    case 23:
+      return new ExtendedControl(code, buf)
+    default:
+      return new InlineControl(code, buf)
   }
 }

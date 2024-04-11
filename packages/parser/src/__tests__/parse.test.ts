@@ -39,9 +39,5 @@ describe('parse', () => {
 
   it('should be collect page size', () => {
     assert.strictEqual(hwpDocument.sections.length, 1)
-
-    // A4 width / height
-    assert.strictEqual(hwpDocument.sections[0].width, 59528)
-    assert.strictEqual(hwpDocument.sections[0].height, 84188)
   })
 })

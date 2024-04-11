@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 
-import { ByteReader } from './utils/byte-reader.js'
-import { HWPRecord } from './models/record.js'
+import type { HWPRecord } from '../models/record.js'
+import type { PeekableIterator } from './generator.js'
 
-export function parseRecordTree(data: Uint8Array): HWPRecord {
-  const reader = new ByteReader(data.buffer)
-
-  const root = new HWPRecord(0, 0, 0)
-
-  while (!reader.isEOF()) {
-    const [tagID, level, size] = reader.readRecord()
-
-    let parent: HWPRecord = root
-
-    const payload = reader.read(size)
-
-    for (let i = 0; i < level; i += 1) {
-      parent = parent.children.slice(-1).pop()!
-    }
-
-    parent.children.push(new HWPRecord(tagID, size, parent.tagID, payload))
+export function collectChildren(
+  iterator: PeekableIterator<HWPRecord>,
+  level: number,
+) {
+  const children: HWPRecord[] = []
+  while (!iterator.isDone() && iterator.peek().level > level) {
+    children.push(iterator.next())
   }
-
-  return root
+  return children
 }

@@ -14,13 +14,55 @@
  * limitations under the License.
  */
 
-import { ParagraphList } from '../../paragraph-list.js'
-import { CommonControl } from '../common.js'
+import { SectionTagID } from '../../../constants/tag-id.js'
+import type { PeekableIterator } from '../../../utils/generator.js'
+import type { HWPRecord } from '../../record.js'
+import type { HWPVersion } from '../../version.js'
+import { CommonProperties } from '../common-properties.js'
+import { DrawText } from '../draw-text.js'
+import { ElementProperties } from '../element-properties.js'
+import { type ShapeObjectContent, parseContent } from './content.js'
 
-export class ShapeControl<P> extends CommonControl {
-  type: number = 0
+/**
+ * 그리기 객체
+ */
+export class GenShapeObjectControl {
+  constructor(
+    /** 개체 공통 속성 */
+    public commonProperties: CommonProperties,
+    /** 개체 요소 속성 */
+    public elementProperties: ElementProperties,
+    /** 글상자 */
+    public drawText: DrawText | null,
+    /** 컨텐츠 */
+    public content: ShapeObjectContent,
+  ) {}
 
-  info: P | null = null
+  static fromRecord(
+    record: HWPRecord,
+    iterator: PeekableIterator<HWPRecord>,
+    version: HWPVersion,
+  ) {
+    const commonProperties = CommonProperties.fromRecord(
+      record,
+      iterator,
+      version,
+    )
 
-  content: ParagraphList<null>[] = []
+    const elementProperties = ElementProperties.fromRecords(iterator, true)
+
+    const drawText =
+      iterator.peek().id === SectionTagID.HWPTAG_LIST_HEADER
+        ? DrawText.fromRecords(iterator, version)
+        : null
+
+    const content = parseContent(elementProperties, record, iterator)
+
+    return new GenShapeObjectControl(
+      commonProperties,
+      elementProperties,
+      drawText,
+      content,
+    )
+  }
 }

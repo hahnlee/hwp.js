@@ -14,28 +14,35 @@
  * limitations under the License.
  */
 
+import type { CFB$Entry } from 'cfb'
+import { inflate } from 'pako'
+
+import type { HWPHeader } from './header.js'
 import { Paragraph } from './paragraph.js'
+import { ByteReader } from '../utils/byte-reader.js'
+import { PeekableIterator } from '../utils/generator.js'
 
 export class Section {
-  width: number = 0
+  constructor(public paragraphs: Paragraph[]) {}
 
-  height: number = 0
+  static fromEntry(entry: CFB$Entry, header: HWPHeader): Section {
+    const content = Uint8Array.from(entry.content)
 
-  paddingLeft: number = 0
+    if (header.flags.compressed) {
+      const decoded = inflate(content, { windowBits: -15 })
+      return Section.fromBuffer(decoded.buffer, header)
+    }
 
-  paddingRight: number = 0
+    return Section.fromBuffer(content.buffer, header)
+  }
 
-  paddingTop: number = 0
-
-  paddingBottom: number = 0
-
-  headerPadding: number = 0
-
-  footerPadding: number = 0
-
-  content: Paragraph[] = []
-
-  orientation: number = 0
-
-  bookBindingMethod: number = 0
+  static fromBuffer(buffer: ArrayBuffer, header: HWPHeader): Section {
+    const reader = new ByteReader(buffer)
+    const records = new PeekableIterator(reader.records())
+    const paragraphs: Paragraph[] = []
+    while (!records.isDone()) {
+      paragraphs.push(Paragraph.fromRecord(records, header.version))
+    }
+    return new Section(paragraphs)
+  }
 }

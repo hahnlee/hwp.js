@@ -14,28 +14,8 @@
  * limitations under the License.
  */
 
-const emptyArrayBuffer = new ArrayBuffer(0)
-
-export class HWPRecord {
-  children: HWPRecord[] = []
-
-  payload: ArrayBuffer
-
-  tagID: number
-
-  size: number
-
-  parentTagID: number
-
-  constructor(
-    tagID: number,
-    size: number,
-    parentTagID: number,
-    payload: ArrayBuffer = emptyArrayBuffer,
-  ) {
-    this.tagID = tagID
-    this.size = size
-    this.parentTagID = parentTagID
-    this.payload = payload
-  }
+export type HWPRecord = {
+  id: number
+  level: number
+  data: ArrayBuffer
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import type { HWPRecord } from '../models/record.js'
+
 export class ByteReader {
   private view: DataView
 
@@ -71,18 +73,32 @@ export class ByteReader {
     return result
   }
 
-  readRecord(): [number, number, number] {
+  readRecord(): HWPRecord {
     const value = this.readUInt32()
 
-    const tagID = value & 0x3FF
-    const level = (value >> 10) & 0x3FF
-    const size = (value >> 20) & 0xFFF
+    const id = value & 0x3ff
+    const level = (value >> 10) & 0x3ff
+    const size = (value >> 20) & 0xfff
 
-    if (size === 0xFFF) {
-      return [tagID, level, this.readUInt32()]
+    if (size === 0xfff) {
+      return {
+        id,
+        level,
+        data: this.read(this.readUInt32()),
+      }
     }
 
-    return [tagID, level, size]
+    return {
+      id,
+      level,
+      data: this.read(size),
+    }
+  }
+
+  *records() {
+    while (!this.isEOF()) {
+      yield this.readRecord()
+    }
   }
 
   read(byte: number): ArrayBuffer {

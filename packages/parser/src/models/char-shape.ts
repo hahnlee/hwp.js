@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-import { CommonAttribute } from './common-attribute.js'
-import { BaseControl } from './base.js'
+import type { ByteReader } from '../utils/byte-reader.js'
 
-export class CommonControl implements BaseControl {
-  id: number = 0
+export class CharShape {
+  constructor(
+    /** 글자 모양이 바뀌는 시작 위치 */
+    public startPosition: number,
+    /** 글자 모양 ID */
+    public shapeId: number,
+  ) {}
 
-  attribute = new CommonAttribute()
+  static fromReader(reader: ByteReader) {
+    const startPosition = reader.readUInt32()
+    const shapeId = reader.readUInt32()
 
-  verticalOffset: number = 0
-
-  horizontalOffset: number = 0
-
-  width: number = 0
-
-  height: number = 0
-
-  zIndex: number = 0
-
-  margin: [number, number, number, number] = [0, 0, 0, 0]
-
-  uid: number = 0
-
-  split: number = 0
+    return new CharShape(startPosition, shapeId)
+  }
 }

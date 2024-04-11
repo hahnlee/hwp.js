@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../constants/ctrl-id.js'
-import { Control } from '../models/controls/index.js'
-import { TableControl } from '../models/controls/table.js'
-import { ShapeControls, PictureControl } from '../models/controls/shapes/index.js'
+import { getBitValue } from '../utils/bit-utils.js'
 
-export function isTable(control: Control): control is TableControl {
-  return control.id === CommonCtrlID.Table
-}
+export class ColorRef {
+  constructor(public red: number, public green: number, public blue: number) {}
 
-export function isShape(control: Control): control is ShapeControls {
-  return control.id === CommonCtrlID.GenShapeObject
-}
+  static fromBits(bits: number) {
+    return new ColorRef(
+      getBitValue(bits, 0, 7),
+      getBitValue(bits, 8, 15),
+      getBitValue(bits, 16, 23),
+    )
+  }
 
-export function isPicture(control: ShapeControls): control is PictureControl {
-  return control.type === CommonCtrlID.Picture
+  toHex() {
+    return `#${this.red.toString(16)}${this.green.toString(
+      16,
+    )}${this.blue.toString(16)}`
+  }
 }

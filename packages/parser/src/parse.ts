@@ -27,7 +27,6 @@ import { DocInfo } from './models/doc-info/doc-info.js'
 import { HWPHeader } from './models/header.js'
 import { Section } from './models/section.js'
 import { DocInfoParser } from './doc-info-parser.js'
-import { SectionParser } from './section-parser.js'
 
 function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
   const docInfoEntry = find(container, 'DocInfo')
@@ -47,20 +46,13 @@ function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
 }
 
 function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber: number): Section {
-  const section = find(container, `Root Entry/BodyText/Section${sectionNumber}`)
+  const entry = find(container, `Root Entry/BodyText/Section${sectionNumber}`)
 
-  if (!section) {
+  if (!entry) {
     throw new Error('Section not exist')
   }
 
-  const content = section.content
-
-  if (header.flags.compressed) {
-    const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
-    return new SectionParser(decodedContent).parse()
-  } else {
-    return new SectionParser(Uint8Array.from(content)).parse()
-  }
+  return Section.fromEntry(entry, header)
 }
 
 export function parse(input: CFB$Blob): HWPDocument {

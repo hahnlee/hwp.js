@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-import { HWPDocument, Section } from '@hwp.js/parser'
-
-import { PageBuilder } from './page-builder.js'
+import { HWPDocument } from '@hwp.js/parser'
 
 export function parsePage(doc: HWPDocument): HWPDocument {
-  let sections: Section[] = []
-
-  doc.sections.forEach((section) => {
-    sections = sections.concat(new PageBuilder(section).build())
-  })
-
-  doc.sections = sections
   return doc
 }

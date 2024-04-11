@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-import { ByteReader } from '../../utils/byte-reader.js'
+import { CommonCtrlID } from '../../constants/ctrl-id.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
-import { SectionTagID } from '../../constants/tag-id.js'
-import { type ControlContent, parseControl } from './content.js'
 import { HWPVersion } from '../version.js'
+import { SectionControl } from './section.js'
+import { PictureControl } from './shapes/picture.js'
+import { GenShapeObjectControl } from './shapes/shape.js'
+import { TableControl } from './table.js'
+import { UnknownControl } from './unknown.js'
 
-export class Control {
-  constructor(public id: number, public content: ControlContent) {}
+export type ControlContent =
+  | TableControl
+  | SectionControl
+  | GenShapeObjectControl
+  | PictureControl
+  | UnknownControl
 
-  static fromRecords(
-    iterator: PeekableIterator<HWPRecord>,
-    version: HWPVersion,
-  ) {
-    const current = iterator.next()
-    if (current.id !== SectionTagID.HWPTAG_CTRL_HEADER) {
-      throw new Error('Control: Record has wrong ID')
-    }
-
-    const reader = new ByteReader(current.data)
-    const id = reader.readUInt32()
-
-    const content = parseControl(id, current, iterator, version)
-
-    return new Control(id, content)
+export function parseControl(
+  ctrlId: number,
+  current: HWPRecord,
+  iterator: PeekableIterator<HWPRecord>,
+  version: HWPVersion,
+): ControlContent {
+  switch (ctrlId) {
+    case CommonCtrlID.Table:
+      return TableControl.fromRecord(current, iterator, version)
+    default:
+      return UnknownControl.fromRecord(current, iterator)
   }
 }

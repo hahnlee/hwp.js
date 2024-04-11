@@ -29,11 +29,12 @@ import { getRGB, getFlag, getBitValue } from './utils/bit-utils.js'
 import { BorderFill } from './models/doc-info/border-fill.js'
 import { HWPRecord } from './models/record.js'
 import { Panose } from './models/doc-info/panose.js'
-import { parseRecordTree } from './parse-record.js'
 import { HWPHeader } from './models/header.js'
+import { PeekableIterator } from './utils/generator.js'
+import { collectChildren } from './utils/record.js'
 
 export class DocInfoParser {
-  private record: HWPRecord
+  private reader: ByteReader
 
   private result = new DocInfo()
 
@@ -43,12 +44,12 @@ export class DocInfoParser {
 
   constructor(header: HWPHeader, data: Uint8Array, container: CFB$Container) {
     this.header = header
-    this.record = parseRecordTree(data)
+    this.reader = new ByteReader(data.buffer)
     this.container = container
   }
 
   visitDocumentProperties(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     this.result.sectionSize = reader.readUInt16()
 
     this.result.startingIndex.page = reader.readUInt16()
@@ -64,7 +65,7 @@ export class DocInfoParser {
   }
 
   visitCharShape(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
 
     const charShape = new CharShape(
       [
@@ -122,11 +123,11 @@ export class DocInfoParser {
       reader.readUInt32(),
     )
 
-    if (record.size > 68) {
+    if (record.data.byteLength > 68) {
       charShape.fontBackgroundId = reader.readUInt16()
     }
 
-    if (record.size > 70) {
+    if (record.data.byteLength > 70) {
       charShape.underLineColor = getRGB(reader.readInt32())
     }
 
@@ -134,7 +135,7 @@ export class DocInfoParser {
   }
 
   visitFaceName(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     const attribute = reader.readUInt8()
     const hasAlternative = getFlag(attribute, 7)
     const hasAttribute = getFlag(attribute, 6)
@@ -172,7 +173,7 @@ export class DocInfoParser {
   }
 
   visitBinData(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     // TODO: (@hahnlee) parse properties
     const attribute = reader.readUInt16()
 
@@ -201,7 +202,7 @@ export class DocInfoParser {
   }
 
   visitBorderFill(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
 
     const borderFill = new BorderFill(
       reader.readUInt16(),
@@ -239,7 +240,7 @@ export class DocInfoParser {
   }
 
   visitParagraphShape(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     const attribute = reader.readUInt32()
 
     const shape = new ParagraphShape()
@@ -248,12 +249,12 @@ export class DocInfoParser {
   }
 
   visitCompatibleDocument(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     this.result.compatibleDocument = reader.readUInt32()
   }
 
   visitLayoutCompatibility(record: HWPRecord) {
-    const reader = new ByteReader(record.payload)
+    const reader = new ByteReader(record.data)
     this.result.layoutCompatibility.char = reader.readUInt32()
     this.result.layoutCompatibility.paragraph = reader.readUInt32()
     this.result.layoutCompatibility.section = reader.readUInt32()
@@ -261,8 +262,8 @@ export class DocInfoParser {
     this.result.layoutCompatibility.field = reader.readUInt32()
   }
 
-  private visit = (record: HWPRecord) => {
-    switch (record.tagID) {
+  private visit = (record: HWPRecord, iterator: PeekableIterator<HWPRecord>) => {
+    switch (record.id) {
       case DocInfoTagID.HWPTAG_DOCUMENT_PROPERTIES: {
         this.visitDocumentProperties(record)
         break
@@ -307,11 +308,13 @@ export class DocInfoParser {
         break
     }
 
-    record.children.forEach(this.visit)
+    collectChildren(iterator, record.level).forEach(record => this.visit(record, iterator))
   }
 
   parse() {
-    this.record.children.forEach(this.visit)
+    const iterator = new PeekableIterator(this.reader.records())
+    const record = iterator.next()
+    this.visit(record, iterator)
     return this.result
   }
 }

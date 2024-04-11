@@ -14,41 +14,105 @@
  * limitations under the License.
  */
 
-import { HWPChar } from './char.js'
-import { ShapePointer } from './shape-pointer.js'
 import { LineSegment } from './line-segment.js'
 import { Control } from './controls/index.js'
+import { ParagraphHeader } from './paragraph-header.js'
+import type { PeekableIterator } from '../utils/generator.js'
+import { HWPRecord } from './record.js'
+import { HWPVersion } from './version.js'
+import { SectionTagID } from '../constants/tag-id.js'
+import { ByteReader } from '../utils/byte-reader.js'
+import { CharList } from './char-list.js'
+import { collectChildren } from '../utils/record.js'
+import { RangeTag } from './range-tag.js'
+import { CharShape } from './char-shape.js'
 
 export class Paragraph {
-  content: HWPChar[] = []
+  constructor(
+    public header: ParagraphHeader,
+    public chars: CharList,
+    public charShapes: CharShape[],
+    public lineSegments: LineSegment[],
+    public rangeTags: RangeTag[],
+    public controls: Control[],
+  ) {}
 
-  shapeBuffer: ShapePointer[] = []
+  static fromRecord(
+    iterator: PeekableIterator<HWPRecord>,
+    version: HWPVersion,
+  ) {
+    const current = iterator.next()
+    const header = ParagraphHeader.fromRecord(current, version)
 
-  controls: Control[] = []
+    // NOTE: (@hahnlee) 문서와 달리 header.chars가 0보다 커도 없을 수 있다.
+    const chars =
+      iterator.peek().id === SectionTagID.HWPTAG_PARA_TEXT
+        ? CharList.fromRecord(iterator.next(), header.chars)
+        : CharList.empty()
 
-  lineSegments: LineSegment[] = []
-
-  shapeIndex: number = 0
-
-  aligns: number = 0
-
-  textSize: number = 0
-
-  getShapeEndPos(index: number): number {
-    if (index === this.shapeBuffer.length - 1) {
-      return this.content.length - 1
+    const charShapes: CharShape[] = []
+    if (header.charShapes > 0) {
+      const record = iterator.next()
+      if (record.id !== SectionTagID.HWPTAG_PARA_CHAR_SHAPE) {
+        throw new Error('BodyText: CharShape: Record has wrong ID')
+      }
+      const reader = new ByteReader(record.data)
+      for (let i = 0; i < header.charShapes; i++) {
+        charShapes.push(CharShape.fromReader(reader))
+      }
+      if (!reader.isEOF()) {
+        throw new Error('BodyText: CharShape: Reader is not EOF')
+      }
     }
 
-    return this.shapeBuffer[index + 1].pos - 1
-  }
-
-  getNextSize(index: number): number {
-    const next = this.lineSegments[index + 1]
-
-    if (!next) {
-      return this.textSize
+    const lineSegments: LineSegment[] = []
+    if (header.aligns > 0) {
+      const record = iterator.next()
+      if (record.id !== SectionTagID.HWPTAG_PARA_LINE_SEG) {
+        throw new Error('BodyText: LineSegment: Record has wrong ID')
+      }
+      const reader = new ByteReader(record.data)
+      for (let i = 0; i < header.aligns; i++) {
+        lineSegments.push(LineSegment.fromReader(reader))
+      }
+      if (!reader.isEOF()) {
+        throw new Error('BodyText: LineSegment: Reader is not EOF')
+      }
     }
 
-    return next.startPosition
+    const rangeTags: RangeTag[] = []
+    if (header.ranges > 0) {
+      const record = iterator.next()
+      if (record.id !== SectionTagID.HWPTAG_PARA_RANGE_TAG) {
+        throw new Error('BodyText: RangeTag: Record has wrong ID')
+      }
+      const reader = new ByteReader(record.data)
+      for (let i = 0; i < header.ranges; i++) {
+        rangeTags.push(RangeTag.fromReader(reader))
+      }
+
+      if (!reader.isEOF()) {
+        throw new Error('BodyText: RangeTag: Reader is not EOF')
+      }
+    }
+
+    const controls: Control[] = chars
+      .extendedControls()
+      .map(() => Control.fromRecords(iterator, version))
+
+    const unknown = collectChildren(iterator, current.level)
+
+    if (unknown.length > 0) {
+      throw new Error('BodyText: Paragraph: Unknown records')
+    }
+
+    return new Paragraph(
+      header,
+      chars,
+      charShapes,
+      lineSegments,
+      rangeTags,
+      controls,
+    )
   }
 }

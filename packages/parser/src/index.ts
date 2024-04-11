@@ -26,7 +26,7 @@ export * from './models/controls/table.js'
 export * from './models/paragraph-list.js'
 export * from './constants/ctrl-id.js'
 export * from './models/document.js'
-export * from './utils/control-util.js'
+export * from './models/controls/page-definition.js'
 export * from './types/color.js'
 
 export * from './parse.js'

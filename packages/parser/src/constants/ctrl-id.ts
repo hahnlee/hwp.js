@@ -37,11 +37,12 @@ export enum CommonCtrlID {
   Curve = makeCtrlID('$', 'c', 'u', 'r'),
   Equation = makeCtrlID('e', 'q', 'e', 'd'),
   Picture = makeCtrlID('$', 'p', 'i', 'c'),
+  Container = makeCtrlID('$', 'c', 'o', 'n'),
   OLE = makeCtrlID('$', 'o', 'l', 'e'),
   Connected = makeCtrlID('$', 'c', 'o', 'n'),
 
   // NOTE: (@hahnlee) 공개된 문서에서 자세히 설명되어 있지는 않으나, 개채요소 설명에 따라 GenShapeObject로 추측됨
-  GenShapeObject = makeCtrlID('g', 's', 'o', ' ')
+  GenShapeObject = makeCtrlID('g', 's', 'o', ' '),
 }
 
 export enum OtherCtrlID {
