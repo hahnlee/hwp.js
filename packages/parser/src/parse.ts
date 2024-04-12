@@ -20,30 +20,11 @@ import {
   type CFB$Blob,
   type CFB$Container,
 } from 'cfb'
-import { inflate } from 'pako'
 
 import { HWPDocument } from './models/document.js'
 import { DocInfo } from './models/doc-info/doc-info.js'
 import { HWPHeader } from './models/header.js'
 import { Section } from './models/section.js'
-import { DocInfoParser } from './doc-info-parser.js'
-
-function parseDocInfo(container: CFB$Container, header: HWPHeader): DocInfo {
-  const docInfoEntry = find(container, 'DocInfo')
-
-  if (!docInfoEntry) {
-    throw new Error('DocInfo not exist')
-  }
-
-  const content = docInfoEntry.content
-
-  if (header.flags.compressed) {
-    const decodedContent = inflate(Uint8Array.from(content), { windowBits: -15 })
-    return new DocInfoParser(header, decodedContent, container).parse()
-  } else {
-    return new DocInfoParser(header, Uint8Array.from(content), container).parse()
-  }
-}
 
 function parseSection(container: CFB$Container, header: HWPHeader, sectionNumber: number): Section {
   const entry = find(container, `Root Entry/BodyText/Section${sectionNumber}`)
@@ -61,11 +42,11 @@ export function parse(input: CFB$Blob): HWPDocument {
   })
 
   const header = HWPHeader.fromCfbContainer(container)
-  const docInfo = parseDocInfo(container, header)
+  const docInfo = DocInfo.fromCfbContainer(container, header)
 
   const sections: Section[] = []
 
-  for (let i = 0; i < docInfo.sectionSize; i += 1) {
+  for (let i = 0; i < docInfo.properties.sections; i += 1) {
     sections.push(parseSection(container, header, i))
   }
 

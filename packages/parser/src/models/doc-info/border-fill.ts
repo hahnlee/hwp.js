@@ -14,40 +14,139 @@
  * limitations under the License.
  */
 
-import { RGB } from '../../types/color.js'
+import { DocInfoTagID } from '../../constants/tag-id.js'
+import { getBitValue, getFlag } from '../../utils/bit-utils.js'
 import { ByteReader } from '../../utils/byte-reader.js'
 import { ColorRef } from '../color-ref.js'
+import { HWPRecord } from '../record.js'
 import { Image } from './bullet.js'
 
-interface BorerStyle {
-  type: number
-  width: number
-  color: RGB
-}
-
-export interface BorderFillStyle {
-  left: BorerStyle
-  right: BorerStyle
-  top: BorerStyle
-  bottom: BorerStyle
-}
-
 export class BorderFill {
-  // TODO: (@hahnlee) getter & setter 만들기
-  attribute: number
-
-  style: BorderFillStyle
-
-  // TODO: (@hahnlee) 그라데이션도 처리하기
-  backgroundColor: RGB | null = null
-
   constructor(
-    attribute: number,
-    style: BorderFillStyle,
-  ) {
-    this.attribute = attribute
-    this.style = style
+    /** 3D 효과의 유무 */
+    public effect3d: boolean,
+    /** 그림자 효과의 유무 */
+    public effectShadow: boolean,
+    /** Slash 대각선 모양 */
+    public slashDiagonalShape: SlashDiagonalShape,
+    /** BackSlash 대각선 모양 */
+    public backSlashDiagonalShape: number,
+    /** Slash 대각선 꺾은선 여부 */
+    public brokenSlashDiagonalLine: boolean,
+    /** BackSlash 대각선 꺾은선 여부 */
+    public brokenBackSlashDiagonalLine: boolean,
+    /** Slash 대각선 모양 180도 회전 여부 */
+    public slackDiagonalLineRotated: boolean,
+    /** BackSlash 대각선 모양 180도 회전 여부 */
+    public backSlackDiagonalLineRotated: boolean,
+    /** 중심선 유무 */
+    public centerLine: boolean,
+    /** 선 정보 */
+    public borders: [Border, Border, Border, Border],
+    /** 대각선 */
+    public diagonalBorder: Border,
+    /** 채우기 정보 */
+    public fill: Fill,
+  ) {}
+
+  static fromRecord(record: HWPRecord) {
+    if (record.id !== DocInfoTagID.HWPTAG_BORDER_FILL) {
+      throw new Error('DocInfo: Border: Record has wrong ID')
+    }
+
+    const reader = new ByteReader(record.data)
+    const attributes = reader.readUInt16()
+
+    const effect3d = getFlag(attributes, 0)
+    const effectShadow = getFlag(attributes, 1)
+    const slashDiagonalShape = mapSlashDiagonalShape(
+      getBitValue(attributes, 2, 4),
+    )
+    const backSlashDiagonalShape = mapBackSlashDiagonalShape(
+      getBitValue(attributes, 5, 7),
+    )
+    const brokenSlashDiagonalLine = getBitValue(attributes, 8, 9) > 0
+    const brokenBackSlashDiagonalLine = getFlag(attributes, 10)
+    const slackDiagonalLineRotated = getFlag(attributes, 11)
+    const backSlackDiagonalLineRotated = getFlag(attributes, 12)
+    const centerLine = getFlag(attributes, 13)
+    const borders: [Border, Border, Border, Border] = [
+      Border.fromReader(reader),
+      Border.fromReader(reader),
+      Border.fromReader(reader),
+      Border.fromReader(reader),
+    ]
+    const diagonalBorder = Border.fromReader(reader)
+    const fill = mapFill(reader)
+
+    if (!reader.isEOF()) {
+      throw new Error('DocInfo: Border: Reader is not EOF')
+    }
+
+    return new BorderFill(
+      effect3d,
+      effectShadow,
+      slashDiagonalShape,
+      backSlashDiagonalShape,
+      brokenSlashDiagonalLine,
+      brokenBackSlashDiagonalLine,
+      slackDiagonalLineRotated,
+      backSlackDiagonalLineRotated,
+      centerLine,
+      borders,
+      diagonalBorder,
+      fill,
+    )
   }
+}
+
+export enum SlashDiagonalShape {
+  None = 0b000,
+  Slash = 0b010,
+  LeftTopToBottomEdge = 0b011,
+  LeftTopToRightEdge = 0b110,
+  LeftTopToBottomRightEdge = 0b111,
+}
+
+function mapSlashDiagonalShape(value: number) {
+  switch (value) {
+    case SlashDiagonalShape.None:
+      return SlashDiagonalShape.None
+    case SlashDiagonalShape.Slash:
+      return SlashDiagonalShape.Slash
+    case SlashDiagonalShape.LeftTopToBottomEdge:
+      return SlashDiagonalShape.LeftTopToBottomEdge
+    case SlashDiagonalShape.LeftTopToRightEdge:
+      return SlashDiagonalShape.LeftTopToRightEdge
+    case SlashDiagonalShape.LeftTopToBottomRightEdge:
+      return SlashDiagonalShape.LeftTopToBottomRightEdge
+    default:
+      throw new Error(`Unknown slash diagonal shape: ${value}`)
+  }
+}
+
+export enum BackSlashDiagonalShape {
+  None = 0b000,
+  BackSlash = 0b010,
+  RightTopToBottomEdge = 0b011,
+  RightTopToLeftEdge = 0b110,
+  RightTopToBottomLeftEdge = 0b111,
+}
+
+function mapBackSlashDiagonalShape(value: number) {
+  switch (value) {
+    case BackSlashDiagonalShape.None:
+      return BackSlashDiagonalShape.None
+    case BackSlashDiagonalShape.BackSlash:
+      return BackSlashDiagonalShape.BackSlash
+    case BackSlashDiagonalShape.RightTopToBottomEdge:
+      return BackSlashDiagonalShape.RightTopToBottomEdge
+    case BackSlashDiagonalShape.RightTopToLeftEdge:
+      return BackSlashDiagonalShape.RightTopToLeftEdge
+    case BackSlashDiagonalShape.RightTopToBottomLeftEdge:
+      return BackSlashDiagonalShape.RightTopToBottomLeftEdge
+  }
+  throw new Error(`Unknown back slash diagonal shape: ${value}`)
 }
 
 export class Border {

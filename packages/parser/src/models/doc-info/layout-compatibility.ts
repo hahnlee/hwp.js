@@ -14,14 +14,42 @@
  * limitations under the License.
  */
 
+import { DocInfoTagID } from '../../constants/tag-id.js'
+import { ByteReader } from '../../utils/byte-reader.js'
+import type { HWPRecord } from '../record.js'
+
 export class LayoutCompatibility {
-  char: number = 0
+  constructor(
+    /** 글자 단위 서식 */
+    public char: number,
+    /** 문단 단위 서식 */
+    public paragraph: number,
+    /** 구역 단위 서식 */
+    public section: number,
+    /** 개체 단위 서식 */
+    public object: number,
+    /** 필드 단위 서식 */
+    public field: number,
+  ) {}
 
-  paragraph: number = 0
+  static fromRecord(record: HWPRecord) {
+    if (record.id !== DocInfoTagID.HWPTAG_LAYOUT_COMPATIBILITY) {
+      throw new Error('DocInfo: LayoutCompatibility: Record has wrong ID')
+    }
 
-  section: number = 0
+    const reader = new ByteReader(record.data)
 
-  object: number = 0
+    // NOTE: (@hahnlee) 문서와 되어있지 않음, 정확한 정보는 HWPX와 대조해서 유추해야함
+    const char = reader.readUInt32()
+    const paragraph = reader.readUInt32()
+    const section = reader.readUInt32()
+    const object = reader.readUInt32()
+    const field = reader.readUInt32()
 
-  field: number = 0
+    if (!reader.isEOF()) {
+      throw new Error('DocInfo: LayoutCompatibility: Reader is not EOF')
+    }
+
+    return new LayoutCompatibility(char, paragraph, section, object, field)
+  }
 }

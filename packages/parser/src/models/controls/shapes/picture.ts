@@ -247,7 +247,9 @@ export class PictureEffect {
   static fromReader(reader: ByteReader) {
     const attribute = reader.readUInt32()
 
-    const shadow = getFlag(attribute, 0) ? PictureShadow.fromReader(reader) : null
+    const shadow = getFlag(attribute, 0)
+      ? PictureShadow.fromReader(reader)
+      : null
 
     const glow = getFlag(attribute, 1) ? Glow.fromReader(reader) : null
     const softEdge = getFlag(attribute, 2) ? SoftEdge.fromReader(reader) : null

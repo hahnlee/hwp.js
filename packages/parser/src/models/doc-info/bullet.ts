@@ -17,6 +17,7 @@
 import { DocInfoTagID } from '../../constants/tag-id.js'
 import { ByteReader } from '../../utils/byte-reader.js'
 import type { HWPRecord } from '../record.js'
+import { HWPVersion } from '../version.js'
 import { ParagraphHead } from './numbering.js'
 
 export class Bullet {
@@ -33,7 +34,7 @@ export class Bullet {
     public checkedChar: string,
   ) {}
 
-  static fromRecord(record: HWPRecord) {
+  static fromRecord(record: HWPRecord, version: HWPVersion) {
     if (record.id !== DocInfoTagID.HWPTAG_BULLET) {
       throw new Error('DocInfo: Bullet: Record has wrong ID')
     }
@@ -42,9 +43,13 @@ export class Bullet {
 
     const paragraphHead = ParagraphHead.fromReader(reader, false)
     const bulletChar = String.fromCharCode(reader.readUInt16())
+
     const useImage = reader.readUInt32() > 0
     const image = Image.fromReader(reader)
-    const checkedChar = String.fromCharCode(reader.readUInt16())
+
+    const checkedChar = reader.isEOF()
+      ? ''
+      : String.fromCharCode(reader.readUInt16())
 
     if (!reader.isEOF()) {
       throw new Error('DocInfo: Bullet: Reader is not EOF')

@@ -15,7 +15,27 @@
  */
 
 import type { HWPRecord } from '../models/record.js'
+import type { HWPVersion } from '../models/version.js'
 import type { PeekableIterator } from './generator.js'
+
+type FromRecord<T> = (record: HWPRecord, version: HWPVersion) => T
+
+export function readItems<T extends FromRecord<any>>(
+  records: Generator<HWPRecord, void, unknown>,
+  count: number,
+  version: HWPVersion,
+  fromRecord: T,
+) {
+  const items: ReturnType<T>[] = []
+  for (let i = 0; i < count; i++) {
+    const record = records.next()
+    if (record.done) {
+      throw new Error('Unexpected EOF')
+    }
+    items.push(fromRecord(record.value, version))
+  }
+  return items
+}
 
 export function collectChildren(
   iterator: PeekableIterator<HWPRecord>,

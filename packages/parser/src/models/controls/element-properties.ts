@@ -191,7 +191,8 @@ export class Outline {
 
     const attribute = reader.readUInt32()
     const kind = mapBorderKind(getBitValue(attribute, 0, 5))
-    const defaultCap = ctrlId === CommonCtrlID.Picture ? EndCap.Round : EndCap.Flat
+    const defaultCap =
+      ctrlId === CommonCtrlID.Picture ? EndCap.Round : EndCap.Flat
     const endCap = mapEndCap(getBitValue(attribute, 6, 9)) || defaultCap
     const headStyle = mapArrowStyle(getBitValue(attribute, 10, 15))
     const tailStyle = mapArrowStyle(getBitValue(attribute, 16, 21))

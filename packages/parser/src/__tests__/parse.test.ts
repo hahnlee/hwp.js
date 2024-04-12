@@ -34,7 +34,7 @@ describe('parse', () => {
   })
 
   it('should parse collect sectionNumber', () => {
-    assert.strictEqual(hwpDocument.info.sectionSize, 1)
+    assert.strictEqual(hwpDocument.info.properties.sections, 1)
   })
 
   it('should be collect page size', () => {

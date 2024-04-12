@@ -14,37 +14,70 @@
  * limitations under the License.
  */
 
-import { CharShape } from './char-shape.js'
-import { FontFace } from './font-face.js'
-import { BinData } from './bin-data.js'
-import { BorderFill } from './border-fill.js'
-import { ParagraphShape } from './paragraph-shape.js'
-import { StartingIndex } from './starting-index.js'
-import { CaratLocation } from './carat-location.js'
-import { LayoutCompatibility } from './layout-compatibility.js'
+import { find, type CFB$Container } from 'cfb'
+import { inflate } from 'pako'
+
+import type { HWPHeader } from '../header.js'
+import { ByteReader } from '../../utils/byte-reader.js'
+import { Properties } from './properties.js'
+import type { HWPVersion } from '../version.js'
+import { IDMappings } from './id-mappings.js'
+import { CompatibleDocument } from './compatible-document.js'
+import { DocInfoTagID } from '../../constants/tag-id.js'
 
 export class DocInfo {
-  sectionSize: number = 0
+  constructor(public properties: Properties, public idMappings: IDMappings) {}
+  public compatibleDocument?: CompatibleDocument
 
-  charShapes: CharShape[] = []
+  static fromCfbContainer(
+    container: CFB$Container,
+    header: HWPHeader,
+  ): DocInfo {
+    const docInfoEntry = find(container, 'DocInfo')
 
-  fontFaces: FontFace[] = []
+    if (!docInfoEntry) {
+      throw new Error('DocInfo not exist')
+    }
 
-  binData: BinData[] = []
+    if (!ArrayBuffer.isView(docInfoEntry.content)) {
+      throw new Error('DocInfo content is not ArrayBuffer')
+    }
 
-  borderFills: BorderFill[] = []
+    if (header.flags.compressed) {
+      const decodedContent: Uint8Array = inflate(docInfoEntry.content, {
+        windowBits: -15,
+      })
+      return DocInfo.fromBytes(decodedContent, header.version)
+    }
+    return DocInfo.fromBytes(docInfoEntry.content, header.version)
+  }
 
-  paragraphShapes: ParagraphShape[] = []
+  static fromBytes(bytes: Uint8Array, version: HWPVersion): DocInfo {
+    const reader = new ByteReader(bytes.buffer)
+    const records = reader.records()
 
-  startingIndex: StartingIndex = new StartingIndex()
+    const properties = Properties.fromRecord(records.next().value!)
+    const idMappings = IDMappings.fromRecords(records, version)
 
-  caratLocation: CaratLocation = new CaratLocation()
+    const info = new DocInfo(properties, idMappings)
 
-  compatibleDocument: number = 0
+    while (true) {
+      const current = records.next()
+      if (current.done) {
+        break
+      }
 
-  layoutCompatibility: LayoutCompatibility = new LayoutCompatibility()
+      switch (current.value.id) {
+        // TODO: Implement other records
+        case DocInfoTagID.HWPTAG_COMPATIBLE_DOCUMENT:
+          info.compatibleDocument = CompatibleDocument.fromRecords(
+            current.value,
+            records,
+          )
+          break
+      }
+    }
 
-  getCharShape(index: number): CharShape | undefined {
-    return this.charShapes[index]
+    return info
   }
 }

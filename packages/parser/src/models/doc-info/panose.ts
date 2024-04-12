@@ -15,45 +15,30 @@
  */
 
 /**
- * Panose 1.0
- * @see https://www.w3.org/Printing/stevahn.html
+ * @link https://en.wikipedia.org/wiki/PANOSE
+ * @link https://monotype.github.io/panose/pan1.htm
  */
 export class Panose {
-  family: number = 0
-
-  serifStyle: number = 0
-
-  weight: number = 0
-
-  proportion: number = 0
-
-  contrast: number = 0
-
-  strokeVariation: number = 0
-
-  armStyle: number = 0
-
-  letterForm: number = 0
-
-  midline: number = 0
-
-  xHeight: number = 0
-
-  getFontFamily() {
-    if (this.family === 3) {
-      return 'cursive'
-    }
-
-    if (this.family === 2) {
-      if (this.serifStyle > 1 && this.serifStyle < 11) {
-        return 'sans'
-      }
-
-      if (this.serifStyle > 10 && this.serifStyle < 14) {
-        return 'sans-serf'
-      }
-    }
-
-    return ''
-  }
+  constructor(
+    /** 글꼴 계열 */
+    public kind: number,
+    /** 세리프 유형 */
+    public serifStyle: number,
+    /** 굵기 */
+    public weight: number,
+    /** 비례 */
+    public proportion: number,
+    /** 대조 */
+    public contrast: number,
+    /** 스트로크 편차 */
+    public strokeVariation: number,
+    /** 자획 유형 */
+    public armStyle: number,
+    /** 글자형 */
+    public letterform: number,
+    /** 중간선 */
+    public midline: number,
+    /** X-높이 */
+    public xHeight: number,
+  ) {}
 }

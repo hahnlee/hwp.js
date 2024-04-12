@@ -14,33 +14,86 @@
  * limitations under the License.
  */
 
+import { DocInfoTagID } from '../../constants/tag-id.js'
+import { getFlag } from '../../utils/bit-utils.js'
+import { ByteReader } from '../../utils/byte-reader.js'
+import type { HWPRecord } from '../record.js'
 import { Panose } from './panose.js'
 
 export class FontFace {
-  name: string = ''
+  constructor(
+    /** 글꼴 이름 */
+    public name: string,
+  ) {}
 
-  alternative: string = ''
+  /** 기본 글꼴 이름 */
+  public defaultFontName?: string
+  /** 글꼴유형정보 */
+  public panose?: Panose
+  /** 대체 글꼴 유형 */
+  public alternativeKind?: AlternativeKind
+  /** 대체 글꼴 이름 */
+  public alternativeFontName?: string
 
-  default: string = ''
+  static fromRecord(record: HWPRecord) {
+    if (record.id !== DocInfoTagID.HWPTAG_FACE_NAME) {
+      throw new Error('DocInfo: Font: Record has wrong ID')
+    }
+    const reader = new ByteReader(record.data)
 
-  panose: Panose | null = null
+    const properties = reader.readUInt8()
+    const name = reader.readString()
 
-  getFontFamily(): string {
-    const result = [`${this.name}`]
+    const hasAlternative = getFlag(properties, 7)
+    const hasPanose = getFlag(properties, 6)
+    const hasDefaultFont = getFlag(properties, 5)
 
-    if (this.alternative) {
-      result.push(`"${this.alternative}"`)
+    const font = new FontFace(name)
+
+    if (hasAlternative) {
+      font.alternativeKind = mapAlternativeKind(reader.readUInt8())
+      font.alternativeFontName = reader.readString()
     }
 
-    if (this.default) {
-      result.push(`"${this.default}"`)
+    if (hasPanose) {
+      font.panose = new Panose(
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+        reader.readUInt8(),
+      )
     }
 
-    if (this.panose) {
-      const panoseFontFamily = this.panose.getFontFamily()
-      result.push(panoseFontFamily)
+    if (hasDefaultFont) {
+      font.defaultFontName = reader.readString()
     }
 
-    return result.join(',')
+    if (!reader.isEOF()) {
+      throw new Error('DocInfo: Font: Reader is not EOF')
+    }
+
+    return font
   }
+}
+
+enum AlternativeKind {
+  /** 원래 종류를 알 수 없을 때 */
+  Unknown,
+  /** 트루타입 글꼴 */
+  TTF,
+  /** 한/글 전용 글꼴 */
+  HFT,
+}
+
+function mapAlternativeKind(value: number) {
+  if (value >= AlternativeKind.Unknown && value <= AlternativeKind.HFT) {
+    return value as AlternativeKind
+  }
+  throw new Error(`Unknown AlternativeKind: ${value}`)
 }
