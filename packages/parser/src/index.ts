@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-// FIXME: (@hanlee) export 고치기
+// FIXME: (@hahnlee) export 고치기
 export * from './models/controls/index.js'
 export * from './models/controls/shapes/index.js'
 export * from './models/section.js'
 export * from './models/paragraph.js'
 export * from './models/line-segment.js'
-export * from './models/shape-pointer.js'
 export * from './models/char.js'
 export * from './models/controls/table.js'
-export * from './models/paragraph-list.js'
 export * from './constants/ctrl-id.js'
 export * from './models/document.js'
 export * from './models/controls/page-definition.js'
-export * from './types/color.js'
 
 export * from './parse.js'

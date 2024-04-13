@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { RGB } from '../types/color.js'
-
 export function getBitValue(mask: number, start: number, end: number = start): number {
   const target: number = mask >> start
 
@@ -26,14 +24,6 @@ export function getBitValue(mask: number, start: number, end: number = start): n
   }
 
   return target & temp
-}
-
-export function getRGB(colorRef: number): RGB {
-  return [
-    getBitValue(colorRef, 0, 7),
-    getBitValue(colorRef, 8, 15),
-    getBitValue(colorRef, 16, 23),
-  ]
 }
 
 export function getFlag(bits: number, position: number): boolean {

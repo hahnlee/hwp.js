@@ -24,7 +24,7 @@ export function makeCtrlID(
   const secondCode = second.charCodeAt(0)
   const thirdCode = third.charCodeAt(0)
   const fourthCode = fourth.charCodeAt(0)
-  return ((firstCode) << 24) | ((secondCode) << 16) | ((thirdCode) << 8) | (fourthCode)
+  return (firstCode << 24) | (secondCode << 16) | (thirdCode << 8) | fourthCode
 }
 
 export enum CommonCtrlID {

@@ -36,13 +36,22 @@ describe('HWPVersion', () => {
     assert.strictEqual(highMajorVersion.isCompatible(targetVersion), false)
 
     const sameMajorAndHigerMinorVersion = new HWPVersion(5, 4, 1, 7)
-    assert.strictEqual(sameMajorAndHigerMinorVersion.isCompatible(targetVersion), false)
+    assert.strictEqual(
+      sameMajorAndHigerMinorVersion.isCompatible(targetVersion),
+      false,
+    )
 
     const sameMajorAndSameMinorVersion = new HWPVersion(5, 3, 1, 7)
-    assert.strictEqual(sameMajorAndSameMinorVersion.isCompatible(targetVersion), true)
+    assert.strictEqual(
+      sameMajorAndSameMinorVersion.isCompatible(targetVersion),
+      true,
+    )
 
     const sameMajorAndLowerMinorVersion = new HWPVersion(5, 1, 2, 4)
-    assert.strictEqual(sameMajorAndLowerMinorVersion.isCompatible(targetVersion), true)
+    assert.strictEqual(
+      sameMajorAndLowerMinorVersion.isCompatible(targetVersion),
+      true,
+    )
 
     const lowerMajorVersion = new HWPVersion(3, 0, 0, 0)
     assert.strictEqual(lowerMajorVersion.isCompatible(targetVersion), false)
