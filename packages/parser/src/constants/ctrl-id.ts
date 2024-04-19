@@ -27,6 +27,7 @@ export function makeCtrlID(
   return (firstCode << 24) | (secondCode << 16) | (thirdCode << 8) | fourthCode
 }
 
+/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
 export enum CommonCtrlID {
   Table = makeCtrlID('t', 'b', 'l', ' '),
   Line = makeCtrlID('$', 'l', 'i', 'n'),
@@ -44,6 +45,7 @@ export enum CommonCtrlID {
   // NOTE: (@hahnlee) 공개된 문서에서 자세히 설명되어 있지는 않으나, 개채요소 설명에 따라 GenShapeObject로 추측됨
   GenShapeObject = makeCtrlID('g', 's', 'o', ' '),
 }
+
 
 export enum OtherCtrlID {
   Section = makeCtrlID('s', 'e', 'c', 'd'),
@@ -101,3 +103,4 @@ export enum FieldCtrlID {
   PrivateInfoSecurity = makeCtrlID('%', 'c', 'p', 'r'),
   TableOfContents = makeCtrlID('%', 't', 'o', 'c'),
 }
+/* eslint-enable @typescript-eslint/prefer-literal-enum-member */

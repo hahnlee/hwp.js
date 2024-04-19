@@ -11,7 +11,7 @@ import tseslint from 'typescript-eslint'
 export default function config(tsconfigDirName, ...args) {
   return tseslint.config(
     eslint.configs.recommended,
-    ...tseslint.configs.recommendedTypeChecked,
+    ...tseslint.configs.strictTypeChecked,
     {
       files: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs'],
       ...tseslint.configs.disableTypeChecked,
@@ -19,6 +19,12 @@ export default function config(tsconfigDirName, ...args) {
     {
       rules: {
         '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+        '@typescript-eslint/restrict-template-expressions': ['error', {
+          allowNever: true,
+        }],
+        '@typescript-eslint/unbound-method': ['error', {
+          ignoreStatic: true,
+        }]
       },
     },
     {

@@ -17,7 +17,6 @@
 import { DocInfoTagID } from '../../constants/tag-id.js'
 import { ByteReader } from '../../utils/byte-reader.js'
 import type { HWPRecord } from '../record.js'
-import { HWPVersion } from '../version.js'
 import { ParagraphHead } from './numbering.js'
 
 export class Bullet {
@@ -34,7 +33,7 @@ export class Bullet {
     public checkedChar: string,
   ) {}
 
-  static fromRecord(record: HWPRecord, version: HWPVersion) {
+  static fromRecord(record: HWPRecord) {
     if (record.id !== DocInfoTagID.HWPTAG_BULLET) {
       throw new Error('DocInfo: Bullet: Record has wrong ID')
     }

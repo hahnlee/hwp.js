@@ -16,6 +16,7 @@
 
 export const HWPTAG_BEGIN: number = 0x10
 
+/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
 export enum DocInfoTagID {
   HWPTAG_DOCUMENT_PROPERTIES = HWPTAG_BEGIN,
   HWPTAG_ID_MAPPINGS = HWPTAG_BEGIN + 1,
@@ -73,3 +74,4 @@ export enum SectionTagID {
   HWPTAG_VIDEO_DATA = HWPTAG_BEGIN + 82,
   HWPTAG_SHAPE_COMPONENT_UNKNOWN = HWPTAG_BEGIN + 99,
 }
+/* eslint-enable @typescript-eslint/prefer-literal-enum-member */

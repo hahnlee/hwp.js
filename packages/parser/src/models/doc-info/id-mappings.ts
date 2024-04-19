@@ -75,7 +75,8 @@ export class IDMappings {
     public changeTrackingAuthors: ChangeTrackingAuthor[],
   ) {}
 
-  static fromRecords(records: Generator<HWPRecord>, version: HWPVersion) {
+  static fromRecords(records: Generator<HWPRecord, void>, version: HWPVersion) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
     const record = records.next().value!
     if (record.id !== DocInfoTagID.HWPTAG_ID_MAPPINGS) {
       throw new Error('DocInfo: IDMappings: Record has wrong ID')

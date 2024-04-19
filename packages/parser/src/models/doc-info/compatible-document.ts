@@ -29,7 +29,7 @@ export class CompatibleDocument {
 
   static fromRecords(
     record: HWPRecord,
-    records: Generator<HWPRecord, void, unknown>,
+    records: Generator<HWPRecord, void>,
   ) {
     if (record.id !== DocInfoTagID.HWPTAG_COMPATIBLE_DOCUMENT) {
       throw new Error('DocInfo: CompatibleDocument: Record has wrong ID')

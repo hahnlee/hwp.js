@@ -17,9 +17,8 @@
 import { DocInfoTagID } from '../../constants/tag-id.js'
 import type { HWPRecord } from '../record.js'
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ChangeTrackingAuthor {
-  constructor() {}
-
   static fromRecord(record: HWPRecord) {
     if (record.id !== DocInfoTagID.HWPTAG_TRACK_CHANGE_AUTHOR) {
       throw new Error('DocInfo: ChangeTrackingAuthor: Record has wrong ID')

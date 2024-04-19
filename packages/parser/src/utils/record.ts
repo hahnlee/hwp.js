@@ -20,13 +20,13 @@ import type { PeekableIterator } from './generator.js'
 
 type FromRecord<T> = (record: HWPRecord, version: HWPVersion) => T
 
-export function readItems<T extends FromRecord<any>>(
-  records: Generator<HWPRecord, void, unknown>,
+export function readItems<T>(
+  records: Generator<HWPRecord, void>,
   count: number,
   version: HWPVersion,
-  fromRecord: T,
+  fromRecord: FromRecord<T>,
 ) {
-  const items: ReturnType<T>[] = []
+  const items: T[] = []
   for (let i = 0; i < count; i++) {
     const record = records.next()
     if (record.done) {

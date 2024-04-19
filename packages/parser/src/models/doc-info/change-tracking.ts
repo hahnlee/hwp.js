@@ -17,6 +17,7 @@
 import { DocInfoTagID } from '../../constants/tag-id.js'
 import type { HWPRecord } from '../record.js'
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ChangeTracking {
   static fromRecord(record: HWPRecord) {
     if (record.id !== DocInfoTagID.HWPTAG_TRACK_CHANGE) {

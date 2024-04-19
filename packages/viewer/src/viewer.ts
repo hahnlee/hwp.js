@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable */
 export class HWPViewer {
   constructor(container: HTMLElement, data: Uint8Array) {
     // TODO: 새 구조에 맞추어 해결
