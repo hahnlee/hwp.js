@@ -4,6 +4,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationDir": "./build",
+    "resolveJsonModule": true,
     "lib": [
       "es2017",
       "dom",
