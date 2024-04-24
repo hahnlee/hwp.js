@@ -24,7 +24,6 @@ html, body {
   flex: 1;
   width: 100%;
   overflow: hidden;
-  border: 1px solid #ced4da;
 }
 
 .code {
