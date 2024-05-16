@@ -1,16 +1,35 @@
 {
   "name": "@hwp.js/parser",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha.0",
   "type": "module",
-  "siseEffect": false,
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "publishConfig": {
-    "main": "./build/cjs.js",
-    "module": "./build/esm.js",
-    "types": "./build/index.d.ts"
+  "sideEffect": false,
+  "exports": {
+    ".": {
+      "require": "./src/index.ts",
+      "import": "./src/index.ts",
+      "types": "./src/index.d.ts"
+    }
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "require": {
+          "types": "./dist/index.d.cts",
+          "default": "./dist/index.cjs"
+        },
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      },
+      "./package.json": "./package.json"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsup",
     "lint": "eslint ./src",
     "test": "node --import tsx --test **/*.test.ts",
     "typecheck": "tsc --noEmit"
@@ -20,6 +39,7 @@
     "@types/node": "^20",
     "@types/pako": "^1.0.1",
     "eslint": "^8",
+    "tsup": "^8.0.2",
     "tsx": "^4.7.2",
     "typescript": "^5"
   },
