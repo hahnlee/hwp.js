@@ -67,4 +67,8 @@ export class CharList {
   extendedControls() {
     return this.chars.filter((char) => char instanceof ExtendedControl)
   }
+
+  toString() {
+    return this.chars.map((char) => char.toString()).join('')
+  }
 }
