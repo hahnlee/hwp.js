@@ -1,6 +1,6 @@
 {
   "name": "@hwp.js/parser",
-  "version": "0.0.4-alpha.3",
+  "version": "0.0.4-alpha.4",
   "type": "module",
   "sideEffect": false,
   "exports": {
