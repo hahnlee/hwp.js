@@ -236,11 +236,11 @@ export function mapFill(reader: ByteReader): Fill {
       }
       return { kind }
     case FillKind.Color:
-      return { kind, content: ColorFill.fromReader(reader) } as const
+      return { kind, content: ColorFill.fromReader(reader, false) } as const
     case FillKind.Image:
       return { kind, content: ImageFill.fromReader(reader) } as const
     case FillKind.Gradation:
-      return { kind, content: GradationFill.fromReader(reader) }
+      return { kind, content: GradationFill.fromReader(reader, false) }
     default:
       throw new Error(`Unknown fill kind: ${kind}`)
   }
@@ -276,7 +276,7 @@ export class ColorFill {
     public alpha: number,
   ) {}
 
-  static fromReader(reader: ByteReader) {
+  static fromReader(reader: ByteReader, checkEof: boolean = true) {
     const backgroundColor = ColorRef.fromBits(reader.readUInt32())
     const patternColor = ColorRef.fromBits(reader.readUInt32())
     const patternKind = mapPatternKind(reader.readInt32() + 1)
@@ -287,7 +287,7 @@ export class ColorFill {
       throw new Error('DocInfo: ColorFill: Additional info is not zero')
     }
 
-    if (!reader.isEOF()) {
+    if (checkEof && !reader.isEOF()) {
       throw new Error('DocInfo: ColorFill: Reader is not EOF')
     }
 
@@ -341,7 +341,7 @@ export class GradationFill {
     public alpha: number,
   ) {}
 
-  static fromReader(reader: ByteReader) {
+  static fromReader(reader: ByteReader, checkEof = true) {
     const kind = mapGradationKind(reader.readUInt8())
     const angle = reader.readUInt32()
     const centerX = reader.readUInt32()
@@ -365,7 +365,7 @@ export class GradationFill {
     const stepCenter = reader.readUInt8()
     const alpha = reader.readUInt8()
 
-    if (!reader.isEOF()) {
+    if (checkEof && !reader.isEOF()) {
       throw new Error('DocInfo: GradationFill: Reader is not EOF')
     }
 
