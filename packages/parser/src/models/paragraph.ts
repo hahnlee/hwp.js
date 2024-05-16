@@ -115,4 +115,8 @@ export class Paragraph {
       controls,
     )
   }
+
+  toString() {
+    return this.chars.toString()
+  }
 }

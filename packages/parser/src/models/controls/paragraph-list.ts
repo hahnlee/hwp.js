@@ -62,6 +62,10 @@ export class ParagraphList {
   get length() {
     return this.paragraphs.length
   }
+
+  toString() {
+    return this.paragraphs.map((paragraph) => paragraph.toString()).join('\n')
+  }
 }
 
 /**
