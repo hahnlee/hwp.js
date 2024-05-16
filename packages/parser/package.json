@@ -1,6 +1,6 @@
 {
   "name": "@hwp.js/parser",
-  "version": "0.0.4-alpha.2",
+  "version": "0.0.4-alpha.3",
   "type": "module",
   "sideEffect": false,
   "exports": {
@@ -30,6 +30,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "prepack": "tsup",
     "lint": "eslint ./src",
     "test": "node --import tsx --test **/*.test.ts",
     "typecheck": "tsc --noEmit"
