@@ -19,7 +19,7 @@ import { readItems } from '../../utils/record.js'
 import type { HWPRecord } from '../record.js'
 import { DocInfoTagID } from '../../constants/tag-id.js'
 import { HWPVersion } from '../version.js'
-import { BinData } from './bin-data.js'
+import { BinData, BinDataKind } from './bin-data.js'
 import { FontFace } from './font-face.js'
 import { BorderFill } from './border-fill.js'
 import { CharShapeStyle } from './char-shape.js'
@@ -160,5 +160,13 @@ export class IDMappings {
         ChangeTrackingAuthor.fromRecord,
       ),
     )
+  }
+
+  *embeddings() {
+    for (const binData of this.binaryData) {
+      if (binData.properties.kind === BinDataKind.Embedding) {
+        yield binData
+      }
+    }
   }
 }

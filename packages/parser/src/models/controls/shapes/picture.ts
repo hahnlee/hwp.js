@@ -119,11 +119,11 @@ export class PictureRecord {
     const image = Image.fromReader(reader)
     outline.alpha = reader.readUInt8()
 
-    const instanceId = !reader.isEOF() ? reader.readUInt32() : null
-    const effect = !reader.isEOF() ? PictureEffect.fromReader(reader) : null
-    const additionalProperties = !reader.isEOF()
-      ? PictureAdditionalProperties.fromReader(reader)
-      : null
+    const instanceId = reader.isEOF() ? null : reader.readUInt32()
+    const effect = reader.isEOF() ? null : PictureEffect.fromReader(reader)
+    const additionalProperties = reader.isEOF()
+      ? null
+      : PictureAdditionalProperties.fromReader(reader)
 
     if (!reader.isEOF()) {
       throw new Error('BodyText: PictureRecord: There are remaining bytes')
@@ -580,10 +580,14 @@ export class PictureAdditionalProperties {
   ) {}
 
   static fromReader(reader: ByteReader) {
+    const width = reader.readUInt32()
+    const height = reader.readUInt32()
+    const alpha = reader.isEOF() ? 0 : reader.readUInt8()
+
     return new PictureAdditionalProperties(
-      reader.readUInt32(),
-      reader.readUInt32(),
-      reader.readUInt8(),
+      width,
+      height,
+      alpha,
     )
   }
 }

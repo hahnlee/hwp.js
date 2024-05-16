@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import { HWPDocument } from './models/document.js'
-
-export function parse(buffer: Uint8Array | ArrayBuffer): HWPDocument {
-  return HWPDocument.fromBytes(convertTypedArray(buffer))
-}
-
-function convertTypedArray(data: Uint8Array | ArrayBuffer): Uint8Array {
-  if (data instanceof ArrayBuffer) {
-    return new Uint8Array(data)
-  }
-  return data
+export class BinData {
+  constructor(
+    public name: string,
+    public data: Uint8Array
+  ) {}
 }

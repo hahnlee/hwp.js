@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CommonCtrlID } from '../../constants/ctrl-id.js'
+import { CommonCtrlID, OtherCtrlID } from '../../constants/ctrl-id.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
 import { HWPVersion } from '../version.js'
@@ -38,8 +38,12 @@ export function parseControl(
   version: HWPVersion,
 ): ControlContent {
   switch (ctrlId) {
+    case OtherCtrlID.Section:
+      return SectionControl.fromRecord(current, iterator, version)
     case CommonCtrlID.Table:
       return TableControl.fromRecord(current, iterator, version)
+    case CommonCtrlID.GenShapeObject:
+      return GenShapeObjectControl.fromRecord(current, iterator, version)
     default:
       return UnknownControl.fromRecord(current, iterator)
   }

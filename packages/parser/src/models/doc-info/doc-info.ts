@@ -39,17 +39,15 @@ export class DocInfo {
       throw new Error('DocInfo not exist')
     }
 
-    if (!ArrayBuffer.isView(docInfoEntry.content)) {
-      throw new Error('DocInfo content is not ArrayBuffer')
-    }
+    const content = Uint8Array.from(docInfoEntry.content)
 
     if (header.flags.compressed) {
-      const decodedContent: Uint8Array = inflate(docInfoEntry.content, {
+      const decodedContent: Uint8Array = inflate(content, {
         windowBits: -15,
       })
       return DocInfo.fromBytes(decodedContent, header.version)
     }
-    return DocInfo.fromBytes(docInfoEntry.content, header.version)
+    return DocInfo.fromBytes(content, header.version)
   }
 
   static fromBytes(bytes: Uint8Array, version: HWPVersion): DocInfo {
