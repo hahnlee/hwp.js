@@ -20,6 +20,7 @@ import type { HWPRecord } from '../record.js'
 import { SectionTagID } from '../../constants/tag-id.js'
 import { type ControlContent, parseControl } from './content.js'
 import { HWPVersion } from '../version.js'
+import type { ParseOptions } from '../../types/parser.js'
 
 export class Control {
   constructor(public id: number, public content: ControlContent) {}
@@ -27,6 +28,7 @@ export class Control {
   static fromRecords(
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const current = iterator.next()
     if (current.id !== SectionTagID.HWPTAG_CTRL_HEADER) {
@@ -36,7 +38,7 @@ export class Control {
     const reader = new ByteReader(current.data)
     const id = reader.readUInt32()
 
-    const content = parseControl(id, current, iterator, version)
+    const content = parseControl(id, current, iterator, version, options)
 
     return new Control(id, content)
   }

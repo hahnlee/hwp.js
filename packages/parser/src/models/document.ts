@@ -15,11 +15,13 @@
  */
 
 import { find, read } from 'cfb'
+import { inflate } from 'pako'
+
 import { DocInfo } from './doc-info/doc-info.js'
 import { HWPHeader } from './header.js'
 import { Section } from './section.js'
 import { BinData } from './bin-data.js'
-import { inflate } from 'pako'
+import type { ParseOptions } from '../types/parser.js'
 
 export class HWPDocument {
   constructor(
@@ -29,7 +31,7 @@ export class HWPDocument {
     public binDataList: BinData[],
   ) {}
 
-  static fromBytes(buffer: Uint8Array) {
+  static fromBytes(buffer: Uint8Array, options: ParseOptions) {
     const container = read(buffer, {
       type: 'array',
     })
@@ -45,7 +47,7 @@ export class HWPDocument {
       if (!entry) {
         throw new Error('Section not exist')
       }
-      sections.push(Section.fromEntry(entry, header))
+      sections.push(Section.fromEntry(entry, header, options))
     }
 
     const binDataList: BinData[] = []

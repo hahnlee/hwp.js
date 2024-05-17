@@ -15,6 +15,7 @@
  */
 
 import { SectionTagID } from '../../../constants/tag-id.js'
+import type { ParseOptions } from '../../../types/parser.js'
 import { getBitValue, getFlag } from '../../../utils/bit-utils.js'
 import { ByteReader } from '../../../utils/byte-reader.js'
 import type { PeekableIterator } from '../../../utils/generator.js'
@@ -49,11 +50,13 @@ export class PictureControl {
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const commonProperties = CommonProperties.fromRecord(
       record,
       iterator,
       version,
+      options,
     )
     const elementProperties = ElementProperties.fromRecords(iterator, false)
     const content = PictureRecord.fromRecords(iterator)

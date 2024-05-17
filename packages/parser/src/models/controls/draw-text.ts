@@ -1,4 +1,5 @@
 import { SectionTagID } from '../../constants/tag-id.js'
+import type { ParseOptions } from '../../types/parser.js'
 import { ByteReader } from '../../utils/byte-reader.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
@@ -27,6 +28,7 @@ export class DrawText {
   static fromRecords(
     records: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const record = records.next()
     if (record.id !== SectionTagID.HWPTAG_LIST_HEADER) {
@@ -34,7 +36,7 @@ export class DrawText {
     }
 
     const reader = new ByteReader(record.data)
-    const paragraphs = ParagraphList.fromReader(reader, records, version)
+    const paragraphs = ParagraphList.fromReader(reader, records, version, options)
 
     const marginLeft = reader.readUInt16()
     const marginRight = reader.readUInt16()

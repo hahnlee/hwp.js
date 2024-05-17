@@ -21,6 +21,7 @@ import type { HWPRecord } from '../record.js'
 import { SectionTagID } from '../../constants/tag-id.js'
 import type { HWPVersion } from '../version.js'
 import { ParagraphList } from './paragraph-list.js'
+import type { ParseOptions } from '../../types/parser.js'
 
 /**
  * 개체 공통 속성
@@ -112,6 +113,7 @@ export class CommonProperties {
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const reader = new ByteReader(record.data)
     const ctrlId = reader.readUInt32()
@@ -185,7 +187,7 @@ export class CommonProperties {
 
     const caption =
       iterator.peek().id === SectionTagID.HWPTAG_LIST_HEADER
-        ? Caption.fromRecords(iterator, version)
+        ? Caption.fromRecords(iterator, version, options)
         : undefined
 
     return new CommonProperties(
@@ -404,6 +406,7 @@ export class Caption {
   static fromRecords(
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const record = iterator.next()
     if (record.id !== SectionTagID.HWPTAG_LIST_HEADER) {
@@ -411,7 +414,7 @@ export class Caption {
     }
 
     const reader = new ByteReader(record.data)
-    const paragraphs = ParagraphList.fromReader(reader, iterator, version)
+    const paragraphs = ParagraphList.fromReader(reader, iterator, version, options)
 
     const attribute = reader.readUInt32()
     const align = mapCaptionAlign(getBitValue(attribute, 0, 1))

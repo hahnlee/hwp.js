@@ -22,6 +22,7 @@ import { HWPVersion } from '../version.js'
 import { CommonProperties } from './common-properties.js'
 import { SectionTagID } from '../../constants/tag-id.js'
 import { ParagraphList } from './paragraph-list.js'
+import type { ParseOptions } from '../../types/parser.js'
 
 export class TableControl {
   constructor(
@@ -35,11 +36,13 @@ export class TableControl {
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const commonProperties = CommonProperties.fromRecord(
       record,
       iterator,
       version,
+      options,
     )
 
     const next = iterator.next()
@@ -54,7 +57,7 @@ export class TableControl {
     )
 
     for (let i = 0; i < cellCount; i++) {
-      cells.push(Cell.fromRecords(iterator, version))
+      cells.push(Cell.fromRecords(iterator, version, options))
     }
 
     return new TableControl(commonProperties, tableRecord, cells)
@@ -209,6 +212,7 @@ export class Cell {
   static fromRecords(
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const record = iterator.next()
     if (record.id !== SectionTagID.HWPTAG_LIST_HEADER) {
@@ -216,7 +220,7 @@ export class Cell {
     }
 
     const reader = new ByteReader(record.data)
-    const paragraphs = ParagraphList.fromReader(reader, iterator, version)
+    const paragraphs = ParagraphList.fromReader(reader, iterator, version, options)
 
     const column = reader.readUInt16()
     const row = reader.readUInt16()

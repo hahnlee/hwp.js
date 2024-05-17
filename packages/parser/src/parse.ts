@@ -15,9 +15,15 @@
  */
 
 import { HWPDocument } from './models/document.js'
+import type { ParseOptions } from './types/parser.js'
 
-export function parse(buffer: Uint8Array | ArrayBuffer): HWPDocument {
-  return HWPDocument.fromBytes(convertTypedArray(buffer))
+export function parse(
+  buffer: Uint8Array | ArrayBuffer,
+  { strict = true }: Partial<ParseOptions> = {},
+): HWPDocument {
+  return HWPDocument.fromBytes(convertTypedArray(buffer), {
+    strict,
+  })
 }
 
 function convertTypedArray(data: Uint8Array | ArrayBuffer): Uint8Array {

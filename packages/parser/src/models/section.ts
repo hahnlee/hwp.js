@@ -21,27 +21,28 @@ import type { HWPHeader } from './header.js'
 import { Paragraph } from './paragraph.js'
 import { ByteReader } from '../utils/byte-reader.js'
 import { PeekableIterator } from '../utils/generator.js'
+import type { ParseOptions } from '../types/parser.js'
 
 export class Section {
   constructor(public paragraphs: Paragraph[]) {}
 
-  static fromEntry(entry: CFB$Entry, header: HWPHeader): Section {
+  static fromEntry(entry: CFB$Entry, header: HWPHeader, options: ParseOptions): Section {
     const content = Uint8Array.from(entry.content)
 
     if (header.flags.compressed) {
       const decoded = inflate(content, { windowBits: -15 })
-      return Section.fromBuffer(decoded.buffer, header)
+      return Section.fromBuffer(decoded.buffer, header, options)
     }
 
-    return Section.fromBuffer(content.buffer, header)
+    return Section.fromBuffer(content.buffer, header, options)
   }
 
-  static fromBuffer(buffer: ArrayBuffer, header: HWPHeader): Section {
+  static fromBuffer(buffer: ArrayBuffer, header: HWPHeader, options: ParseOptions): Section {
     const reader = new ByteReader(buffer)
     const records = new PeekableIterator(reader.records())
     const paragraphs: Paragraph[] = []
     while (!records.isDone()) {
-      paragraphs.push(Paragraph.fromRecord(records, header.version))
+      paragraphs.push(Paragraph.fromRecord(records, header.version, options))
     }
     return new Section(paragraphs)
   }

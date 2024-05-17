@@ -19,6 +19,7 @@ import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
 import type { HWPVersion } from '../version.js'
 import { Paragraph } from '../paragraph.js'
+import type { ParseOptions } from '../../types/parser.js'
 
 /**
  * 문단 리스트
@@ -33,13 +34,14 @@ export class ParagraphList {
     reader: ByteReader,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const header = ParagraphListHeader.fromReader(reader)
 
     // NOTE: 나머지 속성은 사용처에서 파싱해야함
     const paragraphs: Paragraph[] = []
     for (let i = 0; i < header.count; i++) {
-      paragraphs.push(Paragraph.fromRecord(iterator, version))
+      paragraphs.push(Paragraph.fromRecord(iterator, version, options))
     }
 
     return new ParagraphList(header, paragraphs)

@@ -15,6 +15,7 @@
  */
 
 import { CommonCtrlID, OtherCtrlID } from '../../constants/ctrl-id.js'
+import type { ParseOptions } from '../../types/parser.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
 import { HWPVersion } from '../version.js'
@@ -36,14 +37,15 @@ export function parseControl(
   current: HWPRecord,
   iterator: PeekableIterator<HWPRecord>,
   version: HWPVersion,
+  options: ParseOptions,
 ): ControlContent {
   switch (ctrlId) {
     case OtherCtrlID.Section:
       return SectionControl.fromRecord(current, iterator, version)
     case CommonCtrlID.Table:
-      return TableControl.fromRecord(current, iterator, version)
+      return TableControl.fromRecord(current, iterator, version, options)
     case CommonCtrlID.GenShapeObject:
-      return GenShapeObjectControl.fromRecord(current, iterator, version)
+      return GenShapeObjectControl.fromRecord(current, iterator, version, options)
     default:
       return UnknownControl.fromRecord(current, iterator)
   }

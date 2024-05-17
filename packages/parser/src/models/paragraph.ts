@@ -26,6 +26,7 @@ import { CharList } from './char-list.js'
 import { collectChildren } from '../utils/record.js'
 import { RangeTag } from './range-tag.js'
 import { CharShape } from './char-shape.js'
+import type { ParseOptions } from '../types/parser.js'
 
 export class Paragraph {
   constructor(
@@ -40,6 +41,7 @@ export class Paragraph {
   static fromRecord(
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const current = iterator.next()
     const header = ParagraphHeader.fromRecord(current, version)
@@ -98,11 +100,11 @@ export class Paragraph {
 
     const controls: Control[] = chars
       .extendedControls()
-      .map(() => Control.fromRecords(iterator, version))
+      .map(() => Control.fromRecords(iterator, version, options))
 
     const unknown = collectChildren(iterator, current.level)
 
-    if (unknown.length > 0) {
+    if (options.strict && unknown.length > 0) {
       throw new Error('BodyText: Paragraph: Unknown records')
     }
 

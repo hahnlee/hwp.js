@@ -15,6 +15,7 @@
  */
 
 import { SectionTagID } from '../../../constants/tag-id.js'
+import type { ParseOptions } from '../../../types/parser.js'
 import type { PeekableIterator } from '../../../utils/generator.js'
 import type { HWPRecord } from '../../record.js'
 import type { HWPVersion } from '../../version.js'
@@ -42,18 +43,20 @@ export class GenShapeObjectControl {
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
+    options: ParseOptions,
   ) {
     const commonProperties = CommonProperties.fromRecord(
       record,
       iterator,
       version,
+      options,
     )
 
     const elementProperties = ElementProperties.fromRecords(iterator, true)
 
     const drawText =
       iterator.peek().id === SectionTagID.HWPTAG_LIST_HEADER
-        ? DrawText.fromRecords(iterator, version)
+        ? DrawText.fromRecords(iterator, version, options)
         : null
 
     const content = parseContent(elementProperties, record, iterator)

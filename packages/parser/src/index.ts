@@ -26,4 +26,7 @@ export * from './constants/ctrl-id.js'
 export * from './models/document.js'
 export * from './models/controls/page-definition.js'
 
+// type export only
+export type * from './types/parser.js'
+
 export * from './parse.js'
