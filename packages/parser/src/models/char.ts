@@ -50,7 +50,12 @@ export class CharControl {
   constructor(public control: CharControls) {}
 
   toString() {
-    return ''
+    switch (this.control) {
+      case CharControls.Hyphen:
+        return '-'
+      default:
+        return ''
+    }
   }
 }
 
