@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-export * from './control.js'
-export * from './section.js'
+export class Control {
+  constructor(public id: number) {}
+}

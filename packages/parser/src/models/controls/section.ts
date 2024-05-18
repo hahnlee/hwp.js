@@ -21,10 +21,12 @@ import type { PeekableIterator } from '../../utils/generator.js'
 import { Border } from '../doc-info/border-fill.js'
 import type { HWPRecord } from '../record.js'
 import { HWPVersion } from '../version.js'
+import { Control } from './control.js'
 import { PageDefinition } from './page-definition.js'
 
-export class SectionControl {
+export class SectionControl extends Control {
   constructor(
+    public id: number,
     /** 컨트롤 ID */
     public ctrlId: number,
     /** 머리말을 감출지 여부 */
@@ -81,9 +83,12 @@ export class SectionControl {
     /** 미주 모양 정보 */
     public endnoteShape: FootnoteEndnoteShape,
     public unknown: ArrayBuffer,
-  ) {}
+  ) {
+    super(id)
+  }
 
   static fromRecord(
+    id: number,
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
@@ -146,6 +151,7 @@ export class SectionControl {
     // TODO: (@hahnlee) 바탕쪽 정보 관련된 파싱 추가하기
 
     return new SectionControl(
+      id,
       ctrlId,
       hideHeader,
       hideFooter,

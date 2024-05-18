@@ -17,11 +17,18 @@
 import type { PeekableIterator } from '../../utils/generator.js'
 import { collectChildren } from '../../utils/record.js'
 import type { HWPRecord } from '../record.js'
+import { Control } from './control.js'
 
-export class UnknownControl {
-  constructor(public records: HWPRecord[]) {}
+export class UnknownControl extends Control {
+  constructor(public id: number, public records: HWPRecord[]) {
+    super(id)
+  }
 
-  static fromRecord(current: HWPRecord, iterator: PeekableIterator<HWPRecord>) {
-    return new UnknownControl(collectChildren(iterator, current.level))
+  static fromRecord(
+    id: number,
+    current: HWPRecord,
+    iterator: PeekableIterator<HWPRecord>,
+  ) {
+    return new UnknownControl(id, collectChildren(iterator, current.level))
   }
 }

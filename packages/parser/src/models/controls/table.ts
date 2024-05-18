@@ -23,16 +23,21 @@ import { CommonProperties } from './common-properties.js'
 import { SectionTagID } from '../../constants/tag-id.js'
 import { ParagraphList } from './paragraph-list.js'
 import type { ParseOptions } from '../../types/parser.js'
+import { Control } from './control.js'
 
-export class TableControl {
+export class TableControl extends Control {
   constructor(
+    public id: number,
     /** 개체 공통 속성 */
     public commonProperties: CommonProperties,
     public record: TableRecord,
     public cells: Cell[],
-  ) {}
+  ) {
+    super(id)
+  }
 
   static fromRecord(
+    id: number,
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
@@ -60,7 +65,7 @@ export class TableControl {
       cells.push(Cell.fromRecords(iterator, version, options))
     }
 
-    return new TableControl(commonProperties, tableRecord, cells)
+    return new TableControl(id, commonProperties, tableRecord, cells)
   }
 }
 
@@ -220,7 +225,12 @@ export class Cell {
     }
 
     const reader = new ByteReader(record.data)
-    const paragraphs = ParagraphList.fromReader(reader, iterator, version, options)
+    const paragraphs = ParagraphList.fromReader(
+      reader,
+      iterator,
+      version,
+      options,
+    )
 
     const column = reader.readUInt16()
     const row = reader.readUInt16()

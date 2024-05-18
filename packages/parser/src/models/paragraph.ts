@@ -27,6 +27,7 @@ import { collectChildren } from '../utils/record.js'
 import { RangeTag } from './range-tag.js'
 import { CharShape } from './char-shape.js'
 import type { ParseOptions } from '../types/parser.js'
+import { parseControl } from './controls/content.js'
 
 export class Paragraph {
   constructor(
@@ -100,7 +101,7 @@ export class Paragraph {
 
     const controls: Control[] = chars
       .extendedControls()
-      .map(() => Control.fromRecords(iterator, version, options))
+      .map(() => parseControl(iterator, version, options))
 
     const unknown = collectChildren(iterator, current.level)
 

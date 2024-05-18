@@ -20,6 +20,7 @@ import type { PeekableIterator } from '../../../utils/generator.js'
 import type { HWPRecord } from '../../record.js'
 import type { HWPVersion } from '../../version.js'
 import { CommonProperties } from '../common-properties.js'
+import { Control } from '../control.js'
 import { DrawText } from '../draw-text.js'
 import { ElementProperties } from '../element-properties.js'
 import { type ShapeObjectContent, parseContent } from './content.js'
@@ -27,8 +28,9 @@ import { type ShapeObjectContent, parseContent } from './content.js'
 /**
  * 그리기 객체
  */
-export class GenShapeObjectControl {
+export class GenShapeObjectControl extends Control  {
   constructor(
+    public id: number,
     /** 개체 공통 속성 */
     public commonProperties: CommonProperties,
     /** 개체 요소 속성 */
@@ -37,9 +39,12 @@ export class GenShapeObjectControl {
     public drawText: DrawText | null,
     /** 컨텐츠 */
     public content: ShapeObjectContent,
-  ) {}
+  ) {
+    super(id)
+  }
 
   static fromRecord(
+    id: number,
     record: HWPRecord,
     iterator: PeekableIterator<HWPRecord>,
     version: HWPVersion,
@@ -62,6 +67,7 @@ export class GenShapeObjectControl {
     const content = parseContent(elementProperties, record, iterator)
 
     return new GenShapeObjectControl(
+      id,
       commonProperties,
       elementProperties,
       drawText,

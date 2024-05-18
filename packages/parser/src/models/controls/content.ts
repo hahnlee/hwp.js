@@ -15,38 +15,60 @@
  */
 
 import { CommonCtrlID, OtherCtrlID } from '../../constants/ctrl-id.js'
+import { SectionTagID } from '../../constants/tag-id.js'
 import type { ParseOptions } from '../../types/parser.js'
+import { ByteReader } from '../../utils/byte-reader.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
 import { HWPVersion } from '../version.js'
 import { SectionControl } from './section.js'
-import { PictureControl } from './shapes/picture.js'
 import { GenShapeObjectControl } from './shapes/shape.js'
 import { TableControl } from './table.js'
 import { UnknownControl } from './unknown.js'
 
-export type ControlContent =
-  | TableControl
-  | SectionControl
-  | GenShapeObjectControl
-  | PictureControl
-  | UnknownControl
-
-export function parseControl(
+function mapControl(
   ctrlId: number,
   current: HWPRecord,
   iterator: PeekableIterator<HWPRecord>,
   version: HWPVersion,
   options: ParseOptions,
-): ControlContent {
+) {
   switch (ctrlId) {
     case OtherCtrlID.Section:
-      return SectionControl.fromRecord(current, iterator, version)
+      return SectionControl.fromRecord(ctrlId, current, iterator, version)
     case CommonCtrlID.Table:
-      return TableControl.fromRecord(current, iterator, version, options)
+      return TableControl.fromRecord(
+        ctrlId,
+        current,
+        iterator,
+        version,
+        options,
+      )
     case CommonCtrlID.GenShapeObject:
-      return GenShapeObjectControl.fromRecord(current, iterator, version, options)
+      return GenShapeObjectControl.fromRecord(
+        ctrlId,
+        current,
+        iterator,
+        version,
+        options,
+      )
     default:
-      return UnknownControl.fromRecord(current, iterator)
+      return UnknownControl.fromRecord(ctrlId, current, iterator)
   }
+}
+
+export function parseControl(
+  iterator: PeekableIterator<HWPRecord>,
+  version: HWPVersion,
+  options: ParseOptions,
+) {
+  const current = iterator.next()
+  if (current.id !== SectionTagID.HWPTAG_CTRL_HEADER) {
+    throw new Error('Control: Record has wrong ID')
+  }
+
+  const reader = new ByteReader(current.data)
+  const id = reader.readUInt32()
+
+  return mapControl(id, current, iterator, version, options)
 }

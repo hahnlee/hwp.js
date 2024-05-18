@@ -32,6 +32,6 @@ export function parseContent(
     case CommonCtrlID.Picture:
       return PictureRecord.fromRecords(iterator)
     default:
-      return UnknownControl.fromRecord(current, iterator)
+      return UnknownControl.fromRecord(elementProperties.ctrlId, current, iterator)
   }
 }
