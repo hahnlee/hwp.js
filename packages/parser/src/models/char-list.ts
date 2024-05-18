@@ -25,50 +25,32 @@ import type { HWPRecord } from './record.js'
 import { SectionTagID } from '../constants/tag-id.js'
 import { ByteReader } from '../utils/byte-reader.js'
 
-export class CharList {
-  constructor(private chars: HWPChar[]) {}
-
-  static empty() {
-    return new CharList([new CharControl(CharControls.ParaBreak)])
+export function parseChars(record: HWPRecord, count: number) {
+  if (record.id !== SectionTagID.HWPTAG_PARA_TEXT) {
+    throw new Error('BodyText: CharList: Record has wrong ID')
   }
 
-  static fromRecord(record: HWPRecord, count: number) {
-    if (record.id !== SectionTagID.HWPTAG_PARA_TEXT) {
-      throw new Error('BodyText: CharList: Record has wrong ID')
-    }
+  const reader = new ByteReader(record.data)
 
-    const reader = new ByteReader(record.data)
-
-    const chars: HWPChar[] = []
-    let i = 0
-    while (i < count) {
-      const char = readChar(reader)
-      i += char.bytes
-      chars.push(char)
-    }
-
-    if (!reader.isEOF()) {
-      throw new Error('BodyText: CharList: Reader is not EOF')
-    }
-
-    return new CharList(chars)
+  const chars: HWPChar[] = []
+  let i = 0
+  while (i < count) {
+    const char = readChar(reader)
+    i += char.bytes
+    chars.push(char)
   }
 
-  *[Symbol.iterator]() {
-    for (const char of this.chars) {
-      yield char
-    }
+  if (!reader.isEOF()) {
+    throw new Error('BodyText: CharList: Reader is not EOF')
   }
 
-  get length() {
-    return this.chars.length
-  }
+  return chars
+}
 
-  extendedControls() {
-    return this.chars.filter((char) => char instanceof ExtendedControl)
-  }
+export function createEmptyCharList() {
+  return [new CharControl(CharControls.ParaBreak)]
+}
 
-  toString() {
-    return this.chars.map((char) => char.toString()).join('')
-  }
+export function extendedControls(chars: HWPChar[]) {
+  return chars.filter((char) => char instanceof ExtendedControl)
 }

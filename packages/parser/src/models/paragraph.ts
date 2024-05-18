@@ -22,17 +22,22 @@ import { HWPRecord } from './record.js'
 import { HWPVersion } from './version.js'
 import { SectionTagID } from '../constants/tag-id.js'
 import { ByteReader } from '../utils/byte-reader.js'
-import { CharList } from './char-list.js'
 import { collectChildren } from '../utils/record.js'
 import { RangeTag } from './range-tag.js'
 import { CharShape } from './char-shape.js'
 import type { ParseOptions } from '../types/parser.js'
 import { parseControl } from './controls/content.js'
+import type { HWPChar } from './char.js'
+import {
+  createEmptyCharList,
+  extendedControls,
+  parseChars,
+} from './char-list.js'
 
 export class Paragraph {
   constructor(
     public header: ParagraphHeader,
-    public chars: CharList,
+    public chars: HWPChar[],
     public charShapes: CharShape[],
     public lineSegments: LineSegment[],
     public rangeTags: RangeTag[],
@@ -50,8 +55,8 @@ export class Paragraph {
     // NOTE: (@hahnlee) 문서와 달리 header.chars가 0보다 커도 없을 수 있다.
     const chars =
       iterator.peek().id === SectionTagID.HWPTAG_PARA_TEXT
-        ? CharList.fromRecord(iterator.next(), header.chars)
-        : CharList.empty()
+        ? parseChars(iterator.next(), header.chars)
+        : createEmptyCharList()
 
     const charShapes: CharShape[] = []
     if (header.charShapes > 0) {
@@ -99,9 +104,9 @@ export class Paragraph {
       }
     }
 
-    const controls: Control[] = chars
-      .extendedControls()
-      .map(() => parseControl(iterator, version, options))
+    const controls = extendedControls(chars).map(() =>
+      parseControl(iterator, version, options),
+    )
 
     const unknown = collectChildren(iterator, current.level)
 
@@ -117,6 +122,28 @@ export class Paragraph {
       rangeTags,
       controls,
     )
+  }
+
+  *shapes() {
+    let index = 0
+    for (let i = 0; i < this.charShapes.length - 1; i++) {
+      const start = this.charShapes[i].startPosition
+      const end = this.charShapes[i + 1].startPosition
+      const chars = []
+      let counts = end - start
+      while (counts > 0) {
+        const char = this.chars[index]
+        chars.push(char)
+        counts -= char.bytes
+        index++
+      }
+      yield [this.charShapes[i], chars] as const
+    }
+
+    yield [
+      this.charShapes[this.charShapes.length - 1],
+      this.chars.slice(index),
+    ] as const
   }
 
   toString() {
