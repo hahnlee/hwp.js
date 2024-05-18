@@ -15,6 +15,7 @@
  */
 
 import { DocInfoTagID } from '../../constants/tag-id.js'
+import { getBitValue } from '../../utils/bit-utils.js'
 import { ByteReader } from '../../utils/byte-reader.js'
 import type { HWPRecord } from '../record.js'
 
@@ -56,7 +57,8 @@ export class Style {
 
     const name = reader.readString()
     const englishName = reader.readString()
-    const kind = mapStyleKind(reader.readUInt8())
+    const property = reader.readUInt8()
+    const kind = mapStyleKind(property)
     const nextStyleId = reader.readUInt8()
     const langId = reader.readUInt16()
     const paragraphShapeId = reader.readUInt16()
@@ -90,8 +92,10 @@ export enum StyleKind {
 }
 
 function mapStyleKind(value: number) {
-  if (value >= StyleKind.Para && value <= StyleKind.Char) {
-    return value as StyleKind
+  // NOTE: (@hahnlee) 문서에서는 bit range 0~2를 사용하고 있지만 실제로는 0값을 사용하고 있는것으로 보임
+  const property = getBitValue(value, 0)
+  if (property === 0) {
+    return StyleKind.Para
   }
-  throw new Error(`Unknown StyleKind: ${value}`)
+  return StyleKind.Char
 }
