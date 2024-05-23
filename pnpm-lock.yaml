@@ -35,6 +35,9 @@ importers:
 
   packages/parser:
     dependencies:
+      aes-js:
+        specifier: ^3.1.2
+        version: 3.1.2
       cfb:
         specifier: ^1.2.2
         version: 1.2.2
@@ -45,6 +48,9 @@ importers:
       '@hwp.js/eslint-config':
         specifier: workspace:*
         version: link:../../libs/eslint-config
+      '@types/aes-js':
+        specifier: ^3.1.4
+        version: 3.1.4
       '@types/node':
         specifier: ^20
         version: 20.12.6
@@ -676,6 +682,10 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@types/aes-js@3.1.4:
+    resolution: {integrity: sha512-v3D66IptpUqh+pHKVNRxY8yvp2ESSZXe0rTzsGdzUhEwag7ljVfgCllkWv2YgiYXDhWFBrEywll4A5JToyTNFA==}
+    dev: true
+
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
@@ -863,6 +873,10 @@ packages:
   /adler-32@1.3.1:
     resolution: {integrity: sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==}
     engines: {node: '>=0.8'}
+    dev: false
+
+  /aes-js@3.1.2:
+    resolution: {integrity: sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==}
     dev: false
 
   /ajv@6.12.6:

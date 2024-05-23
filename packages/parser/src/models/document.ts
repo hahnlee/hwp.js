@@ -42,12 +42,7 @@ export class HWPDocument {
     const sections: Section[] = []
 
     for (let i = 0; i < docInfo.properties.sections; i += 1) {
-      const entry = find(container, `Root Entry/BodyText/Section${i}`)
-
-      if (!entry) {
-        throw new Error('Section not exist')
-      }
-      sections.push(Section.fromEntry(entry, header, options))
+      sections.push(Section.fromCFB(container, i, header, options))
     }
 
     const binDataList: BinData[] = []

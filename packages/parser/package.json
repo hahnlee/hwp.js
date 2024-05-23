@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@hwp.js/eslint-config": "workspace:*",
+    "@types/aes-js": "^3.1.4",
     "@types/node": "^20",
     "@types/pako": "^1.0.1",
     "eslint": "^8",
@@ -45,6 +46,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "aes-js": "^3.1.2",
     "cfb": "^1.2.2",
     "pako": "^2.1.0"
   }
