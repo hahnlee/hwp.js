@@ -19,7 +19,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import { HWPDocument } from '../models/document.js'
-import { HWPVersion } from '../models/version.js'
 import { parse } from '../parse.js'
 
 const filePath = path.join(import.meta.dirname, 'data', '(양식7-대리인)위임장.hwp')
