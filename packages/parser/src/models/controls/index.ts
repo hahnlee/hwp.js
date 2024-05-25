@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
+export * from './column.js'
 export * from './control.js'
 export * from './section.js'

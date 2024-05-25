@@ -21,6 +21,7 @@ import { ByteReader } from '../../utils/byte-reader.js'
 import type { PeekableIterator } from '../../utils/generator.js'
 import type { HWPRecord } from '../record.js'
 import { HWPVersion } from '../version.js'
+import { ColumnControl } from './column.js'
 import { SectionControl } from './section.js'
 import { GenShapeObjectControl } from './shapes/shape.js'
 import { TableControl } from './table.js'
@@ -34,6 +35,8 @@ function mapControl(
   options: ParseOptions,
 ) {
   switch (ctrlId) {
+    case OtherCtrlID.Column:
+      return ColumnControl.fromRecord(ctrlId, current, iterator)
     case OtherCtrlID.Section:
       return SectionControl.fromRecord(ctrlId, current, iterator, version)
     case CommonCtrlID.Table:
