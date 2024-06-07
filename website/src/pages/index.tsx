@@ -34,7 +34,7 @@ function IndexPage() {
       .then(res => {
         const array = new Uint8Array(res)
         setIsLoading(false)
-        new HWPViewer(viewerRef.current, array, { type: 'array' })
+        new HWPViewer(viewerRef.current, array, { parser: { type: 'array' }})
       })
       .catch(() => {
         setIsLoading(false)
